@@ -1,6 +1,6 @@
-package org.example;
+package agh.isc.oop.project;
 
-public class Main {
+public class DarwinWorld {
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }
