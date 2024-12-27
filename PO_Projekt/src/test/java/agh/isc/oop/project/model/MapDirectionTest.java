@@ -18,6 +18,18 @@ class MapDirectionTest {
     }
 
     @Test
+    void testReverse() {
+        assertEquals(MapDirection.SOUTH, MapDirection.NORTH.reverse());
+        assertEquals(MapDirection.SOUTHWEST, MapDirection.NORTHEAST.reverse());
+        assertEquals(MapDirection.WEST, MapDirection.EAST.reverse());
+        assertEquals(MapDirection.NORTHWEST, MapDirection.SOUTHEAST.reverse());
+        assertEquals(MapDirection.NORTH, MapDirection.SOUTH.reverse());
+        assertEquals(MapDirection.NORTHEAST, MapDirection.SOUTHWEST.reverse());
+        assertEquals(MapDirection.EAST, MapDirection.WEST.reverse());
+        assertEquals(MapDirection.SOUTHEAST, MapDirection.NORTHWEST.reverse());
+    }
+
+    @Test
     void testToUnitVector() {
         assertEquals(new Vector2d(0, 1), MapDirection.NORTH.toUnitVector());
         assertEquals(new Vector2d(1, 1), MapDirection.NORTHEAST.toUnitVector());

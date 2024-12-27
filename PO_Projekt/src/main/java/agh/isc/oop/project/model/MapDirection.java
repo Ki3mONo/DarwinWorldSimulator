@@ -1,21 +1,33 @@
 package agh.isc.oop.project.model;
 
+import java.util.Random;
+
 public enum MapDirection {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
 
+    // Wszystko potrzebne do generowania losowych kierunków.
+    // Takie rozwiązanie, żeby nie trzeba było używać values()
+    // za każdym razem, gdy generujemy losowy kierunek.
+    private static final MapDirection[] VALUES = MapDirection.values();
+    private static final int LENGTH = VALUES.length;
+    private static final Random rand = new Random();
 
-    //Next - jedno przesunięcie o 45 stopni
+    public static MapDirection getRandomDirection() {
+        return VALUES[rand.nextInt(LENGTH)];
+    }
+
+    //Next — jedno przesunięcie o 45 stopni
     public MapDirection next(){
-        return switch (this) {
-            case NORTH -> NORTHEAST;
-            case NORTHEAST -> EAST;
-            case EAST -> SOUTHEAST;
-            case SOUTHEAST -> SOUTH;
-            case SOUTH -> SOUTHWEST;
-            case SOUTHWEST -> WEST;
-            case WEST -> NORTHWEST;
-            case NORTHWEST -> NORTH;
-        };
+        // Stałe kierunków są zdefiniowane po kolei, zgodnie z kierunkiem
+        // wskazówek zegara, więc next może zwracać następny kierunek
+        // lub w przypadku ostatniego, pierwszy
+        return VALUES[(this.ordinal() + 1)% LENGTH];
+    }
+
+    public MapDirection reverse(){
+        // Logika identyczna jak wyżej, tylko odwrotny kierunek
+        // oznacza przesunięcie o połowę ilości kierunków
+        return VALUES[(this.ordinal() + LENGTH / 2)% LENGTH];
     }
 
     //Przetłumaczenie kierunku, w jakim zwrócone jest zwierzę,
