@@ -31,6 +31,7 @@ public class Genome {
 
     private int currentGeneIndex;
 
+
     //Do genów zwierząt generowanych na początku
     public Genome(List<Integer> genome) {
         Random rand = new Random();
@@ -56,9 +57,8 @@ public class Genome {
 
         //Całkowita energia rodziców
         int totalEnergy = strongerParent.getEnergy() + weakerParent.getEnergy();
-
         //Liczba genów dziedziczonych od słabszego rodzica
-        int weakerParentShare = (weakerParent.getEnergy() / totalEnergy) * length;
+        int weakerParentShare = (int) ((double) weakerParent.getEnergy() / (double) totalEnergy * length);
 
         List<Integer> temp = new ArrayList<Integer>(length);
 
@@ -83,7 +83,7 @@ public class Genome {
             }
         }
 
-        this.genome = mutate(temp, rand.nextInt(minMutations, maxMutations + 1));;
+        this.genome = mutate(temp, rand.nextInt(minMutations, maxMutations + 1));
     }
 
     //Mutacje genomu
@@ -96,7 +96,7 @@ public class Genome {
 
         Random rand = new Random();
         for (int i = 0; i < mutationsNumber; i++) {
-            genome.set(indexes.get(i), rand.nextInt(8));
+            genome.set(indexes.get(i), (genome.get(indexes.get(i)) + rand.nextInt(1, 8)) % 8);
         }
 
         return genome;
@@ -112,4 +112,12 @@ public class Genome {
         currentGeneIndex = (currentGeneIndex + 1) % length;
     }
 
+    //Gettery na potrzeby testów
+    public List<Integer> getGenome() {
+        return genome;
+    }
+
+    public int getCurrentGeneIndex() {
+        return currentGeneIndex;
+    }
 }
