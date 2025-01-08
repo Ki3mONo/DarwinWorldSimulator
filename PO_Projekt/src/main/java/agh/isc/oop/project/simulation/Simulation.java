@@ -56,12 +56,12 @@ public class Simulation implements Runnable{
 
         for (Animal animal : animals) {
             try {
-                map.place(animal); //tu pewnie dodac jakiś nextmove
+                map.move(animal); //tu pewnie dodac jakiś nextmove
             } catch (IncorrectPositionException e) {
                 System.err.println("Animal move failed: " + e.getMessage());
             }
         }
-
+    //je tylko najsilniejszy
         for (Animal animal : animals) {
             Grass grass = map.getGrassAt(animal.getPosition());
             if (grass != null) {
