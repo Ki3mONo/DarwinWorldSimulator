@@ -41,8 +41,8 @@ public class Animal implements WorldElement{
 
     private final Genome genome;
 
-    //Liczba dni życia zwierzaka
-    protected int age = 0;
+    //Dzień urodzenia zwierzaka
+    private final int birthDate;
 
     //Do generowania początkowych zwierząt
     public Animal(Vector2d position, List<Integer> geneList) {
@@ -50,15 +50,17 @@ public class Animal implements WorldElement{
         this.orientation = MapDirection.getRandomDirection();
         this.genome = new Genome(geneList);
         this.energy = initialEnergy;
+        this.birthDate = 0;
     }
 
     //Do tworzenia dzieci
-    public Animal(Animal parent1, Animal parent2) {
+    public Animal(Animal parent1, Animal parent2, int currentDay) {
         this.position = new Vector2d(parent1.position.getX(), parent1.position.getY());
         this.orientation = MapDirection.getRandomDirection();
         this.genome = new Genome(parent1, parent2);
         //Energia stracona przez rodziców trafia do dziecka
         this.energy = 2 * lostBreedingEnergy;
+        this.birthDate = currentDay;
     }
 
     public int getEnergy() {
@@ -74,19 +76,31 @@ public class Animal implements WorldElement{
         return position;
     }
 
-    public void move(){
+
+    //Przyjmuje mapę, żeby obliczyć nową pozycję zwierzaka.
+    //Zwraca nową pozycję do zapisania w mapie
+    public Vector2d move(AbstractWorldMap map){
+        //Zużycie energii na ruch
+        energy -= moveEnergy;
+
         // Obrót zwierzaka zgodnie z aktywnym genem
-        for (int i = 0; i < genome.getActiveGene(); i++) {
-            orientation = orientation.next();
-        }
+        orientation = orientation.turnBy(genome.getActiveGene());
+
         //Aktywacja kolejnego genu
         genome.updateCurrentGeneIndex();
 
+        //Wyliczenie nowej pozycji, przeniesienie między prawą i lewą krawędzią mapy
+        //załatwia funkcja adjustPosition()
+        Vector2d newPosition = map.adjustPosition(position.add(orientation.toUnitVector()));
 
-        //Do dopisania, bo muszę wiedzieć, jak będzie wyglądała mapa.
-        //Wydaje mi się, że dobre będzie zrobienie tutaj całej logiki ruchu,
-        //obliczania gdzie pójdzie, czy może itd., i zwrócenie nowej pozycji do mapy
-        energy -= moveEnergy;
+        //Jeśli nie da się tam ruszyć, to pozycja się nie zmienia, a zwierzak się obraca
+        if (map.canMoveTo(newPosition)) {
+            position = newPosition;
+        } else {
+            orientation = orientation.reverse();
+        }
+
+        return position;
     }
 
     public void eat(){

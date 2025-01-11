@@ -11,25 +11,29 @@ public class AgingAnimal extends Animal {
         super(position, geneList);
     }
 
-    public AgingAnimal(Animal parent1, Animal parent2) {
-        super(parent1, parent2);
+    public AgingAnimal(Animal parent1, Animal parent2, int currentDay) {
+        super(parent1, parent2, currentDay);
     }
 
     @Override
-    public void move(){
+    public Vector2d move(AbstractWorldMap map){
         Random rand = new Random();
+
+        Vector2d newPosition = getPosition();
+
         //Prawdopodobieństwo, że liczba z przedziału od 0 do 1
         // będzie mniejsza niż x, wynosi dokładnie x
         if (rand.nextDouble() < missMoveProbability){
             energy -= moveEnergy;
-        }
-        else{
-            super.move();
+        } else {
+            //Odejmowanie energii jest już tam w środku
+            newPosition = super.move(map);
         }
 
         if (missMoveProbability < 0.8) {
             //Nie wiem, czy mamy podawać wartość o ile to zwiększamy
             missMoveProbability += 0.01;
         }
+        return newPosition;
     }
 }

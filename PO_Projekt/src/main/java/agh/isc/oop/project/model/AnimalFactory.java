@@ -9,8 +9,8 @@ public class AnimalFactory {
     }
 
     //Tworzenie urodzonych zwierząt
-    public Animal createAnimal(Animal parent1, Animal parent2) {
-        return new Animal(parent1, parent2);
+    public Animal createAnimal(Animal parent1, Animal parent2, int currentDay) {
+        return new Animal(parent1, parent2, currentDay);
     }
 
 }
