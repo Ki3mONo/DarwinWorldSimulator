@@ -18,6 +18,21 @@ class MapDirectionTest {
     }
 
     @Test
+    void testTurnBy(){
+            assertEquals(MapDirection.NORTH, MapDirection.NORTH.turnBy(0));
+            assertEquals(MapDirection.EAST, MapDirection.EAST.turnBy(0));
+            assertEquals(MapDirection.SOUTHWEST, MapDirection.SOUTHWEST.turnBy(0));
+
+            assertEquals(MapDirection.EAST, MapDirection.NORTH.turnBy(2));
+            assertEquals(MapDirection.SOUTH, MapDirection.EAST.turnBy(2));
+            assertEquals(MapDirection.NORTHWEST, MapDirection.SOUTHWEST.turnBy(2));
+
+            assertEquals(MapDirection.NORTH, MapDirection.NORTH.turnBy(8));
+            assertEquals(MapDirection.EAST, MapDirection.NORTH.turnBy(10));
+            assertEquals(MapDirection.NORTHWEST, MapDirection.NORTHWEST.turnBy(16));
+    }
+
+    @Test
     void testReverse() {
         assertEquals(MapDirection.SOUTH, MapDirection.NORTH.reverse());
         assertEquals(MapDirection.SOUTHWEST, MapDirection.NORTHEAST.reverse());

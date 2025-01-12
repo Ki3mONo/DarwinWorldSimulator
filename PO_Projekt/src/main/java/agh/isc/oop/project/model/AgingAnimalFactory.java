@@ -11,7 +11,7 @@ public class AgingAnimalFactory extends AnimalFactory {
 
     //Tworzenie urodzonych zwierząt
     @Override
-    public Animal createAnimal(Animal parent1, Animal parent2) {
-        return new AgingAnimal(parent1, parent2);
+    public Animal createAnimal(Animal parent1, Animal parent2, int currentDay) {
+        return new AgingAnimal(parent1, parent2, currentDay);
     }
 }

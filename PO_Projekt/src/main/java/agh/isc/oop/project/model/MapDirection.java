@@ -24,6 +24,11 @@ public enum MapDirection {
         return VALUES[(this.ordinal() + 1)% LENGTH];
     }
 
+    public MapDirection turnBy(int n){
+        // Logika jak wyżej, tylko obracamy się n razy
+        return VALUES[(this.ordinal() + n) % LENGTH];
+    }
+
     public MapDirection reverse(){
         // Logika identyczna jak wyżej, tylko odwrotny kierunek
         // oznacza przesunięcie o połowę ilości kierunków

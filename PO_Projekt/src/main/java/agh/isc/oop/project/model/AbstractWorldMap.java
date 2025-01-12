@@ -65,7 +65,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         mapChanged("Animal placed at: " + position);
     }
 
-    protected Vector2d adjustPosition(Vector2d position) {
+    public Vector2d adjustPosition(Vector2d position) {
         int x = (position.getX() + mapSize.getX()) % mapSize.getX();
         int y = position.getY();
 
