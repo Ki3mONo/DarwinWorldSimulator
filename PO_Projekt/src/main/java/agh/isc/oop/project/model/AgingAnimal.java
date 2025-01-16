@@ -24,7 +24,7 @@ public class AgingAnimal extends Animal {
         //Prawdopodobieństwo, że liczba z przedziału od 0 do 1
         // będzie mniejsza niż x, wynosi dokładnie x
         if (rand.nextDouble() < missMoveProbability){
-            energy -= moveEnergy;
+            energy -= config.getMoveCost();;
         } else {
             //Odejmowanie energii jest już tam w środku
             newPosition = super.move(map);

@@ -1,23 +1,29 @@
 package agh.isc.oop.project.simulation;
 
 public class SimulationConfig {
+    //WorldMap
     private final int mapWidth;
     private final int mapHeight;
     private final int startGrassCount;
     private final int grassEnergy;
     private final int dailyGrassGrowth;
     private final int startAnimalCount;
-    private final int startEnergy;
+    //Animal
+    private final int initialEnergy;
     private final int reproductionEnergy;
     private final int reproductionCost;
+    private final int moveCost;
+    private final boolean agingAnimalVariant;
+    //Genome
     private final int minMutations;
     private final int maxMutations;
     private final int genomeLength;
+    //Simulation
     private final long dayDurationMs;
 
     public SimulationConfig(int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,
-                            int dailyGrassGrowth, int startAnimalCount, int startEnergy,
-                            int reproductionEnergy, int reproductionCost, int minMutations,
+                            int dailyGrassGrowth, int startAnimalCount, int initialEnergy,
+                            int reproductionEnergy, int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
                             int maxMutations, int genomeLength, long dayDurationMs) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -25,9 +31,11 @@ public class SimulationConfig {
         this.grassEnergy = grassEnergy;
         this.dailyGrassGrowth = dailyGrassGrowth;
         this.startAnimalCount = startAnimalCount;
-        this.startEnergy = startEnergy;
+        this.initialEnergy = initialEnergy;
         this.reproductionEnergy = reproductionEnergy;
         this.reproductionCost = reproductionCost;
+        this.moveCost = moveCost;
+        this.agingAnimalVariant = agingAnimalVariant;
         this.minMutations = minMutations;
         this.maxMutations = maxMutations;
         this.genomeLength = genomeLength;
@@ -40,11 +48,15 @@ public class SimulationConfig {
     public int getGrassEnergy() { return grassEnergy; }
     public int getDailyGrassGrowth() { return dailyGrassGrowth; }
     public int getStartAnimalCount() { return startAnimalCount; }
-    public int getStartEnergy() { return startEnergy; }
+    public int getInitialEnergy() { return initialEnergy; }
     public int getReproductionEnergy() { return reproductionEnergy; }
     public int getReproductionCost() { return reproductionCost; }
+    public int getMoveCost() { return moveCost; }
     public int getMinMutations() { return minMutations; }
     public int getMaxMutations() { return maxMutations; }
     public int getGenomeLength() { return genomeLength; }
     public long getDayDurationMs() { return dayDurationMs; }
+    public boolean isAgingAnimalVariant() {
+        return agingAnimalVariant;
+    }
 }

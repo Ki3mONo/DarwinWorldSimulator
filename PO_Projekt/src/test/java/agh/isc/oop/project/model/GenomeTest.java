@@ -1,5 +1,6 @@
 package agh.isc.oop.project.model;
 
+import agh.isc.oop.project.simulation.SimulationConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,10 +11,12 @@ class GenomeTest {
 
     @Test
     void reproductionTest(){
-        Genome.setLength(5);
-        Genome.setMinMutations(0);
-        Genome.setMaxMutations(0);
-        Animal.setInitialEnergy(10);
+        SimulationConfig config = new SimulationConfig(0, 0, 0,
+                0, 0, 0, 10,
+                0, 0, 0, false,
+                0, 0, 5, 0);
+        Animal.setConfig(config);
+        Genome.setConfig(config);
 
         Animal parent1 = new Animal(new Vector2d(1, 1), List.of(1, 2, 3, 4, 5));
         Animal parent2 = new Animal(new Vector2d(1, 1), List.of(1, 2, 3, 4, 5));
@@ -25,10 +28,12 @@ class GenomeTest {
 
     @Test
     void mutationTest(){
-        Genome.setLength(5);
-        Genome.setMinMutations(3);
-        Genome.setMaxMutations(3);
-        Animal.setInitialEnergy(10);
+        SimulationConfig config = new SimulationConfig(0, 0, 0,
+                0, 0, 0, 10,
+                0, 0, 0, false,
+                3, 3, 5, 0);
+        Animal.setConfig(config);
+        Genome.setConfig(config);
 
         Animal parent1 = new Animal(new Vector2d(1, 1), List.of(1, 2, 3, 4, 5));
         Animal parent2 = new Animal(new Vector2d(1, 1), List.of(1, 2, 3, 4, 5));
@@ -46,7 +51,13 @@ class GenomeTest {
 
     @Test
     void getActiveGeneTest(){
-        Genome.setLength(5);
+        SimulationConfig config = new SimulationConfig(0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, false,
+                0, 0, 5, 0);
+        Animal.setConfig(config);
+        Genome.setConfig(config);
+
         Genome genome = new Genome(List.of(1, 2, 3, 4, 5));
 
         assertEquals(genome.getGeneList().get(genome.getCurrentGeneIndex()), genome.getActiveGene());
@@ -54,7 +65,13 @@ class GenomeTest {
 
     @Test
     void updateCurrentGeneTest(){
-        Genome.setLength(5);
+        SimulationConfig config = new SimulationConfig(0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, false,
+                0, 0, 5, 0);
+        Animal.setConfig(config);
+        Genome.setConfig(config);
+
         Genome genome = new Genome(List.of(1, 2, 3, 4, 5));
         int current = genome.getCurrentGeneIndex();
 
@@ -67,18 +84,30 @@ class GenomeTest {
 
     @Test
     void geneInheritanceTest(){
-        Genome.setLength(8);
-        Genome.setMinMutations(0);
-        Genome.setMaxMutations(0);
+        SimulationConfig config = new SimulationConfig(0, 0, 0,
+                0, 0, 0, 10,
+                0, 0, 0, false,
+                0, 0, 8, 0);
+        Animal.setConfig(config);
+        Genome.setConfig(config);
 
-        Animal.setInitialEnergy(10);
+        //oboje energia 10
         Animal parent1 = new Animal(new Vector2d(1, 1), List.of(0, 1, 2, 3, 4, 5, 6, 7));
         Animal parent2 = new Animal(new Vector2d(1, 1), List.of(7, 6, 5, 4, 3, 2, 1, 0));
         Animal child12 = new Animal(parent1, parent2, 0);
 
-        Animal.setInitialEnergy(5);
+        Animal.setConfig(new SimulationConfig(0, 0, 0,
+                0, 0, 0, 5,
+                0, 0, 0, false,
+                0, 0, 8, 0));
+        //energia 5
         Animal parent3 = new Animal(new Vector2d(1, 1), List.of(0, 1, 2, 3, 4, 5, 6, 7));
-        Animal.setInitialEnergy(10);
+
+        Animal.setConfig(new SimulationConfig(0, 0, 0,
+                0, 0, 0, 10,
+                0, 0, 0, false,
+                0, 0, 8, 0));
+
         Animal parent4 = new Animal(new Vector2d(1, 1), List.of(7, 6, 5, 4, 3, 2, 1, 0));
         Animal child34 = new Animal(parent3, parent4, 0);
 

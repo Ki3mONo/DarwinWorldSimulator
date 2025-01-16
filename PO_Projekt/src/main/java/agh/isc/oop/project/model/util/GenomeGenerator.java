@@ -58,7 +58,6 @@ public class GenomeGenerator {
         }
 
         genes = mutate(genes, mutationsNumber);
-        System.out.println("dupa1" + genomeLength);
         return genes;
     }
 

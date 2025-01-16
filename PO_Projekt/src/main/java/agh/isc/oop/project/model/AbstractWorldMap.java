@@ -74,11 +74,12 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
         return new Vector2d(x, y);
     }
+
     public List<WorldElement> objectAt(Vector2d position) {
         Vector2d adjustedPosition = adjustPosition(position);
         return worldElements.getOrDefault(adjustedPosition, Collections.emptyList());
     }
-
+    //tu pewnie optional
     public Grass getGrassAt(Vector2d grassPosition) {
         return grassMap.get(grassPosition);
     }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AnimalFactory {
     //Generowanie startowych zwierząt
-    public Animal generateAnimal(Vector2d position, List<Integer> geneList) {
+    public Animal createAnimal(Vector2d position, List<Integer> geneList) {
         return new Animal(position, geneList);
     }
 
