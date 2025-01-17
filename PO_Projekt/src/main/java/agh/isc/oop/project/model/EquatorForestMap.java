@@ -20,8 +20,8 @@ public class EquatorForestMap extends AbstractWorldMap {
     @Override
     public void initializeGrass(int initialGrassSize) {
         Random random = new Random();
-        int equatorStart = mapSize.getY() / 3;
-        int equatorEnd = 2 * mapSize.getY() / 3;
+        int equatorStart = 2 * mapSize.getY() / 5;
+        int equatorEnd = 3 * mapSize.getY() / 5;
 
         int equatorGrass = (int) (initialGrassSize * 0.8); // 80% for equatorial region
         int otherGrass = initialGrassSize - equatorGrass; // 20% for other regions

@@ -90,6 +90,9 @@ public abstract class AbstractWorldMap implements WorldMap {
         return Optional.ofNullable(grassMap.get(grassPosition));
     }
 
+    public void move(Animal animal) throws IncorrectPositionException {
+        //todo
+    }
     public void removeGrass(Vector2d grassPosition) {
         grassMap.remove(grassPosition);
     }
