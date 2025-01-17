@@ -12,6 +12,7 @@ public class Simulation implements Runnable{
     private final GenomeGenerator genomeGenerator;
     private boolean isRunning = true;
     private final AnimalFactory animalFactory;
+    private int currentDay = 0;
 
     public Simulation(SimulationConfig config, AbstractWorldMap map) {
         this.config = config;
@@ -33,6 +34,7 @@ public class Simulation implements Runnable{
                 System.err.println("Failed to place animal: " + e.getMessage());
             }
         }
+        //to już jest w konstruktorze mapy?
         map.initializeGrass(config.getStartGrassCount());
     }
 
@@ -40,6 +42,7 @@ public class Simulation implements Runnable{
     public void run() {
         while (isRunning) {
             performDayCycle();
+            currentDay++;
             try {
                 Thread.sleep(config.getDayDurationMs());
             } catch (InterruptedException e) {
@@ -59,26 +62,12 @@ public class Simulation implements Runnable{
         });
 
         for (Animal animal : animals) {
-            try {
-                map.place(animal); //tu pewnie dodac jakiś nextmove
-                //zmienić na move, try do wywalenia
-            } catch (IncorrectPositionException e) {
-                System.err.println("Animal move failed: " + e.getMessage());
-            }
+            map.move(animal);
         }
 
-        for (Animal animal : animals) {
-            //zmienić na zwracanie optionala
-            //i dodać logikę, bo z pola je tylko ten najsilniejszy
-            Grass grass = map.getGrassAt(animal.getPosition());
-            if (grass != null) {
-                animal.eat(config.getGrassEnergy());
-                map.removeGrass(grass.getPosition());
-                map.mapChanged("Grass consumed at: " + grass.getPosition());
-            }
-        }
-        //handle reproduction chyba sensowniej zostawić tutaj, w osobnej metodzie
-        //map.handleReproduction(config);
+        map.handleEating(config.getGrassEnergy());
+
+        map.handleReproduction(currentDay, config.getReproductionEnergy());
 
         map.grassGrow(config.getDailyGrassGrowth());
     }

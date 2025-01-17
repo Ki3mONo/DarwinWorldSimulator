@@ -53,7 +53,6 @@ public class Animal implements WorldElement{
         return position;
     }
 
-
     //Przyjmuje mapę, żeby obliczyć nową pozycję zwierzaka.
     //Zwraca nową pozycję do zapisania w mapie
     public Vector2d move(AbstractWorldMap map){
@@ -68,7 +67,12 @@ public class Animal implements WorldElement{
 
         //Wyliczenie nowej pozycji, przeniesienie między prawą i lewą krawędzią mapy
         //załatwia funkcja adjustPosition()
-        Vector2d newPosition = map.adjustPosition(position.add(orientation.toUnitVector()));
+        Vector2d newPosition = position.add(orientation.toUnitVector());
+
+        //Jeśli ma nastąpić przeniesienie dookoła kuli ziemskiej, to
+        //ta metoda zwróci nową pozycję po drugiej stronie
+        if (newPosition.getX() == -1 || newPosition.getX() == config.getMapWidth())
+            newPosition = adjustPosition(newPosition);
 
         //Jeśli nie da się tam ruszyć, to pozycja się nie zmienia, a zwierzak się obraca
         if (map.canMoveTo(newPosition)) {
@@ -80,8 +84,21 @@ public class Animal implements WorldElement{
         return position;
     }
 
+    private Vector2d adjustPosition(Vector2d position){
+        int x = position.getX();
+        if (x == -1)
+            x = config.getMapWidth() - 1;
+        else if (x == config.getMapWidth())
+            x = 0;
+
+        return new Vector2d(x, position.getY());
+    }
+
     public void eat(int grassEnergy){
         energy += grassEnergy;
     }
 
+    public void loseReproductionEnergy(){
+        energy -= config.getReproductionCost();
+    }
 }

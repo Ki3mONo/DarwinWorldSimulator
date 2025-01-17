@@ -10,7 +10,7 @@ public class CrawlingJungleMap extends AbstractWorldMap{
         this.mapID = UUID.randomUUID();
         this.mapSize = mapSize;
         this.leftBottomCorner = new Vector2d(0, 0);
-        this.rightUpperCorner = mapSize;
+        this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
         initializeGrass(initialGrassCount);
     }
 
@@ -20,7 +20,7 @@ public class CrawlingJungleMap extends AbstractWorldMap{
         for (int i = 0; i < initialGrassSize; i++) {
             Vector2d position = new Vector2d(random.nextInt(mapSize.getX()), random.nextInt(mapSize.getY()));
             if (!grassMap.containsKey(position)) {
-                grassMap.put(position, new Grass(position, 10));
+                grassMap.put(position, new Grass(position));
                 mapChanged("Initial grass placed at: " + position);
             }
         }
@@ -42,7 +42,7 @@ public class CrawlingJungleMap extends AbstractWorldMap{
             }
 
             if (inBounds(newPlantPosition) && !grassMap.containsKey(newPlantPosition)) {
-                grassMap.put(newPlantPosition, new Grass(newPlantPosition, 10));
+                grassMap.put(newPlantPosition, new Grass(newPlantPosition));
                 mapChanged("Grass grown at: " + newPlantPosition);
             }
         }
