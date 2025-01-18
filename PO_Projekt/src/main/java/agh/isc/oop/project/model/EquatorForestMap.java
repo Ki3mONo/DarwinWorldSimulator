@@ -12,10 +12,11 @@ public class EquatorForestMap extends AbstractWorldMap {
         this.mapID = UUID.randomUUID();
         this.mapSize = mapSize;
         this.leftBottomCorner = new Vector2d(0, 0);
-        this.rightUpperCorner = mapSize;
+        this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
         initializeGrass(initialGrassCount);
     }
 
+    //Czemu to zapisywanie do worldElements i po co w ogóle taka hashmapa?
     @Override
     public void initializeGrass(int initialGrassSize) {
         Random random = new Random();

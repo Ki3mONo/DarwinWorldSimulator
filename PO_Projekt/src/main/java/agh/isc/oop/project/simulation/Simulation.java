@@ -11,17 +11,22 @@ public class Simulation implements Runnable{
     private final List<Animal> animals = new ArrayList<>();
     private final GenomeGenerator genomeGenerator;
     private boolean isRunning = true;
+    private final AnimalFactory animalFactory;
+    private int currentDay = 0;
 
     public Simulation(SimulationConfig config, AbstractWorldMap map) {
         this.config = config;
         this.map = map;
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
+        this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
+
+        //nie wiem czy przenosić to do metody, bo to chyba tylko tymczasowe
         for (int i = 0; i < config.getStartAnimalCount(); i++) {
             Vector2d position = new Vector2d(
                     (int) (Math.random() * config.getMapWidth()),
                     (int) (Math.random() * config.getMapHeight())
             );
-            Animal animal = new Animal(position, genomeGenerator.generateGenome());
+            Animal animal = animalFactory.createAnimal(position, genomeGenerator.generateGenome());
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -29,6 +34,7 @@ public class Simulation implements Runnable{
                 System.err.println("Failed to place animal: " + e.getMessage());
             }
         }
+        //to już jest w konstruktorze mapy?
         map.initializeGrass(config.getStartGrassCount());
     }
 
@@ -36,6 +42,7 @@ public class Simulation implements Runnable{
     public void run() {
         while (isRunning) {
             performDayCycle();
+            currentDay++;
             try {
                 Thread.sleep(config.getDayDurationMs());
             } catch (InterruptedException e) {
@@ -55,23 +62,12 @@ public class Simulation implements Runnable{
         });
 
         for (Animal animal : animals) {
-            try {
-                map.move(animal); //tu pewnie dodac jakiś nextmove
-            } catch (IncorrectPositionException e) {
-                System.err.println("Animal move failed: " + e.getMessage());
-            }
-        }
-    //je tylko najsilniejszy
-        for (Animal animal : animals) {
-            Grass grass = map.getGrassAt(animal.getPosition());
-            if (grass != null) {
-                animal.eat();
-                map.removeGrass(grass.getPosition());
-                map.mapChanged("Grass consumed at: " + grass.getPosition());
-            }
+            map.move(animal);
         }
 
-        //map.handleReproduction(config);
+        map.handleEating(config.getGrassEnergy());
+
+        map.handleReproduction(currentDay, config.getReproductionEnergy());
 
         map.grassGrow(config.getDailyGrassGrowth());
     }
