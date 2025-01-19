@@ -73,7 +73,6 @@ public class SimulationMapWindowController implements MapChangeListener {
 
         simulation.getMap().addObserver(this);
 
-        // Dodanie listenera do zmiany rozmiaru okna
         gridContainer.widthProperty().addListener((obs, oldVal, newVal) -> resizeGrid());
         gridContainer.heightProperty().addListener((obs, oldVal, newVal) -> resizeGrid());
 
@@ -85,7 +84,7 @@ public class SimulationMapWindowController implements MapChangeListener {
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
 
-        double cellSize = calculateCellSize(); // Nowy rozmiar dla równej szerokości i wysokości
+        double cellSize = calculateCellSize();
 
         for (int x = 0; x < config.getMapWidth(); x++) {
             ColumnConstraints column = new ColumnConstraints(cellSize);
@@ -107,7 +106,7 @@ public class SimulationMapWindowController implements MapChangeListener {
 
 
     private void resizeGrid() {
-        double cellSize = calculateCellSize(); // Obliczamy nowe rozmiary komórek
+        double cellSize = calculateCellSize();
 
         for (ColumnConstraints column : mapGrid.getColumnConstraints()) {
             column.setPrefWidth(cellSize);
@@ -117,7 +116,6 @@ public class SimulationMapWindowController implements MapChangeListener {
             row.setPrefHeight(cellSize);
         }
 
-        // 🔹 Przeskalowanie wszystkich elementów w komórkach
         for (javafx.scene.Node node : mapGrid.getChildren()) {
             if (node instanceof StackPane cell) {
                 cell.setPrefSize(cellSize, cellSize);
@@ -147,7 +145,7 @@ public class SimulationMapWindowController implements MapChangeListener {
 
                     Optional<List<WorldElement>> elementsOpt = worldMap.objectAt(position);
 
-                    // Zamiast isPresent i orElse, używamy ifPresentOrElse dla bezpieczniejszego przetwarzania
+                    // Zamiast isPresent i orElse, używamy ifPresentOrElse bo inaczej nie chciało działać xD
                     int finalX = x;
                     int finalY = y;
                     elementsOpt.ifPresentOrElse(elements -> {

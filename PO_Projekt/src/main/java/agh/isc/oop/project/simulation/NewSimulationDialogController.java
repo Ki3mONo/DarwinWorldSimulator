@@ -160,7 +160,6 @@ public class NewSimulationDialogController {
 
     private void saveConfigToFile(File file) {
         try {
-            // Tutaj można zaimplementować zapis do pliku CSV
             showAlert("Sukces", "Konfiguracja została zapisana.");
         } catch (Exception e) {
             showAlert("Błąd", "Nie udało się zapisać pliku.");

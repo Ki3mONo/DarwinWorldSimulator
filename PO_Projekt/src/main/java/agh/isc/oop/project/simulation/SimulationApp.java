@@ -33,51 +33,42 @@ public class SimulationApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Set application icon
         Image appIcon = new Image(getClass().getResourceAsStream("/icons/icon.png"));
         primaryStage.getIcons().add(appIcon);
 
-        // Load background image
         Image backgroundImage = new Image(getClass().getResourceAsStream("/app/background.png"));
         ImageView backgroundView = new ImageView(backgroundImage);
         backgroundView.setPreserveRatio(true);
         backgroundView.setSmooth(true);
 
-        // Create layout
         StackPane root = new StackPane();
         backgroundView.fitWidthProperty().bind(root.widthProperty());
         backgroundView.fitHeightProperty().bind(root.heightProperty());
         root.getChildren().add(backgroundView);
 
-        // Create menu
         VBox menuBox = new VBox(20);
         menuBox.setAlignment(javafx.geometry.Pos.CENTER);
         menuBox.setPadding(new javafx.geometry.Insets(20));
 
-        // Define buttons
         Button newSimButton = createTransparentImageButton("/app/start.png");
         Button loadConfigButton = createTransparentImageButton("/app/json.png");
         Button loadSimulationButton = createTransparentImageButton("/app/csv.png");
         Button exitButton = createTransparentImageButton("/app/close.png");
 
-        // Style buttons
         String buttonStyle = "-fx-font-size: 16px; -fx-min-width: 200px;";
         newSimButton.setStyle(buttonStyle);
         loadConfigButton.setStyle(buttonStyle);
         loadSimulationButton.setStyle(buttonStyle);
         exitButton.setStyle(buttonStyle);
 
-        // Set button actions
         newSimButton.setOnAction(e -> openNewSimulationWindow());
         loadConfigButton.setOnAction(e -> onLoadSimulationFromJSON(primaryStage));
         loadSimulationButton.setOnAction(e -> onLoadSimulationFromCSV(primaryStage));
         exitButton.setOnAction(e -> primaryStage.close());
 
-        // Add buttons to the menu
         menuBox.getChildren().addAll(newSimButton, loadConfigButton, loadSimulationButton, exitButton);
         root.getChildren().add(menuBox);
 
-        // Create scene
         Scene scene = new Scene(root, 896, 512);
         primaryStage.setTitle("DarwinWorld – Menu Główne");
         primaryStage.setScene(scene);

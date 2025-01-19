@@ -172,9 +172,6 @@ public class Animal implements WorldElement {
         }
     }
 
-    /**
-     * Zwraca dzień śmierci zwierzaka lub -1 jeśli wciąż żyje.
-     */
     public int getDeathDay() {
         return deathDay;
     }

@@ -75,12 +75,12 @@ public class WorldElementBox extends VBox {
             animalCountBar = new ProgressBar();
             animalCountBar.setMinWidth(width);
             animalCountBar.setMaxWidth(width);
-            animalCountBar.setPrefHeight(Math.max(height * 0.1, 5)); // 🔹 Minimalna wysokość 5 px
-            animalCountBar.setMaxHeight(Double.MAX_VALUE); // 🔹 Maksymalna wysokość, jeśli dostępna
+            animalCountBar.setPrefHeight(Math.max(height * 0.1, 5));
+            animalCountBar.setMaxHeight(Double.MAX_VALUE);
             animalCountBar.setProgress(1);
             animalCountBar.setStyle("-fx-accent: blue;");
 
-            VBox.setVgrow(animalCountBar, Priority.ALWAYS); // 🔹 Pozwala rosnąć w pionie
+            VBox.setVgrow(animalCountBar, Priority.ALWAYS);
 
             this.getChildren().add(animalCountBar);
             updateAnimalCountBar(animalCount);
@@ -89,7 +89,7 @@ public class WorldElementBox extends VBox {
 
     private double getHealthProgress(Animal animal) {
         int energy = animal.getEnergy();
-        int maxEnergy = Math.max(animal.getMaxEnergy(), 1); // Zapobieganie dzieleniu przez 0
+        int maxEnergy = Math.max(animal.getMaxEnergy(), 1);
         return (double) energy / maxEnergy;
     }
 

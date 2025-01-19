@@ -25,7 +25,7 @@ public class Simulation implements Runnable {
     public Simulation(SimulationConfig config, AbstractWorldMap map, String csvFilePath) {
         this.config = config;
         this.map = map;
-        this.currentDay = 0; // Initialize currentDay
+        this.currentDay = 0;
         Genome.setConfig(config);
         Animal.setConfig(config);
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
@@ -57,7 +57,7 @@ public class Simulation implements Runnable {
             try {
                 synchronized (this) {
                     while (isPaused) {
-                        wait(config.getDayDurationMs()); // Timeout, aby uniknąć zakleszczenia
+                        wait(config.getDayDurationMs());
                     }
                 }
                 performDayCycle();
@@ -99,7 +99,7 @@ public class Simulation implements Runnable {
     }
     public void stop() {
         isRunning = false;
-        resume(); // Jeśli symulacja była wstrzymana, pozwól jej się zakończyć
+        resume();
     }
 
     public synchronized void pause() {
