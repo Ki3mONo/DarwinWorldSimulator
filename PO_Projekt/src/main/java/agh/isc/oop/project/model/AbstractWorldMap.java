@@ -78,7 +78,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
         animals.computeIfAbsent(position, k -> new ArrayList<>()).add(animal);
         worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(animal);
-        mapChanged("Animal placed at: " + position);
     }
 
     public void removeGrass(Vector2d grassPosition) {
@@ -154,7 +153,6 @@ public abstract class AbstractWorldMap implements WorldMap {
 
             winner.eat(grassEnergy);
             grassEaten.add(position);
-            mapChanged("Grass consumed at: " + position);
         }
 
         grassEaten.forEach(this::removeGrass);
@@ -173,7 +171,6 @@ public abstract class AbstractWorldMap implements WorldMap {
                 Animal parent2 = candidates.get(i + 1);
                 Animal child = new Animal(parent1, parent2, currentDay);
                 try {
-                    mapChanged("Animal born at: " + position);
                     place(child);
                     bornAnimals.add(child);
                 } catch (IncorrectPositionException e) {
@@ -222,7 +219,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             Grass grass = new Grass(position);
             worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(grass);
             grassMap.put(position, grass);
-            mapChanged("Grass grown at: " + position);
         }
     }
 

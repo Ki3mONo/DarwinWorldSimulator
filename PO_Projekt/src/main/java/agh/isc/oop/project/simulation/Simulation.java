@@ -96,6 +96,7 @@ public class Simulation implements Runnable {
         if (csvSaver != null) {
             csvSaver.saveDayStatistics();
         }
+        map.mapChanged("Day " + currentDay + " finished");
     }
     public void stop() {
         isRunning = false;
