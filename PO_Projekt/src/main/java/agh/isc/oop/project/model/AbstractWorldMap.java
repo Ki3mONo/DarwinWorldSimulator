@@ -2,6 +2,7 @@ package agh.isc.oop.project.model;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements WorldMap {
@@ -264,11 +265,13 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     public double getAverageChildrenCount() {
         synchronized (animals) {
-            List<Animal> allAnimals = animals.values().stream()
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
+            CopyOnWriteArrayList<Animal> allAnimals = new CopyOnWriteArrayList<>();
+            for (List<Animal> animalList : animals.values()) {
+                allAnimals.addAll(animals.getOrDefault(animalList, new ArrayList<>()));
+            }
 
             int totalChildren = allAnimals.stream()
+                    .filter(Objects::nonNull)
                     .mapToInt(Animal::getChildrenCount)
                     .sum();
 
