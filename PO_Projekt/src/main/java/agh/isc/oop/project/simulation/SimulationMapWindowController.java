@@ -269,7 +269,7 @@ public class SimulationMapWindowController implements MapChangeListener {
 
 
     @Override
-    public void mapChanged(AbstractWorldMap worldMap, String message) {
+    public void mapChanged(AbstractWorldMap worldMap) {
         if (!isPaused) {
             drawMap();
         }

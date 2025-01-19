@@ -1,11 +1,13 @@
 package agh.isc.oop.project.model;
 
+import agh.isc.oop.project.simulation.SimulationConfig;
+
 public class WorldMapFactory {
 
-    public static AbstractWorldMap createMap(MapType type, Vector2d mapSize, int initialGrassCount) {
+    public static AbstractWorldMap createMap(MapType type, SimulationConfig config) {
         return switch (type) {
-            case EQUATOR_FOREST -> new EquatorForestMap(mapSize, initialGrassCount);
-            case CRAWLING_JUNGLE -> new CrawlingJungleMap(mapSize, initialGrassCount);
+            case EQUATOR_FOREST -> new EquatorForestMap(config);
+            case CRAWLING_JUNGLE -> new CrawlingJungleMap(config);
             default -> throw new IllegalArgumentException("Unsupported map type: " + type);
         };
     }

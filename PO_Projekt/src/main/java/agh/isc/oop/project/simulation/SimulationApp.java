@@ -188,8 +188,7 @@ public class SimulationApp extends Application {
     private void startSimulation(SimulationConfig config) {
         printConfigSetup(config);
 
-        Vector2d mapSize = new Vector2d(config.getMapWidth(), config.getMapHeight());
-        AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), mapSize, config.getStartGrassCount());
+        AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), config);
 
         Simulation simulation = new Simulation(config, worldMap, config.csvFilePath);
         SimulationEngine engine = new SimulationEngine();

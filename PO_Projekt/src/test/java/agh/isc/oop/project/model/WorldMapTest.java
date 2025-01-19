@@ -30,8 +30,7 @@ public class WorldMapTest {
         Animal.setConfig(config);
         Genome.setConfig(config);
 
-        AbstractWorldMap map = new CrawlingJungleMap(
-                new Vector2d(config.getMapHeight(), config.getMapWidth()), 0);
+        AbstractWorldMap map = new CrawlingJungleMap(config);
 
         Animal animal1 = new Animal(new Vector2d(1, 1), List.of(0));
         Animal animal2 = new Animal(new Vector2d(2, 1), List.of(0));
@@ -72,7 +71,7 @@ public class WorldMapTest {
         Animal animal3 = new Animal(new Vector2d(0, 2), List.of(0));
         Animal animal4 = new Animal(new Vector2d(5, 3), List.of(0));
 
-        AbstractWorldMap map = new CrawlingJungleMap(new Vector2d(6, 6), 0);
+        AbstractWorldMap map = new CrawlingJungleMap(config);
 
         try {
             Field orientation = animal1.getClass().getDeclaredField("orientation");
@@ -126,8 +125,7 @@ public class WorldMapTest {
         Animal.setConfig(config);
         Genome.setConfig(config);
 
-        AbstractWorldMap map = new CrawlingJungleMap(
-                new Vector2d(config.getMapHeight(), config.getMapWidth()), 0);
+        AbstractWorldMap map = new CrawlingJungleMap(config);
 
         map.grassMap.put(new Vector2d(2, 2), new Grass(new Vector2d(2, 2)));
         map.grassMap.put(new Vector2d(2, 3), new Grass(new Vector2d(2, 3)));
@@ -176,9 +174,7 @@ public class WorldMapTest {
         Animal.setConfig(config);
         Genome.setConfig(config);
 
-        AbstractWorldMap map = new CrawlingJungleMap(
-                new Vector2d(config.getMapHeight(), config.getMapWidth()),
-                config.getStartGrassCount());
+        AbstractWorldMap map = new CrawlingJungleMap(config);
 
         Animal animal1 = new Animal(new Vector2d(2, 2), List.of(1, 1, 1, 1));
         Animal animal2 = new Animal(new Vector2d(2, 2), List.of(2, 2, 2, 2));

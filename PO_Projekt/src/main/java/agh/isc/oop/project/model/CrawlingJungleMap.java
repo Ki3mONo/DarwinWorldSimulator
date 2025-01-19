@@ -1,17 +1,16 @@
 package agh.isc.oop.project.model;
 
+import agh.isc.oop.project.simulation.SimulationConfig;
+
 import java.util.*;
 
 public class CrawlingJungleMap extends AbstractWorldMap{
     private final Random random = new Random();
 
 
-    public CrawlingJungleMap(Vector2d mapSize, int initialGrassCount) {
-        super(mapSize);
-        this.mapID = UUID.randomUUID();
-        this.leftBottomCorner = new Vector2d(0, 0);
-        this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
-        initializeGrass(initialGrassCount);
+    public CrawlingJungleMap(SimulationConfig config) {
+        super(config);
+        initializeGrass(config.getStartGrassCount());
     }
 
 

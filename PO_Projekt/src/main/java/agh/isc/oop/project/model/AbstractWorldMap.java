@@ -1,5 +1,7 @@
 package agh.isc.oop.project.model;
 
+import agh.isc.oop.project.simulation.SimulationConfig;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -13,12 +15,18 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected HashMap<Vector2d, Grass> grassMap = new HashMap<>();
     protected HashMap<Vector2d, List<WorldElement>> worldElements = new HashMap<>();
     private List<MapChangeListener> observing = new ArrayList<>();
+    private final SimulationConfig config;
+    private final AnimalFactory animalFactory;
 
     private Map<Vector2d, Integer> grassGrowthHistory = new HashMap<>();
 
-    public AbstractWorldMap(Vector2d mapSize) {
-        this.mapSize = mapSize;
-        this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
+    public AbstractWorldMap(SimulationConfig config) {
+        this.config = config;
+        this.mapID = UUID.randomUUID();
+        this.mapSize = new Vector2d(config.getMapWidth(), config.getMapHeight());
+        this.leftBottomCorner = new Vector2d(0, 0);
+        this.rightUpperCorner = new Vector2d(config.getMapWidth() - 1, config.getMapHeight() - 1);
+        this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
     }
 
     public void addObserver(MapChangeListener mapChangeListener) {
@@ -29,9 +37,9 @@ public abstract class AbstractWorldMap implements WorldMap {
         observing.remove(mapChangeListener);
     }
 
-    public void mapChanged(String message) {
+    public void mapChanged() {
         for (MapChangeListener mapChangeListener : observing) {
-            mapChangeListener.mapChanged(this, message);
+            mapChangeListener.mapChanged(this);
         }
     }
 
@@ -77,7 +85,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
         animals.computeIfAbsent(position, k -> new ArrayList<>()).add(animal);
         worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(animal);
-        mapChanged("Animal placed at: " + position);
     }
 
     public void removeGrass(Vector2d grassPosition) {
@@ -153,7 +160,6 @@ public abstract class AbstractWorldMap implements WorldMap {
 
             winner.eat(grassEnergy);
             grassEaten.add(position);
-            mapChanged("Grass consumed at: " + position);
         }
 
         grassEaten.forEach(this::removeGrass);
@@ -162,17 +168,19 @@ public abstract class AbstractWorldMap implements WorldMap {
     public List<Animal> handleReproduction(int currentDay, int reproductionEnergy) {
         List<Animal> bornAnimals = new ArrayList<>();
         animals.keySet().forEach(position -> {
+            //Tutaj kolejność identyczna jak przy jedzeniu
             List<Animal> candidates = animals.get(position).stream()
                     .filter(a -> a.getEnergy() >= reproductionEnergy)
-                    .sorted(Comparator.comparingInt(Animal::getEnergy).reversed())
+                    .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+                            .thenComparing(Animal::getBirthDate)
+                            .thenComparing(Animal::getChildrenCount).reversed())
                     .toList();
 
             for (int i = 0; i + 1 < candidates.size(); i += 2) {
                 Animal parent1 = candidates.get(i);
                 Animal parent2 = candidates.get(i + 1);
-                Animal child = new Animal(parent1, parent2, currentDay);
+                Animal child = animalFactory.createAnimal(parent1, parent2, currentDay);
                 try {
-                    mapChanged("Animal born at: " + position);
                     place(child);
                     bornAnimals.add(child);
                 } catch (IncorrectPositionException e) {
@@ -220,7 +228,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             Grass grass = new Grass(position);
             worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(grass);
             grassMap.put(position, grass);
-            mapChanged("Grass grown at: " + position);
         }
     }
 

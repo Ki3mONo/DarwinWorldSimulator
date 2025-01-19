@@ -16,7 +16,7 @@ public interface WorldMap {
     Optional<List<WorldElement>> objectAt(Vector2d position);
 
 
-    void mapChanged(String message);
+    void mapChanged();
 
     UUID getID();
 

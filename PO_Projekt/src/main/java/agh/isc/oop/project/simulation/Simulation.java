@@ -30,6 +30,7 @@ public class Simulation implements Runnable {
         Animal.setConfig(config);
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
         this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
+        //to do wywalenia i jako observer do mapy
         this.csvSaver = csvFilePath != null ? new SimulationCSVSaver(this, csvFilePath) : null;
 
         // Inicjalizacja zwierząt
@@ -79,7 +80,6 @@ public class Simulation implements Runnable {
                 animal.die(currentDay);
                 deadAnimals.add(animal);
                 deadAnimalsLifespan.add(currentDay - animal.getBirthDate());
-                map.mapChanged("Animal died at: " + animal.getPosition());
             }
         }
         map.removeAnimals(deadAnimals);
@@ -93,6 +93,9 @@ public class Simulation implements Runnable {
         List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionCost());
         animals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
+
+        map.mapChanged();
+        //to też docelowo ma być observer
         if (csvSaver != null) {
             csvSaver.saveDayStatistics();
         }

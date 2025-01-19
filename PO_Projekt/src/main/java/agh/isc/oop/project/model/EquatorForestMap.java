@@ -1,6 +1,8 @@
 package agh.isc.oop.project.model;
 
 
+import agh.isc.oop.project.simulation.SimulationConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,12 +10,9 @@ import java.util.UUID;
 
 public class EquatorForestMap extends AbstractWorldMap {
 
-    public EquatorForestMap(Vector2d mapSize, int initialGrassCount) {
-        super(mapSize);
-        this.mapID = UUID.randomUUID();
-        this.leftBottomCorner = new Vector2d(0, 0);
-        this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
-        initializeGrass(initialGrassCount);
+    public EquatorForestMap(SimulationConfig config) {
+        super(config);
+        initializeGrass(config.getStartGrassCount());
     }
 
     //Czemu to zapisywanie do worldElements i po co w ogóle taka hashmapa? przydaje sie w kilku miejscach a w kilku bywa strasznie uciążliwa, nigdy wiecej XD
