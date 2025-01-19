@@ -1,6 +1,6 @@
 package agh.isc.oop.project.model;
 
-public class Grass implements WorldElement{
+public class Grass implements WorldElement {
     private final Vector2d position;
 
     public Grass(Vector2d position) {
@@ -14,6 +14,11 @@ public class Grass implements WorldElement{
 
     @Override
     public String toString() {
-        return "*"; //może sie przyda
+        return "*";
+    }
+
+    @Override
+    public String getResourceName() {
+        return "/world/grass.png";
     }
 }

@@ -1,5 +1,7 @@
 package agh.isc.oop.project.simulation;
 
+import agh.isc.oop.project.model.MapType;
+
 public class SimulationConfig {
     //WorldMap
     private final int mapWidth;
@@ -10,7 +12,6 @@ public class SimulationConfig {
     private final int startAnimalCount;
     //Animal
     private final int initialEnergy;
-    private final int reproductionEnergy;
     private final int reproductionCost;
     private final int moveCost;
     private final boolean agingAnimalVariant;
@@ -21,10 +22,13 @@ public class SimulationConfig {
     //Simulation
     private final long dayDurationMs;
 
-    public SimulationConfig(int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,
-                            int dailyGrassGrowth, int startAnimalCount, int initialEnergy,
-                            int reproductionEnergy, int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
-                            int maxMutations, int genomeLength, long dayDurationMs) {
+    String csvFilePath;
+    private final MapType mapType;
+
+    public SimulationConfig(MapType mapType, int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,
+                            int dailyGrassGrowth, int startAnimalCount, int initialEnergy, int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
+                            int maxMutations, int genomeLength, long dayDurationMs, String csvFilePath) {
+        this.mapType = mapType;
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.startGrassCount = startGrassCount;
@@ -32,7 +36,6 @@ public class SimulationConfig {
         this.dailyGrassGrowth = dailyGrassGrowth;
         this.startAnimalCount = startAnimalCount;
         this.initialEnergy = initialEnergy;
-        this.reproductionEnergy = reproductionEnergy;
         this.reproductionCost = reproductionCost;
         this.moveCost = moveCost;
         this.agingAnimalVariant = agingAnimalVariant;
@@ -40,6 +43,7 @@ public class SimulationConfig {
         this.maxMutations = maxMutations;
         this.genomeLength = genomeLength;
         this.dayDurationMs = dayDurationMs;
+        this.csvFilePath = csvFilePath;
     }
 
     public int getMapWidth() { return mapWidth; }
@@ -49,7 +53,6 @@ public class SimulationConfig {
     public int getDailyGrassGrowth() { return dailyGrassGrowth; }
     public int getStartAnimalCount() { return startAnimalCount; }
     public int getInitialEnergy() { return initialEnergy; }
-    public int getReproductionEnergy() { return reproductionEnergy; }
     public int getReproductionCost() { return reproductionCost; }
     public int getMoveCost() { return moveCost; }
     public int getMinMutations() { return minMutations; }
@@ -58,5 +61,13 @@ public class SimulationConfig {
     public long getDayDurationMs() { return dayDurationMs; }
     public boolean isAgingAnimalVariant() {
         return agingAnimalVariant;
+    }
+
+    public String getCsvFilePath() {
+        return csvFilePath;
+    }
+
+    public MapType getMapType(){
+        return mapType;
     }
 }

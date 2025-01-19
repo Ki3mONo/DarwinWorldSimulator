@@ -3,6 +3,8 @@ package agh.isc.oop.project.model;
 import agh.isc.oop.project.model.util.GenomeGenerator;
 import agh.isc.oop.project.simulation.SimulationConfig;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Random;
@@ -56,4 +58,14 @@ public class Genome {
     public int getCurrentGeneIndex() {
         return currentGeneIndex;
     }
+
+    int genomeSum(){
+        return genome.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    @Override
+    public String toString() {
+        return genome.toString();
+    }
+
 }

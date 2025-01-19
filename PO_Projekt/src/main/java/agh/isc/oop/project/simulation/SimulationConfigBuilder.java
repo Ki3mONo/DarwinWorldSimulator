@@ -1,7 +1,10 @@
 package agh.isc.oop.project.simulation;
 
+import agh.isc.oop.project.model.MapType;
+
 public class SimulationConfigBuilder {
     //WorldMap
+    private MapType mapType;
     private int mapWidth;
     private int mapHeight;
     private int startGrassCount;
@@ -20,13 +23,17 @@ public class SimulationConfigBuilder {
     private int genomeLength;
     //Simulation
     private long dayDurationMs;
+    private String csvFilePath;
 
     public SimulationConfig build(){
-        return new SimulationConfig(mapWidth, mapHeight, startGrassCount, grassEnergy, dailyGrassGrowth,
-                startAnimalCount, initialEnergy, reproductionEnergy, reproductionCost, moveCost,
-                agingAnimalVariant, minMutations, maxMutations, genomeLength, dayDurationMs);
+        return new SimulationConfig(mapType, mapWidth, mapHeight, startGrassCount, grassEnergy, dailyGrassGrowth,
+                startAnimalCount, initialEnergy, reproductionCost, moveCost,
+                agingAnimalVariant, minMutations, maxMutations, genomeLength, dayDurationMs, csvFilePath);
     }
 
+    public void setMapType(MapType mapType){
+        this.mapType = mapType;
+    }
     public void setMapWidth(int mapWidth) {
         this.mapWidth = mapWidth;
     }
@@ -85,5 +92,9 @@ public class SimulationConfigBuilder {
 
     public void setDayDurationMs(long dayDurationMs) {
         this.dayDurationMs = dayDurationMs;
+    }
+
+    public void setCsvFilePath(String filePath) {
+        this.csvFilePath = filePath;
     }
 }

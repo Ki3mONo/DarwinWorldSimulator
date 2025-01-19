@@ -9,8 +9,8 @@ import java.util.UUID;
 public class EquatorForestMap extends AbstractWorldMap {
 
     public EquatorForestMap(Vector2d mapSize, int initialGrassCount) {
+        super(mapSize);
         this.mapID = UUID.randomUUID();
-        this.mapSize = mapSize;
         this.leftBottomCorner = new Vector2d(0, 0);
         this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
         initializeGrass(initialGrassCount);
@@ -21,7 +21,7 @@ public class EquatorForestMap extends AbstractWorldMap {
     public void initializeGrass(int initialGrassSize) {
         Random random = new Random();
         int equatorStart = 2 * mapSize.getY() / 5;
-        int equatorEnd = 3 * mapSize.getY() / 5;
+        int equatorEnd = 3 * mapSize.getY() / 5 + 1;
 
         int equatorGrass = (int) (initialGrassSize * 0.8); // 80% for equatorial region
         int otherGrass = initialGrassSize - equatorGrass; // 20% for other regions
@@ -30,7 +30,7 @@ public class EquatorForestMap extends AbstractWorldMap {
             int x = random.nextInt(mapSize.getX());
             int y = equatorStart + random.nextInt(equatorEnd - equatorStart);
             Vector2d position = new Vector2d(x, y);
-            worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(new Grass(position));
+            super.putGrass(position);
         }
 
         for (int i = 0; i < otherGrass; i++) {
@@ -41,15 +41,14 @@ public class EquatorForestMap extends AbstractWorldMap {
             } while (y >= equatorStart && y < equatorEnd); // Ensure it's outside equatorial region
 
             Vector2d position = new Vector2d(x, y);
-            worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(new Grass(position));
+            super.putGrass(position);
         }
     }
-
     @Override
     public void grassGrow(int dailyGrowth){
         Random random = new Random();
-        int equatorStart = mapSize.getY() / 3;
-        int equatorEnd = 2 * mapSize.getY() / 3;
+        int equatorStart = 2 * mapSize.getY() / 5;
+        int equatorEnd = 3 * mapSize.getY() / 5 + 1;
 
         int equatorGrowth = (int) (dailyGrowth * 0.8);
         int otherGrowth = dailyGrowth - equatorGrowth;
@@ -58,8 +57,7 @@ public class EquatorForestMap extends AbstractWorldMap {
             int x = random.nextInt(mapSize.getX());
             int y = equatorStart + random.nextInt(equatorEnd - equatorStart);
             Vector2d position = new Vector2d(x, y);
-            worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(new Grass(position));
-            mapChanged("Grass grown at: " + position);
+            super.putGrass(position);
         }
 
         for (int i = 0; i < otherGrowth; i++) {
@@ -70,10 +68,8 @@ public class EquatorForestMap extends AbstractWorldMap {
             } while (y >= equatorStart && y < equatorEnd);
 
             Vector2d position = new Vector2d(x, y);
-            worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(new Grass(position));
-            mapChanged("Grass grown at: " + position);
+            super.putGrass(position);
         }
     }
-
 
 }

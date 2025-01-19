@@ -213,7 +213,7 @@ public class WorldMapTest {
             throw new RuntimeException(e);
         }
 
-        map.handleReproduction(2137, config.getReproductionEnergy());
+        map.handleReproduction(2137, config.getReproductionCost());
 
         List<Animal> kidsV54 =  map.getAnimals().get(new Vector2d(5, 4))
                 .stream()
