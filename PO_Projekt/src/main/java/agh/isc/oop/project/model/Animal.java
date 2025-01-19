@@ -2,7 +2,10 @@ package agh.isc.oop.project.model;
 
 import agh.isc.oop.project.simulation.SimulationConfig;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Animal implements WorldElement {
     protected static SimulationConfig config;
@@ -20,6 +23,16 @@ public class Animal implements WorldElement {
     private final int birthDate;
     private int deathDay = -1; // -1 oznacza, że zwierzę jeszcze nie zmarło
     private int grassEaten = 0; // Liczba zjedzonych roślin
+
+    private List<Animal> children = new ArrayList<>();
+
+    public void addChild(Animal child) {
+        this.children.add(child);
+    }
+
+    public List<Animal> getChildren() {
+        return children;
+    }
 
     private final String cachedAnimalIcon;
 
@@ -167,6 +180,19 @@ public class Animal implements WorldElement {
     }
 
     public int getChildrenCount() {
-        return 0;
+        return children.size();
+    }
+    public int getDescendantsCount() {
+        Set<Animal> uniqueDescendants = new HashSet<>();
+        collectDescendants(this, uniqueDescendants);
+        return uniqueDescendants.size();
+    }
+
+    private void collectDescendants(Animal animal, Set<Animal> uniqueDescendants) {
+        for (Animal child : animal.getChildren()) {
+            if (uniqueDescendants.add(child)) {
+                collectDescendants(child, uniqueDescendants);
+            }
+        }
     }
 }

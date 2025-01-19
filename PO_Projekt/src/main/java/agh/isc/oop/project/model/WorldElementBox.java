@@ -126,6 +126,16 @@ public class WorldElementBox extends VBox {
         BackgroundFill highlight = new BackgroundFill(Color.rgb(255, 255, 0, 0.3), CornerRadii.EMPTY, Insets.EMPTY);
         this.setBackground(new Background(highlight));
     }
+    public void highlightDominantGenotype() {
+        BackgroundFill highlight = new BackgroundFill(Color.rgb(0, 255, 255, 0.2), CornerRadii.EMPTY, Insets.EMPTY);
+        this.setBackground(new Background(highlight));
+    }
+
+    public void highlightPreferredField() {
+        BackgroundFill highlight = new BackgroundFill(Color.rgb(255, 0, 0, 0.1), CornerRadii.EMPTY, Insets.EMPTY);
+        this.setBackground(new Background(highlight));
+    }
+
 
     private static Background loadBackground(String path) {
         try {
@@ -140,4 +150,5 @@ public class WorldElementBox extends VBox {
             return new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY));
         }
     }
+
 }

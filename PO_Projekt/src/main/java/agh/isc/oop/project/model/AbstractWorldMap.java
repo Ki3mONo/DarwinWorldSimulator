@@ -14,6 +14,8 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected HashMap<Vector2d, List<WorldElement>> worldElements = new HashMap<>();
     private List<MapChangeListener> observing = new ArrayList<>();
 
+    private Map<Vector2d, Integer> grassGrowthHistory = new HashMap<>();
+
     public AbstractWorldMap(Vector2d mapSize) {
         this.mapSize = mapSize;
         this.rightUpperCorner = new Vector2d(mapSize.getX() - 1, mapSize.getY() - 1);
@@ -179,6 +181,8 @@ public abstract class AbstractWorldMap implements WorldMap {
 
                 parent1.loseReproductionEnergy();
                 parent2.loseReproductionEnergy();
+                parent1.addChild(child);
+                parent2.addChild(child);
             }
         });
         return bornAnimals;
@@ -206,6 +210,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     void putGrass(Vector2d position) {
+        grassGrowthHistory.put(position, grassGrowthHistory.getOrDefault(position, 0) + 1);
         if (!grassMap.containsKey(position)) {
             Grass grass = new Grass(position);
             worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(grass);
@@ -215,8 +220,13 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     public List<Integer> getMostPopularGenotype() {
+        if (animals == null) {
+            return Collections.emptyList();
+        }
+
         Map<List<Integer>, Long> genotypeFrequency = animals.values().stream()
                 .flatMap(List::stream)
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(a -> a.getGenome().getGeneList(), Collectors.counting()));
 
         return genotypeFrequency.entrySet().stream()
@@ -224,6 +234,23 @@ public abstract class AbstractWorldMap implements WorldMap {
                 .map(Map.Entry::getKey)
                 .orElse(Collections.emptyList());
     }
+
+    public Set<Vector2d> getPreferredGrassFields() {
+        Set<Vector2d> preferredFields = new HashSet<>();
+
+        int maxGrowths = grassGrowthHistory.values().stream()
+                .max(Integer::compare)
+                .orElse(0);
+
+        for (Map.Entry<Vector2d, Integer> entry : grassGrowthHistory.entrySet()) {
+            if (entry.getValue() == maxGrowths) {
+                preferredFields.add(entry.getKey());
+            }
+        }
+
+        return preferredFields;
+    }
+
 
     public double getAverageChildrenCount() {
         int totalChildren = animals.values().stream()

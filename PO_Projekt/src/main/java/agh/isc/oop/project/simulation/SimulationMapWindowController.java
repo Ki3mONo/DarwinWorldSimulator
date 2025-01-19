@@ -312,7 +312,7 @@ public class SimulationMapWindowController implements MapChangeListener {
             trackedEnergyLabel.setText("Energia: " + trackedAnimal.getEnergy());
             trackedGrassEatenLabel.setText("Zjedzone rośliny: " + trackedAnimal.getGrassEaten());
             trackedChildrenLabel.setText("Dzieci: " + trackedAnimal.getChildrenCount());
-            trackedDescendantsLabel.setText("Potomkowie: " + trackedAnimal.getChildrenCount());
+            trackedDescendantsLabel.setText("Potomkowie: " + trackedAnimal.getDescendantsCount());
             trackedAgeLabel.setText(trackedAnimal.isAlive() ? "Wiek: " + trackedAnimal.getAge(simulation.getCurrentDay()) : "Wiek: Nie żyje");
             trackedDeathDayLabel.setText(trackedAnimal.isAlive() ? "Dzień śmierci: Żyje" : "Dzień śmierci: " + trackedAnimal.getDeathDay());
         }
