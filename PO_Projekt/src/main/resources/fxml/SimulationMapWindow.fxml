@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="agh.isc.oop.project.simulation.SimulationMapWindowController">
+
+    <!-- Lewa sekcja: Statystyki + Wykresy -->
+    <left>
+        <VBox alignment="CENTER" prefWidth="250" spacing="15">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Statystyki" />
+            <Label fx:id="animalCountLabel" text="Zwierzęta: 0" />
+            <Label fx:id="grassCountLabel" text="Rośliny: 0" />
+            <Label fx:id="mostPopularGenotypeLabel" text="Genotyp:" />
+            <Label fx:id="avgEnergyLabel" text="Średnia energia: 0" />
+            <Label fx:id="avgLifespanLabel" text="Średnia długość życia: 0" />
+            <Label fx:id="avgChildrenLabel" text="Średnia liczba dzieci: 0" />
+
+            <!-- Wykres liczby zwierząt -->
+            <LineChart fx:id="animalChart" prefHeight="150" prefWidth="200" title="Zwierzęta w czasie">
+                <xAxis><NumberAxis label="Dzień" /></xAxis>
+                <yAxis><NumberAxis label="Zwierzęta" /></yAxis>
+            </LineChart>
+
+            <!-- Wykres liczby roślin -->
+            <LineChart fx:id="grassChart" prefHeight="150" prefWidth="200" title="Rośliny w czasie">
+                <xAxis><NumberAxis label="Dzień" /></xAxis>
+                <yAxis><NumberAxis label="Rośliny" /></yAxis>
+            </LineChart>
+
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="pauseButton" onAction="#pauseSimulation" text="Pauza" />
+                <Button fx:id="resumeButton" onAction="#resumeSimulation" text="Wznów" />
+                <Button fx:id="closeButton" onAction="#closeWindow" text="Zamknij" />
+            </HBox>
+
+        </VBox>
+    </left>
+
+    <!-- Centrum: Siatka mapy z ustawionym stałym rozmiarem -->
+    <center>
+        <StackPane fx:id="gridContainer">
+            <GridPane fx:id="mapGrid" hgap="1" maxHeight="900" maxWidth="900" minHeight="500" minWidth="500" prefHeight="700" prefWidth="700" vgap="1" />
+        </StackPane>
+    </center>
+
+    <!-- Prawa sekcja: Śledzony zwierzak -->
+    <right>
+        <VBox alignment="CENTER" prefWidth="250" spacing="15">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Śledzony zwierzak" />
+            <Label fx:id="trackedGenotypeLabel" text="Genom: -" />
+            <Label fx:id="trackedActiveGeneLabel" text="Aktywny gen: -" />
+            <Label fx:id="trackedEnergyLabel" text="Energia: -" />
+            <Label fx:id="trackedGrassEatenLabel" text="Zjedzone rośliny: -" />
+            <Label fx:id="trackedChildrenLabel" text="Dzieci: -" />
+            <Label fx:id="trackedDescendantsLabel" text="Potomkowie: -" />
+            <Label fx:id="trackedAgeLabel" text="Wiek: -" />
+            <Label fx:id="trackedDeathDayLabel" text="Dzień śmierci: -" />
+            <Button fx:id="stopTrackingButton" onAction="#stopTracking" text="Przestań śledzić" />
+        </VBox>
+    </right>
+
+</BorderPane>
