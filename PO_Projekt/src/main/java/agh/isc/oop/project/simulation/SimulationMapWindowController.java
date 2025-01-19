@@ -51,7 +51,6 @@ public class SimulationMapWindowController implements MapChangeListener {
     private Simulation simulation;
     private SimulationConfig config;
     private boolean isPaused = false;
-    private int dayCounter = 0;
     private static final Map<String, Background> backgroundCache = new ConcurrentHashMap<>();
 
     private XYChart.Series<Number, Number> animalSeries;
@@ -167,7 +166,7 @@ public class SimulationMapWindowController implements MapChangeListener {
                                     box.highlightYellow();
                                 }
                                 box.updateAnimalCountBar(animalCount);
-                            } else if (animalCount == 1) {
+                            } else if (animalCount == 1 && animalsOnCell.get(0).isAlive()) {
                                 Animal animal = animalsOnCell.get(0);
                                 box = new WorldElementBox(animal, (int) cellSquareSide, (int) cellSquareSide);
                                 if (trackedAnimal != null && trackedAnimal.equals(animal)) {
@@ -262,12 +261,9 @@ public class SimulationMapWindowController implements MapChangeListener {
             avgLifespanLabel.setText(String.format("Średnia długość życia: %.4f", simulation.getAverageLifespan()));
             avgChildrenLabel.setText(String.format("Średnia liczba dzieci: %.2f", avgChildren));
 
-            animalSeries.getData().add(new XYChart.Data<>(dayCounter, animalCount));
-            grassSeries.getData().add(new XYChart.Data<>(dayCounter, grassCount));
+            animalSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), animalCount));
+            grassSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), grassCount));
 
-            if (!isPaused) {
-                dayCounter++;
-            }
         });
     }
 
