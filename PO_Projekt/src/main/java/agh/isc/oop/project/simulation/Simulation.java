@@ -132,7 +132,14 @@ public class Simulation implements Runnable {
     }
 
     public double getAverageLifespan() {
-        return deadAnimalsLifespan.stream().mapToInt(Integer::intValue).average().orElse(0);
+        synchronized (deadAnimalsLifespan) {
+            List<Integer> copyList = new ArrayList<>(deadAnimalsLifespan); // Create a copy of the list
+            return copyList.stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0);
+        }
     }
+
 
 }
