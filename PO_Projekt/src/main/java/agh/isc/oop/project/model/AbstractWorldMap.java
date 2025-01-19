@@ -200,12 +200,13 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     public double getAverageEnergy() {
         synchronized (animals) {
-            List<Animal> allAnimals = animals.values().stream()
-                    .filter(Objects::nonNull)  // Removes null lists
-                    .flatMap(List::stream)
-                    .filter(Objects::nonNull)  // Removes null animals
-                    .collect(Collectors.toList());
-
+            CopyOnWriteArrayList<Animal> allAnimals = new CopyOnWriteArrayList<>();
+            for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
+                List<Animal> animalList = entry.getValue();
+                if (!animalList.isEmpty()) {
+                    allAnimals.addAll(animalList);
+                }
+            }
             int totalEnergy = allAnimals.stream()
                     .mapToInt(Animal::getEnergy)
                     .sum();
@@ -266,8 +267,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     public double getAverageChildrenCount() {
         synchronized (animals) {
             CopyOnWriteArrayList<Animal> allAnimals = new CopyOnWriteArrayList<>();
-            for (List<Animal> animalList : animals.values()) {
-                allAnimals.addAll(animals.getOrDefault(animalList, new ArrayList<>()));
+            for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
+                List<Animal> animalList = entry.getValue();
+                if (!animalList.isEmpty()) {
+                    allAnimals.addAll(animalList);
+                }
             }
 
             int totalChildren = allAnimals.stream()
