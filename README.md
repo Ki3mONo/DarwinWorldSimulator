@@ -3,8 +3,8 @@
 
 ## Autorzy
 
-- [Tomasz Głąbek](https://github.com/memecat5)
-- [Maciej Kmąk](https://github.com/Ki3mONo)
+- **Tomasz Głąbek** (a.k.a. [memecat5](https://github.com/memecat5))
+- **Maciej Kmąk** (a.k.a. [Ki3mONo](https://github.com/Ki3mONo))
 
 ## Opis projektu
 
