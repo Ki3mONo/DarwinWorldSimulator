@@ -233,4 +233,23 @@ public abstract class AbstractWorldMap implements WorldMap {
 
         return preferredFields;
     }
+
+
+
+    public double getAverageChildrenCount() {
+        synchronized (animals) {
+            CopyOnWriteArrayList<Animal> allAnimals = new CopyOnWriteArrayList<>();
+            for (List<Animal> animalList : animals.values()) {
+                allAnimals.addAll(animals.getOrDefault(animalList, new ArrayList<>()));
+            }
+
+            int totalChildren = allAnimals.stream()
+                    .filter(Objects::nonNull)
+                    .mapToInt(Animal::getChildrenCount)
+                    .sum();
+
+            int animalCount = getAnimalCount();
+            return animalCount > 0 ? (double) totalChildren / animalCount : 0;
+        }
+    }
 }

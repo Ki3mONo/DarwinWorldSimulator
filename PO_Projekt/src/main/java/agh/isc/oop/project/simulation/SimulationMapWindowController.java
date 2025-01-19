@@ -167,7 +167,7 @@ public class SimulationMapWindowController implements MapChangeListener {
                                     box.highlightYellow();
                                 }
                                 box.updateAnimalCountBar(animalCount);
-                            } else if (animalCount == 1 && animalsOnCell.get(0).isAlive()) {
+                            } else if (animalCount == 1 && animalsOnCell.get(0)!= null && animalsOnCell.get(0).isAlive()) {
                                 Animal animal = animalsOnCell.get(0);
                                 box = new WorldElementBox(animal, (int) cellSquareSide, (int) cellSquareSide);
                                 if (trackedAnimal != null && trackedAnimal.equals(animal)) {
