@@ -38,8 +38,8 @@ public class SimulationMapWindow {
             Image appIcon = new Image(getClass().getResourceAsStream("/icons/icon.png"));
             stage.getIcons().add(appIcon);
             stage.setScene(scene);
-            stage.setMinWidth(1200);  // Minimalna szerokość okna
-            stage.setMinHeight(800); // Minimalna wysokość okna
+            stage.setMinWidth(900);  // Minimalna szerokość okna
+            stage.setMinHeight(600); // Minimalna wysokość okna
 
             // Listener zamknięcia okna - zatrzymuje symulację
             stage.setOnCloseRequest(e -> {

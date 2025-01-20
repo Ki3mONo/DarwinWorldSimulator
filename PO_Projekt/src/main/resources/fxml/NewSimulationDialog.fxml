@@ -3,108 +3,114 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="600" prefWidth="500" spacing="12" style="-fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="agh.isc.oop.project.simulation.NewSimulationDialogController">
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/17.0.2-ea"
+            fx:controller="agh.isc.oop.project.simulation.NewSimulationDialogController"
+            fitToWidth="true">
+    <content>
+        <VBox alignment="CENTER" prefHeight="690" prefWidth="400" spacing="6" style="-fx-padding: 20;">
 
-    <!-- Nagłówek -->
-    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Ustaw parametry symulacji" />
+            <!-- Nagłówek -->
+            <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Ustaw parametry symulacji" />
 
-    <!-- Kontener, aby wyrównać całość do prawej strony okna -->
-    <HBox alignment="CENTER">
-        <GridPane hgap="10" vgap="10">
-            <columnConstraints>
-                <!-- Kolumna dla etykiet (wyrównana do lewej) -->
-                <ColumnConstraints halignment="LEFT" minWidth="150"/>
-                <!-- Kolumna dla pól (wyrównana do prawej) -->
-                <ColumnConstraints halignment="RIGHT" minWidth="100"/>
-            </columnConstraints>
+            <!-- Kontener, aby wyrównać całość do prawej strony okna -->
+            <HBox alignment="CENTER">
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <!-- Kolumna dla etykiet (wyrównana do lewej) -->
+                        <ColumnConstraints halignment="LEFT" minWidth="150"/>
+                        <!-- Kolumna dla pól (wyrównana do prawej) -->
+                        <ColumnConstraints halignment="RIGHT" minWidth="100"/>
+                    </columnConstraints>
 
-            <children>
-                <!-- mapWidth -->
-                <Label text="Map Width:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <Spinner fx:id="mapWidthSpinner" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-
-                <!-- mapHeight -->
-                <Label text="Map Height:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <Spinner fx:id="mapHeightSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-                <!-- startGrassCount -->
-                <Label text="Start Grass:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <Spinner fx:id="startGrassSpinner" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-
-                <!-- grassEnergy -->
-                <Label text="Grass Energy:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                <Spinner fx:id="grassEnergySpinner" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-
-                <!-- dailyGrassGrowth -->
-                <Label text="Daily Grass Growth:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                <Spinner fx:id="dailyGrassGrowthSpinner" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-
-                <!-- startAnimalCount -->
-                <Label text="Start Animal Count:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-                <Spinner fx:id="startAnimalCountSpinner" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-
-                <!-- initialEnergy -->
-                <Label text="Initial Energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-                <Spinner fx:id="initialEnergySpinner" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-
-                <!-- reproductionCost -->
-                <Label text="Reproduction Cost:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-                <Spinner fx:id="reproductionCostSpinner" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-
-                <!-- moveCost -->
-                <Label text="Move Cost:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
-                <Spinner fx:id="moveCostSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1" />
-
-                <!-- Rodzaj mapy -->
-                <Label text="Rodzaj mapy:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
-                <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="9" GridPane.columnIndex="1">
                     <children>
-                        <RadioButton fx:id="equatorMapRadio" text="Equator" />
-                        <RadioButton fx:id="crawlingJungleMapRadio" text="Crawling Jungle" />
+                        <!-- mapWidth -->
+                        <Label text="Map Width:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <Spinner fx:id="mapWidthSpinner" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                        <!-- mapHeight -->
+                        <Label text="Map Height:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <Spinner fx:id="mapHeightSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                        <!-- startGrassCount -->
+                        <Label text="Start Grass:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <Spinner fx:id="startGrassSpinner" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                        <!-- grassEnergy -->
+                        <Label text="Grass Energy:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                        <Spinner fx:id="grassEnergySpinner" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                        <!-- dailyGrassGrowth -->
+                        <Label text="Daily Grass Growth:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                        <Spinner fx:id="dailyGrassGrowthSpinner" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+                        <!-- startAnimalCount -->
+                        <Label text="Start Animal Count:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                        <Spinner fx:id="startAnimalCountSpinner" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+
+                        <!-- initialEnergy -->
+                        <Label text="Initial Energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                        <Spinner fx:id="initialEnergySpinner" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+
+                        <!-- reproductionCost -->
+                        <Label text="Reproduction Cost:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                        <Spinner fx:id="reproductionCostSpinner" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+
+                        <!-- moveCost -->
+                        <Label text="Move Cost:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
+                        <Spinner fx:id="moveCostSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1" />
+
+                        <!-- Rodzaj mapy -->
+                        <Label text="Rodzaj mapy:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="9" GridPane.columnIndex="1">
+                            <children>
+                                <RadioButton fx:id="equatorMapRadio" text="Equator" />
+                                <RadioButton fx:id="crawlingJungleMapRadio" text="Crawling Jungle" />
+                            </children>
+                        </HBox>
+
+                        <!-- agingAnimalVariant -->
+                        <Label text="Aging Animal Variant?" GridPane.rowIndex="10" GridPane.columnIndex="0" />
+                        <CheckBox fx:id="agingAnimalCheckBox" GridPane.rowIndex="10" GridPane.columnIndex="1" />
+
+                        <!-- minMutations -->
+                        <Label text="Min Mutations:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
+                        <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="11" GridPane.columnIndex="1" />
+
+                        <!-- maxMutations -->
+                        <Label text="Max Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
+                        <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1" />
+
+                        <!-- genomeLength -->
+                        <Label text="Genome Length:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
+                        <Spinner fx:id="genomeLengthSpinner" GridPane.rowIndex="13" GridPane.columnIndex="1" />
+
+                        <!-- dayDurationMs -->
+                        <Label text="Day Duration (ms):" GridPane.rowIndex="14" GridPane.columnIndex="0" />
+                        <TextField fx:id="dayDurationField" prefWidth="80" GridPane.rowIndex="14" GridPane.columnIndex="1" />
+
+                        <!-- CSV Save -->
+                        <Label text="CSV Save?" GridPane.rowIndex="15" GridPane.columnIndex="0" />
+                        <CheckBox fx:id="csvSaveCheckBox" GridPane.rowIndex="15" GridPane.columnIndex="1" />
+                        <Label text="File Path:" GridPane.rowIndex="16" GridPane.columnIndex="0" />
+                        <HBox spacing="5" GridPane.rowIndex="16" GridPane.columnIndex="1">
+                            <children>
+                                <TextField fx:id="filePathField" promptText="Ścieżka do pliku" />
+                                <Button fx:id="fileExplorerButton" text="Explore" />
+                            </children>
+                        </HBox>
                     </children>
-                </HBox>
+                </GridPane>
+            </HBox>
 
-                <!-- agingAnimalVariant -->
-                <Label text="Aging Animal Variant?" GridPane.rowIndex="10" GridPane.columnIndex="0" />
-                <CheckBox fx:id="agingAnimalCheckBox" GridPane.rowIndex="10" GridPane.columnIndex="1" />
-
-                <!-- minMutations -->
-                <Label text="Min Mutations:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
-                <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="11" GridPane.columnIndex="1" />
-
-                <!-- maxMutations -->
-                <Label text="Max Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
-                <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1" />
-
-                <!-- genomeLength -->
-                <Label text="Genome Length:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
-                <Spinner fx:id="genomeLengthSpinner" GridPane.rowIndex="13" GridPane.columnIndex="1" />
-
-                <!-- dayDurationMs -->
-                <Label text="Day Duration (ms):" GridPane.rowIndex="14" GridPane.columnIndex="0" />
-                <TextField fx:id="dayDurationField" prefWidth="80" GridPane.rowIndex="14" GridPane.columnIndex="1" />
-
-                <!-- CSV Save -->
-                <Label text="CSV Save?" GridPane.rowIndex="15" GridPane.columnIndex="0" />
-                <CheckBox fx:id="csvSaveCheckBox" GridPane.rowIndex="15" GridPane.columnIndex="1" />
-                <Label text="File Path:" GridPane.rowIndex="16" GridPane.columnIndex="0" />
-                <TextField fx:id="csvFilePathField" prefWidth="200" GridPane.rowIndex="16" GridPane.columnIndex="1" />
-                    <HBox spacing="5" GridPane.rowIndex="16" GridPane.columnIndex="1">
-                        <children>
-                            <TextField fx:id="filePathField" promptText="Ścieżka do pliku" />
-                            <Button fx:id="fileExplorerButton" text="Explore" />
-                        </children>
-                    </HBox>
-            </children>
-        </GridPane>
-    </HBox>
-
-    <!-- Przyciski Start i Cancel -->
-    <HBox alignment="CENTER" spacing="30" style="-fx-padding: 20 0 0 0;">
-        <children>
-            <Button fx:id="saveButton" text="Zapisz Konfigurację" />
-            <Button fx:id="startButton" text="Rozpocznij Symulację" />
-            <Button fx:id="cancelButton" text="Zamknij Okno" />
-        </children>
-    </HBox>
-</VBox>
+            <!-- Przyciski Start i Cancel -->
+            <HBox alignment="CENTER" spacing="30" style="-fx-padding: 20 0 0 0;">
+                <children>
+                    <Button fx:id="saveButton" text="Zapisz Konfigurację" />
+                    <Button fx:id="startButton" text="Rozpocznij Symulację" />
+                    <Button fx:id="cancelButton" text="Zamknij Okno" />
+                </children>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>
