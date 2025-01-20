@@ -96,6 +96,7 @@ public class Simulation implements Runnable {
         aliveAnimals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
 
+        map.mapChanged();
     }
     public void stop() {
         isRunning = false;
