@@ -26,7 +26,8 @@ public class SimulationCSVSaver implements MapChangeListener {
             if (!file.exists())
                 file.createNewFile();
 
-            writer.write("Day,Animal Count,Grass Count,Average Lifespan\n");
+            writer.write("Day,Animal Count,Grass Count,Free Fields,Most Popular Genes," +
+                    "Average Energy,Average Lifespan,Average children count\n");
 
         } catch (IOException e) {
             System.err.println("Error creating file: " + filePath);
@@ -44,7 +45,9 @@ public class SimulationCSVSaver implements MapChangeListener {
             int currentDay = simulation.getCurrentDay();
             SimulationStatTracker stats = simulation.getStatTracker();
 
-            csvPrinter.printRecord(currentDay, stats.getAnimalCount(), stats.getGrassCount(), stats.getAverageLifespan());
+            csvPrinter.printRecord(currentDay, stats.getAnimalCount(), stats.getGrassCount(),
+                    stats.getFreeFields(), stats.getMostPopularGenes(), stats.getAverageEnergy(),
+                    stats.getAverageLifespan(), stats.getAverageChildren());
             csvPrinter.flush();
         } catch (IOException e) {
             System.err.println("Error saving simulation statistics: " + e.getMessage());
