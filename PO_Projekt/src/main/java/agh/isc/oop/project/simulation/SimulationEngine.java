@@ -18,7 +18,7 @@ public class SimulationEngine {
 
     public void runAsync() {
         for (Simulation simulation : simulations) {
-            addAndStartSimulation(simulation);
+            executorService.submit(simulation);
         }
     }
 
@@ -43,12 +43,6 @@ public class SimulationEngine {
 
     private void shutdownExecutor() {
         executorService.shutdownNow();
-    }
-
-    private void addAndStartSimulation(Simulation simulation) {
-        executorService.submit(simulation);
-        simulation.pause();
-        simulation.resume();
     }
 
 }
