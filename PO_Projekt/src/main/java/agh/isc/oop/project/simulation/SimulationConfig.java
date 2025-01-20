@@ -12,6 +12,7 @@ public class SimulationConfig {
     private final int startAnimalCount;
     //Animal
     private final int initialEnergy;
+    private final int reproductionEnergy;
     private final int reproductionCost;
     private final int moveCost;
     private final boolean agingAnimalVariant;
@@ -26,7 +27,8 @@ public class SimulationConfig {
     private final MapType mapType;
 
     public SimulationConfig(MapType mapType, int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,
-                            int dailyGrassGrowth, int startAnimalCount, int initialEnergy, int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
+                            int dailyGrassGrowth, int startAnimalCount, int initialEnergy, int reproductionEnergy,
+                            int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
                             int maxMutations, int genomeLength, long dayDurationMs, String csvFilePath) {
         this.mapType = mapType;
         this.mapWidth = mapWidth;
@@ -36,6 +38,7 @@ public class SimulationConfig {
         this.dailyGrassGrowth = dailyGrassGrowth;
         this.startAnimalCount = startAnimalCount;
         this.initialEnergy = initialEnergy;
+        this.reproductionEnergy = reproductionEnergy;
         this.reproductionCost = reproductionCost;
         this.moveCost = moveCost;
         this.agingAnimalVariant = agingAnimalVariant;
@@ -53,6 +56,9 @@ public class SimulationConfig {
     public int getDailyGrassGrowth() { return dailyGrassGrowth; }
     public int getStartAnimalCount() { return startAnimalCount; }
     public int getInitialEnergy() { return initialEnergy; }
+    public int getReproductionEnergy() {
+        return reproductionEnergy;
+    }
     public int getReproductionCost() { return reproductionCost; }
     public int getMoveCost() { return moveCost; }
     public int getMinMutations() { return minMutations; }

@@ -28,6 +28,7 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML private GridPane mapGrid;
     @FXML private Label animalCountLabel;
     @FXML private Label grassCountLabel;
+    @FXML private Label freeFieldsLabel;
     @FXML private Label avgEnergyLabel;
     @FXML private Label avgLifespanLabel;
     @FXML private Button pauseButton;
@@ -252,6 +253,7 @@ public class SimulationMapWindowController implements MapChangeListener {
 
             animalCountLabel.setText("Zwierzęta: " + stats.getAnimalCount());
             grassCountLabel.setText("Rośliny: " + stats.getGrassCount());
+            freeFieldsLabel.setText("Wolne pola: " + stats.getFreeFields());
             mostPopularGenotypeLabel.setText("Genotyp: " + stats.getMostPopularGenes().toString());
             avgEnergyLabel.setText(String.format("Średnia energia: %.4f", stats.getAverageEnergy()));
             avgLifespanLabel.setText(String.format("Średnia długość życia: %.4f", stats.getAverageLifespan()));

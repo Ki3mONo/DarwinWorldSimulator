@@ -21,8 +21,6 @@ public class Simulation implements Runnable {
     private int currentDay = 0;
 
     private SimulationStatTracker statTracker;
-    //do wywalenia jak skończę
-    private final List<Integer> deadAnimalsLifespan = new ArrayList<>();
 
     public Simulation(SimulationConfig config, AbstractWorldMap map, String csvFilePath) {
         this.config = config;
@@ -39,8 +37,6 @@ public class Simulation implements Runnable {
         if(csvFilePath != null){
             this.map.addObserver(new SimulationCSVSaver(this, csvFilePath));
         }
-        //to do wywalenia i jako observer do mapy
-        //this.csvSaver = csvFilePath != null ? new SimulationCSVSaver(this, csvFilePath) : null;
 
         // Inicjalizacja zwierząt
         for (int i = 0; i < config.getStartAnimalCount(); i++) {
@@ -88,8 +84,6 @@ public class Simulation implements Runnable {
             if (animal.getEnergy() <= 0) {
                 animal.die(currentDay);
                 diedThisCycle.add(animal);
-                //do wywalenia jak skończę
-                deadAnimalsLifespan.add(currentDay - animal.getBirthDate());
             }
         }
         map.removeAnimals(diedThisCycle);
@@ -102,15 +96,11 @@ public class Simulation implements Runnable {
 
         map.handleEating(config.getGrassEnergy());
 
-        List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionCost());
+        List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionEnergy());
         aliveAnimals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
 
         map.mapChanged();
-        //to też docelowo ma być observer
-        //if (csvSaver != null) {
-        //    csvSaver.saveDayStatistics();
-        //}
     }
     public void stop() {
         isRunning = false;
@@ -149,17 +139,6 @@ public class Simulation implements Runnable {
     public SimulationConfig getConfig() {
         return config;
     }
-
-    public double getAverageLifespan() {
-        synchronized (deadAnimalsLifespan) {
-            List<Integer> copyList = new ArrayList<>(deadAnimalsLifespan); // Create a copy of the list
-            return copyList.stream()
-                    .mapToInt(Integer::intValue)
-                    .average()
-                    .orElse(0);
-        }
-    }
-
 
     public SimulationStatTracker getStatTracker() {
         return statTracker;

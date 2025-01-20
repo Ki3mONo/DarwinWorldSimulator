@@ -8,17 +8,29 @@ import agh.isc.oop.project.simulation.SimulationStatTracker;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 public class SimulationCSVSaver implements MapChangeListener {
     private final Simulation simulation;
-    private final String filePath;
+    private final File file;
 
+
+    //Jeśli plik nie jest pusty, to go wyczyści
     public SimulationCSVSaver(Simulation simulation, String filePath) {
         this.simulation = simulation;
-        this.filePath = filePath;
+        this.file = new File(filePath);
+        try(FileWriter writer = new FileWriter(file, false)){
+            if (!file.exists())
+                file.createNewFile();
+
+            writer.write("Day,Animal Count,Grass Count,Average Lifespan\n");
+
+        } catch (IOException e) {
+            System.err.println("Error creating file: " + filePath);
+        }
     }
 
     public void mapChanged(AbstractWorldMap map) {
@@ -26,14 +38,8 @@ public class SimulationCSVSaver implements MapChangeListener {
     }
 
     public void saveDayStatistics() {
-        boolean fileExists = new java.io.File(filePath).exists();
-        try (FileWriter writer = new FileWriter(filePath, true);
-             CSVPrinter csvPrinter = new CSVPrinter(writer,
-                     CSVFormat.DEFAULT.withHeader("Day", "Animal Count", "Grass Count", "Average Lifespan"))) {
-
-            if (!fileExists) {
-                csvPrinter.printRecord("Dayx", "Animal Count", "Grass Count", "Average Lifespan");
-            }
+        try (FileWriter writer = new FileWriter(file, true);
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
 
             int currentDay = simulation.getCurrentDay();
             SimulationStatTracker stats = simulation.getStatTracker();

@@ -12,6 +12,7 @@
             <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Statystyki" />
             <Label fx:id="animalCountLabel" text="Zwierzęta: 0" />
             <Label fx:id="grassCountLabel" text="Rośliny: 0" />
+            <Label fx:id="freeFieldsLabel" text="Wolne pola: all"/>
             <Label fx:id="mostPopularGenotypeLabel" text="Genotyp:" />
             <Label fx:id="avgEnergyLabel" text="Średnia energia: 0" />
             <Label fx:id="avgLifespanLabel" text="Średnia długość życia: 0" />
