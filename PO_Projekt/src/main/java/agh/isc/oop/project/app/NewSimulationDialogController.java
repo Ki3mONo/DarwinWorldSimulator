@@ -1,6 +1,8 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.app;
 
 import agh.isc.oop.project.model.map.MapType;
+import agh.isc.oop.project.simulation.SimulationConfig;
+import agh.isc.oop.project.simulation.SimulationConfigBuilder;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;

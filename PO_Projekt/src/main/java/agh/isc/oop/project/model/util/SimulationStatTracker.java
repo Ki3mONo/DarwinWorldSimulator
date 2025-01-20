@@ -1,10 +1,11 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.model.util;
 
 import agh.isc.oop.project.model.elements.Animal;
 import agh.isc.oop.project.model.elements.WorldElement;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.MapChangeListener;
 import agh.isc.oop.project.model.util.Vector2d;
+import agh.isc.oop.project.simulation.Simulation;
 
 import java.util.*;
 import java.util.stream.Collectors;

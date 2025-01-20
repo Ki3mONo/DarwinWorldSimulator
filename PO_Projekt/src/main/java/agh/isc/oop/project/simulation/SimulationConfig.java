@@ -23,7 +23,7 @@ public class SimulationConfig {
     //Simulation
     private final long dayDurationMs;
 
-    String csvFilePath;
+    private String csvFilePath;
     private final MapType mapType;
 
     public SimulationConfig(MapType mapType, int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,

@@ -1,13 +1,14 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.app;
 
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.map.WorldMapFactory;
 import agh.isc.oop.project.model.map.MapType;
+import agh.isc.oop.project.simulation.Simulation;
+import agh.isc.oop.project.simulation.SimulationConfig;
+import agh.isc.oop.project.simulation.SimulationConfigBuilder;
+import agh.isc.oop.project.simulation.SimulationEngine;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -25,8 +26,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class SimulationApp extends Application {
@@ -144,7 +143,7 @@ public class SimulationApp extends Application {
 
         AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), config);
 
-        Simulation simulation = new Simulation(config, worldMap, config.csvFilePath);
+        Simulation simulation = new Simulation(config, worldMap, config.getCsvFilePath());
 
         SimulationMapWindow simWindow = new SimulationMapWindow(simulation, config, engine);
         simWindow.showAndStart();

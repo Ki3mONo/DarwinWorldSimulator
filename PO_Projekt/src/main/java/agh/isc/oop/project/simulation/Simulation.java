@@ -8,6 +8,7 @@ import agh.isc.oop.project.model.elements.Genome;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.GenomeGenerator;
 import agh.isc.oop.project.model.util.SimulationCSVSaver;
+import agh.isc.oop.project.model.util.SimulationStatTracker;
 import agh.isc.oop.project.model.util.Vector2d;
 
 import java.util.ArrayList;

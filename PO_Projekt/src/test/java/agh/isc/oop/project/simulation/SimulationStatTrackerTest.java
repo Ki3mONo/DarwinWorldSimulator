@@ -6,6 +6,7 @@ import agh.isc.oop.project.model.elements.Grass;
 import agh.isc.oop.project.model.elements.WorldElement;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.map.CrawlingJungleMap;
+import agh.isc.oop.project.model.util.SimulationStatTracker;
 import agh.isc.oop.project.model.util.Vector2d;
 import org.junit.jupiter.api.Test;
 

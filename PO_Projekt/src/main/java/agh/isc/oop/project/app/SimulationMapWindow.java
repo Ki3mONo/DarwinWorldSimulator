@@ -1,6 +1,8 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.app;
 
-import javafx.application.Platform;
+import agh.isc.oop.project.simulation.Simulation;
+import agh.isc.oop.project.simulation.SimulationConfig;
+import agh.isc.oop.project.simulation.SimulationEngine;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

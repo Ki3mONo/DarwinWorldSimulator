@@ -2,7 +2,6 @@ package agh.isc.oop.project.model.util;
 
 import agh.isc.oop.project.simulation.Simulation;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
-import agh.isc.oop.project.simulation.SimulationStatTracker;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 

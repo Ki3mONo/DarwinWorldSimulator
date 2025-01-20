@@ -1,17 +1,19 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.app;
 
 import agh.isc.oop.project.model.elements.Animal;
 import agh.isc.oop.project.model.elements.Grass;
 import agh.isc.oop.project.model.elements.WorldElement;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.*;
+import agh.isc.oop.project.simulation.Simulation;
+import agh.isc.oop.project.model.util.SimulationStatTracker;
+import agh.isc.oop.project.simulation.SimulationConfig;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
