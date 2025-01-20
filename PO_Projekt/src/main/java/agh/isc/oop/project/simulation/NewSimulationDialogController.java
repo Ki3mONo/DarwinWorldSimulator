@@ -10,6 +10,7 @@ import java.io.File;
 
 public class NewSimulationDialogController {
 
+
     @FXML private Spinner<Integer> mapWidthSpinner;
     @FXML private Spinner<Integer> mapHeightSpinner;
     @FXML private Spinner<Integer> startGrassSpinner;
@@ -17,6 +18,7 @@ public class NewSimulationDialogController {
     @FXML private Spinner<Integer> dailyGrassGrowthSpinner;
     @FXML private Spinner<Integer> startAnimalCountSpinner;
     @FXML private Spinner<Integer> initialEnergySpinner;
+    @FXML private Spinner<Integer> reproductionEnergySpinner;
     @FXML private Spinner<Integer> reproductionCostSpinner;
     @FXML private Spinner<Integer> moveCostSpinner;
     @FXML private CheckBox agingAnimalCheckBox;
@@ -46,7 +48,8 @@ public class NewSimulationDialogController {
         dailyGrassGrowthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 10));
         startAnimalCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 10));
         initialEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 100));
-        reproductionCostSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 500, 50));
+        reproductionEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 500, 30));
+        reproductionCostSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 500, 20));
         moveCostSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200, 5));
         agingAnimalCheckBox.setSelected(false);
         minMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 1));
@@ -62,6 +65,7 @@ public class NewSimulationDialogController {
         dailyGrassGrowthSpinner.setEditable(true);
         startAnimalCountSpinner.setEditable(true);
         initialEnergySpinner.setEditable(true);
+        reproductionEnergySpinner.setEditable(true);
         reproductionCostSpinner.setEditable(true);
         moveCostSpinner.setEditable(true);
         minMutationsSpinner.setEditable(true);
@@ -132,6 +136,7 @@ public class NewSimulationDialogController {
         builder.setDailyGrassGrowth(dailyGrassGrowthSpinner.getValue());
         builder.setStartAnimalCount(startAnimalCountSpinner.getValue());
         builder.setInitialEnergy(initialEnergySpinner.getValue());
+        builder.setReproductionEnergy(reproductionEnergySpinner.getValue());
         builder.setReproductionCost(reproductionCostSpinner.getValue());
         builder.setMoveCost(moveCostSpinner.getValue());
         builder.setAgingAnimalVariant(agingAnimalCheckBox.isSelected());

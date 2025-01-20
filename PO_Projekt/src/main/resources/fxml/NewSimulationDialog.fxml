@@ -8,7 +8,7 @@
             fx:controller="agh.isc.oop.project.simulation.NewSimulationDialogController"
             fitToWidth="true">
     <content>
-        <VBox alignment="CENTER" prefHeight="690" prefWidth="400" spacing="6" style="-fx-padding: 20;">
+        <VBox alignment="CENTER" prefHeight="720" prefWidth="500" spacing="6" style="-fx-padding: 20;">
 
             <!-- Nagłówek -->
             <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Ustaw parametry symulacji" />
@@ -52,17 +52,21 @@
                         <Label text="Initial Energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
                         <Spinner fx:id="initialEnergySpinner" GridPane.rowIndex="6" GridPane.columnIndex="1" />
 
+                        <!-- initialEnergy -->
+                        <Label text="Reproduction Energy:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                        <Spinner fx:id="reproductionEnergySpinner" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+
                         <!-- reproductionCost -->
-                        <Label text="Reproduction Cost:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-                        <Spinner fx:id="reproductionCostSpinner" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+                        <Label text="Reproduction Cost:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
+                        <Spinner fx:id="reproductionCostSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1" />
 
                         <!-- moveCost -->
-                        <Label text="Move Cost:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
-                        <Spinner fx:id="moveCostSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1" />
+                        <Label text="Move Cost:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
+                        <Spinner fx:id="moveCostSpinner" GridPane.rowIndex="9" GridPane.columnIndex="1" />
 
                         <!-- Rodzaj mapy -->
-                        <Label text="Rodzaj mapy:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
-                        <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="9" GridPane.columnIndex="1">
+                        <Label text="Rodzaj mapy:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="10" GridPane.columnIndex="1">
                             <children>
                                 <RadioButton fx:id="equatorMapRadio" text="Equator" />
                                 <RadioButton fx:id="crawlingJungleMapRadio" text="Crawling Jungle" />
@@ -70,30 +74,30 @@
                         </HBox>
 
                         <!-- agingAnimalVariant -->
-                        <Label text="Aging Animal Variant?" GridPane.rowIndex="10" GridPane.columnIndex="0" />
-                        <CheckBox fx:id="agingAnimalCheckBox" GridPane.rowIndex="10" GridPane.columnIndex="1" />
+                        <Label text="Aging Animal Variant?" GridPane.rowIndex="11" GridPane.columnIndex="0" />
+                        <CheckBox fx:id="agingAnimalCheckBox" GridPane.rowIndex="11" GridPane.columnIndex="1" />
 
                         <!-- minMutations -->
-                        <Label text="Min Mutations:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
-                        <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="11" GridPane.columnIndex="1" />
+                        <Label text="Min Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
+                        <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1" />
 
                         <!-- maxMutations -->
-                        <Label text="Max Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
-                        <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1" />
+                        <Label text="Max Mutations:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
+                        <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="13" GridPane.columnIndex="1" />
 
                         <!-- genomeLength -->
-                        <Label text="Genome Length:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
-                        <Spinner fx:id="genomeLengthSpinner" GridPane.rowIndex="13" GridPane.columnIndex="1" />
+                        <Label text="Genome Length:" GridPane.rowIndex="14" GridPane.columnIndex="0" />
+                        <Spinner fx:id="genomeLengthSpinner" GridPane.rowIndex="14" GridPane.columnIndex="1" />
 
                         <!-- dayDurationMs -->
-                        <Label text="Day Duration (ms):" GridPane.rowIndex="14" GridPane.columnIndex="0" />
-                        <TextField fx:id="dayDurationField" prefWidth="80" GridPane.rowIndex="14" GridPane.columnIndex="1" />
+                        <Label text="Day Duration (ms):" GridPane.rowIndex="15" GridPane.columnIndex="0" />
+                        <TextField fx:id="dayDurationField" prefWidth="80" GridPane.rowIndex="15" GridPane.columnIndex="1" />
 
                         <!-- CSV Save -->
-                        <Label text="CSV Save?" GridPane.rowIndex="15" GridPane.columnIndex="0" />
-                        <CheckBox fx:id="csvSaveCheckBox" GridPane.rowIndex="15" GridPane.columnIndex="1" />
-                        <Label text="File Path:" GridPane.rowIndex="16" GridPane.columnIndex="0" />
-                        <HBox spacing="5" GridPane.rowIndex="16" GridPane.columnIndex="1">
+                        <Label text="CSV Save?" GridPane.rowIndex="16" GridPane.columnIndex="0" />
+                        <CheckBox fx:id="csvSaveCheckBox" GridPane.rowIndex="16" GridPane.columnIndex="1" />
+                        <Label text="File Path:" GridPane.rowIndex="17" GridPane.columnIndex="0" />
+                        <HBox spacing="5" GridPane.rowIndex="17" GridPane.columnIndex="1">
                             <children>
                                 <TextField fx:id="filePathField" promptText="Ścieżka do pliku" />
                                 <Button fx:id="fileExplorerButton" text="Explore" />

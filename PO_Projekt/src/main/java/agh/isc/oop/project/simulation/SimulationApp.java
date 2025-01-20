@@ -27,15 +27,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class SimulationApp extends Application {
     SimulationEngine engine = new SimulationEngine();
     @Override
     public void start(Stage primaryStage) {
-        Image appIcon = new Image(getClass().getResourceAsStream("/icons/icon.png"));
+        Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
         primaryStage.getIcons().add(appIcon);
 
-        Image backgroundImage = new Image(getClass().getResourceAsStream("/app/background.png"));
+        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app/background.png")));
         ImageView backgroundView = new ImageView(backgroundImage);
         backgroundView.setPreserveRatio(true);
         backgroundView.setSmooth(true);
@@ -51,21 +52,18 @@ public class SimulationApp extends Application {
 
         Button newSimButton = createTransparentImageButton("/app/start.png");
         Button loadConfigButton = createTransparentImageButton("/app/json.png");
-        Button loadSimulationButton = createTransparentImageButton("/app/csv.png");
         Button exitButton = createTransparentImageButton("/app/close.png");
 
         String buttonStyle = "-fx-font-size: 16px; -fx-min-width: 200px;";
         newSimButton.setStyle(buttonStyle);
         loadConfigButton.setStyle(buttonStyle);
-        loadSimulationButton.setStyle(buttonStyle);
         exitButton.setStyle(buttonStyle);
 
         newSimButton.setOnAction(e -> openNewSimulationWindow());
         loadConfigButton.setOnAction(e -> onLoadSimulationFromJSON(primaryStage));
-        loadSimulationButton.setOnAction(e -> onLoadSimulationFromCSV(primaryStage));
         exitButton.setOnAction(e -> primaryStage.close());
 
-        menuBox.getChildren().addAll(newSimButton, loadConfigButton, loadSimulationButton, exitButton);
+        menuBox.getChildren().addAll(newSimButton, loadConfigButton, exitButton);
         root.getChildren().add(menuBox);
 
         Scene scene = new Scene(root, 896, 512);
@@ -87,7 +85,7 @@ public class SimulationApp extends Application {
             NewSimulationDialogController controller = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.setTitle("DarwinWorld – Ustaw Parametry Nowej Symulacji");
-            Image appIcon = new Image(getClass().getResourceAsStream("/icons/icon.png"));
+            Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
             dialogStage.getIcons().add(appIcon);
             dialogStage.setScene(new Scene(root));
             dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -136,49 +134,6 @@ public class SimulationApp extends Application {
 
             } catch (IOException e) {
                 showErrorDialog("Błąd", "Nie udało się wczytać pliku JSON.");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void onLoadSimulationFromCSV(Stage stage) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Wybierz plik CSV z danymi symulacji");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki CSV", "*.csv"));
-
-        File chosenFile = fileChooser.showOpenDialog(stage);
-        if (chosenFile != null) {
-            try {
-                CSVParser csvParser = CSVParser.parse(Files.newBufferedReader(Paths.get(chosenFile.toURI())),
-                        CSVFormat.DEFAULT.withHeader());
-
-                SimulationConfigBuilder builder = new SimulationConfigBuilder();
-
-                for (CSVRecord record : csvParser) {
-                    builder.setMapWidth(Integer.parseInt(record.get("mapWidth")));
-                    builder.setMapHeight(Integer.parseInt(record.get("mapHeight")));
-                    builder.setStartGrassCount(Integer.parseInt(record.get("startGrassCount")));
-                    builder.setGrassEnergy(Integer.parseInt(record.get("grassEnergy")));
-                    builder.setDailyGrassGrowth(Integer.parseInt(record.get("dailyGrassGrowth")));
-                    builder.setStartAnimalCount(Integer.parseInt(record.get("startAnimalCount")));
-                    builder.setInitialEnergy(Integer.parseInt(record.get("initialEnergy")));
-                    builder.setReproductionCost(Integer.parseInt(record.get("reproductionCost")));
-                    builder.setMoveCost(Integer.parseInt(record.get("moveCost")));
-                    builder.setAgingAnimalVariant(Boolean.parseBoolean(record.get("agingAnimalVariant")));
-                    builder.setMinMutations(Integer.parseInt(record.get("minMutations")));
-                    builder.setMaxMutations(Integer.parseInt(record.get("maxMutations")));
-                    builder.setGenomeLength(Integer.parseInt(record.get("genomeLength")));
-                    builder.setDayDurationMs(Long.parseLong(record.get("dayDurationMs")));
-                    builder.setMapType(MapType.valueOf(record.get("mapType")));
-                    break;
-                }
-                csvParser.close();
-
-                SimulationConfig config = builder.build();
-                startSimulation(config);
-
-            } catch (IOException | NumberFormatException e) {
-                showErrorDialog("Błąd", "Nie udało się poprawnie wczytać pliku CSV.");
                 e.printStackTrace();
             }
         }

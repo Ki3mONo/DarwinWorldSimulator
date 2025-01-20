@@ -184,7 +184,6 @@ public class SimulationMapWindowController implements MapChangeListener {
                         VBox.setVgrow(box, Priority.ALWAYS);
                         HBox.setHgrow(box, Priority.ALWAYS);
                         box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                        cell.getChildren().add(box);
 
                         cell.setOnMouseClicked(event -> {
                             if (isPaused) {
@@ -195,9 +194,13 @@ public class SimulationMapWindowController implements MapChangeListener {
                                                 .thenComparingInt(Animal::getBirthDate)
                                                 .thenComparingInt(Animal::getChildrenCount))
                                         .ifPresent(this::trackAnimal);
+
+                                if (trackedAnimal != null) {
+                                    box.highlightYellow();
+                                }
                             }
                         });
-
+                        cell.getChildren().add(box);
                         mapGrid.add(cell, finalX, finalY);
                     }, () -> {
                         WorldElementBox box;
@@ -219,24 +222,6 @@ public class SimulationMapWindowController implements MapChangeListener {
         });
     }
 
-
-
-
-    private Background getBackground(String resourcePath) {
-        return backgroundCache.computeIfAbsent(resourcePath, path -> {
-            try {
-                Image bgImage = new Image(getClass().getResourceAsStream(path));
-                BackgroundSize bgSize = new BackgroundSize(100, 100, true, true, true, false);
-                BackgroundImage backgroundImage = new BackgroundImage(bgImage,
-                        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER, bgSize);
-                return new Background(backgroundImage);
-            } catch (Exception e) {
-                System.err.println("Nie udało się załadować tła: " + resourcePath);
-                return new Background(new BackgroundFill(javafx.scene.paint.Color.LIGHTGREEN, CornerRadii.EMPTY, javafx.geometry.Insets.EMPTY));
-            }
-        });
-    }
 
     private double calculateCellSize() {
         double width = gridContainer.getWidth();
