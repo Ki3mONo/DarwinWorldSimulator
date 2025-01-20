@@ -238,10 +238,9 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     public double getAverageChildrenCount() {
         synchronized (animals) {
-            CopyOnWriteArrayList<Animal> allAnimals = new CopyOnWriteArrayList<>();
-            for (List<Animal> animalList : animals.values()) {
-                allAnimals.addAll(animals.getOrDefault(animalList, new ArrayList<>()));
-            }
+            List<Animal> allAnimals = animals.values().stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
 
             int totalChildren = allAnimals.stream()
                     .filter(Objects::nonNull)
