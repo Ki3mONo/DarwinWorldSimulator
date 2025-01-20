@@ -21,6 +21,9 @@ import javafx.stage.Stage;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static agh.isc.oop.project.model.util.WorldElementBox.DEFAULT_BACKGROUND;
 
@@ -49,6 +52,8 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML private Label trackedDescendantsLabel;
     @FXML private Label trackedAgeLabel;
     @FXML private Label trackedDeathDayLabel;
+    @FXML private Button highlightPreferredFieldsButton;
+    @FXML private Button highlightDominantGenotypeButton;
     @FXML private Button stopTrackingButton;
 
     private Animal trackedAnimal;
@@ -57,6 +62,11 @@ public class SimulationMapWindowController implements MapChangeListener {
     private Simulation simulation;
     private SimulationConfig config;
     private boolean isPaused = false;
+    private boolean isHighlightingPreferredFields = false;
+    private boolean isHighlightingDominantGenotypes = false;
+
+    private Set<Vector2d> preferredFields = new HashSet<>();
+    private Set<Animal> dominantGenotypeAnimals = new HashSet<>();
     private static final Map<String, Background> backgroundCache = new ConcurrentHashMap<>();
 
     private XYChart.Series<Number, Number> animalSeries;
@@ -184,15 +194,19 @@ public class SimulationMapWindowController implements MapChangeListener {
 
             if (animalCount > 1) {
                 return createManyAnimalsBoxForCell(animalsOnCell, cellSquareSide, elements);
-            } else if (animalCount == 1 && animalsOnCell.get(0) != null && animalsOnCell.get(0).isAlive()) {
-                return createSingleAnimalBoxForCell(animalsOnCell.get(0), cellSquareSide, elements);
+            } else if (animalCount == 1 && animalsOnCell != null && !animalsOnCell.isEmpty()) {
+                Animal firstAnimal = animalsOnCell.get(0);
+                if (firstAnimal != null && firstAnimal.isAlive()) {
+                    return createSingleAnimalBoxForCell(firstAnimal, cellSquareSide, elements);
+                }
             } else {
                 return createGrassBoxForCell(position, cellSquareSide);
             }
-        } else {
-            return createAlphaChannelBoxForCell(cellSquareSide);
         }
+
+        return createAlphaChannelBoxForCell(cellSquareSide);
     }
+
 
     private WorldElementBox createManyAnimalsBoxForCell(List<Animal> animalsOnCell, double cellSquareSide, List<WorldElement> elements) {
         ManyAnimals manyAnimals = new ManyAnimals(animalsOnCell.size());
@@ -307,12 +321,15 @@ public class SimulationMapWindowController implements MapChangeListener {
     void pauseSimulation() {
         isPaused = true;
         simulation.pause();
+        updateHighlightButtonsState(); // Aktualizuje przyciski
     }
 
     @FXML
     void resumeSimulation() {
         isPaused = false;
         simulation.resume();
+        removeHighlighting();
+        updateHighlightButtonsState(); // Aktualizuje przyciski
         drawMap();
     }
 
@@ -321,6 +338,89 @@ public class SimulationMapWindowController implements MapChangeListener {
         simulation.stop();
         ((Stage) mapGrid.getScene().getWindow()).close();
     }
+
+    @FXML
+    void highlightDominantGenotype() {
+        if (!isPaused) return;
+        isHighlightingDominantGenotypes = true;
+        highlightElements(this::isAnimalWithDominantGenotype, WorldElementBox::highlightDominantGenotype);
+    }
+
+    @FXML
+    void highlightPreferredFields() {
+        if (!isPaused) return;
+        isHighlightingPreferredFields = true;
+        highlightElements(this::isPreferredField, WorldElementBox::highlightPreferredField);
+    }
+
+    private void highlightElements(Predicate<Vector2d> filterCondition, Consumer<WorldElementBox> highlightAction) {
+        Platform.runLater(() -> {
+            for (javafx.scene.Node node : mapGrid.getChildren()) {
+                if (node instanceof StackPane cell) {
+                    Vector2d pos = getGridPosition(cell);
+                    if (pos == null || !filterCondition.test(pos)) continue;
+
+                    for (javafx.scene.Node child : cell.getChildren()) {
+                        if (child instanceof WorldElementBox box) {
+                            highlightAction.accept(box);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private Vector2d getGridPosition(StackPane cell) {
+        Integer columnIndex = GridPane.getColumnIndex(cell);
+        Integer rowIndex = GridPane.getRowIndex(cell);
+        return (columnIndex != null && rowIndex != null) ? new Vector2d(columnIndex, rowIndex) : null;
+    }
+
+    private boolean isAnimalWithDominantGenotype(Vector2d pos) {
+        AbstractWorldMap worldMap = simulation.getMap();
+        if (dominantGenotypeAnimals.isEmpty()) {
+            dominantGenotypeAnimals.addAll(getAnimalsWithMostPopularGenes());
+        }
+
+        List<WorldElement> elementsAtPos = worldMap.getWorldElements().get(pos);
+        return elementsAtPos != null && elementsAtPos.stream()
+                .anyMatch(element -> element instanceof Animal animal && dominantGenotypeAnimals.contains(animal));
+    }
+
+    private boolean isPreferredField(Vector2d pos) {
+        AbstractWorldMap worldMap = simulation.getMap();
+
+        if (preferredFields.isEmpty()) {
+            Map<Vector2d, Integer> preferredGrassMap = worldMap.getPreferredGrassFields();
+            preferredFields.addAll(preferredGrassMap.keySet()); // Pobiera same klucze (pola)
+        }
+
+        return preferredFields.contains(pos);
+    }
+
+
+    private void removeHighlighting() {
+        Platform.runLater(() -> {
+            for (javafx.scene.Node node : mapGrid.getChildren()) {
+                if (node instanceof StackPane cell) {
+                    for (javafx.scene.Node child : cell.getChildren()) {
+                        if (child instanceof WorldElementBox box) {
+                            box.setBackground(WorldElementBox.DEFAULT_BACKGROUND);
+                        }
+                    }
+                }
+            }
+            isHighlightingDominantGenotypes = false;
+            isHighlightingPreferredFields = false;
+        });
+    }
+
+    private void updateHighlightButtonsState() {
+        boolean disable = !isPaused;
+        highlightPreferredFieldsButton.setDisable(disable);
+        highlightDominantGenotypeButton.setDisable(disable);
+    }
+
     public void trackAnimal(Animal animal) {
         if (isPaused) {
             trackedAnimal = animal;
@@ -358,6 +458,32 @@ public class SimulationMapWindowController implements MapChangeListener {
             trackedBox.setBackground(DEFAULT_BACKGROUND);
             trackedBox = null;
         }
+    }
+
+    public List<Animal> getAnimalsWithMostPopularGenes() {
+        List<Integer> popularGenes = simulation.getStatTracker().getMostPopularGenes();
+        if (popularGenes == null || popularGenes.isEmpty()) return Collections.emptyList();
+
+        return simulation.getAliveAnimals().stream()
+                .filter(animal -> animal.getGenome() != null &&
+                        differsByAtMostOneGene(animal.getGenome().getGeneList(), popularGenes))
+                .collect(Collectors.toList());
+    }
+
+
+    private boolean differsByAtMostOneGene(List<Integer> genome1, List<Integer> genome2) {
+
+        int differences = 0;
+        for (int i = 0; i < config.getGenomeLength(); i++) {
+            if (!Objects.equals(genome1.get(i), genome2.get(i))) {
+                differences++;
+                if (differences > (config.getGenomeLength() / 3.0)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 

@@ -22,6 +22,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     private final SimulationConfig config;
     private final AnimalFactory animalFactory;
 
+    private Map<Vector2d, Integer> grassGrowthAttempts = new HashMap<>();
     private Map<Vector2d, Integer> grassGrowthHistory = new HashMap<>();
 
     public AbstractWorldMap(SimulationConfig config) {
@@ -210,32 +211,37 @@ public abstract class AbstractWorldMap implements WorldMap {
 
 
     void putGrass(Vector2d position) {
-        grassGrowthHistory.put(position, grassGrowthHistory.getOrDefault(position, 0) + 1);
-        if (!grassMap.containsKey(position)) {
+        grassGrowthAttempts.put(position, grassGrowthAttempts.getOrDefault(position, 0) + 1); // Liczymy próby
+
+        if (!grassMap.containsKey(position)) { // Jeśli pole nie było zajęte → trawa faktycznie rośnie
+            grassGrowthHistory.put(position, grassGrowthHistory.getOrDefault(position, 0) + 1);
             Grass grass = new Grass(position);
             worldElements.computeIfAbsent(position, k -> new ArrayList<>()).add(grass);
             grassMap.put(position, grass);
         }
     }
 
-    //Ja nie wiem czy to nie chodzi o to, żeby po prostu pokazać te, na których jest 80% szans na roślinę
-    public Set<Vector2d> getPreferredGrassFields() {
-        Set<Vector2d> preferredFields = new HashSet<>();
 
-        Map<Vector2d, Integer> allGrassGrowthHistory = new HashMap<>(grassGrowthHistory);
+    //Ja nie wiem czy to nie chodzi o to, żeby po prostu pokazać te, na których jest 80% szans na roślinę
+    public Map<Vector2d, Integer> getPreferredGrassFields() {
+        Map<Vector2d, Integer> preferredFields = new HashMap<>();
+        Map<Vector2d, Integer> allGrassGrowthHistory = new HashMap<>(grassGrowthAttempts); // Używamy prób wzrostu
 
         int maxGrowths = allGrassGrowthHistory.values().stream()
                 .max(Integer::compare)
                 .orElse(0);
 
+        double tolerance = (1.0 / 3 * config.getDailyGrassGrowth()); // Ustawienie tolerancji
+
         for (Map.Entry<Vector2d, Integer> entry : allGrassGrowthHistory.entrySet()) {
-            if (entry.getValue() == maxGrowths) {
-                preferredFields.add(entry.getKey());
+            if (maxGrowths - entry.getValue() <= tolerance) { // Uwzględnia tolerancję
+                preferredFields.put(entry.getKey(), entry.getValue());
             }
         }
 
         return preferredFields;
     }
+
 
 
 
