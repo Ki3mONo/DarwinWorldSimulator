@@ -1,13 +1,15 @@
 package agh.isc.oop.project.simulation;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 public class SimulationEngine {
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ForkJoinPool executorService = ForkJoinPool.commonPool();
     private final List<Simulation> simulations = new ArrayList<>();
 
     public void addSimulation(Simulation simulation) {
@@ -16,7 +18,7 @@ public class SimulationEngine {
 
     public void runAsync() {
         for (Simulation simulation : simulations) {
-            executorService.submit(simulation);
+            addAndStartSimulation(simulation);
         }
     }
 
@@ -42,4 +44,11 @@ public class SimulationEngine {
     private void shutdownExecutor() {
         executorService.shutdownNow();
     }
+
+    private void addAndStartSimulation(Simulation simulation) {
+        executorService.submit(simulation);
+        simulation.pause();
+        simulation.resume();
+    }
+
 }

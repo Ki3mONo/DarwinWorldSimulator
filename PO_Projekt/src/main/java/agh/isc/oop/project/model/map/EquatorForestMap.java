@@ -1,12 +1,10 @@
-package agh.isc.oop.project.model;
+package agh.isc.oop.project.model.map;
 
 
+import agh.isc.oop.project.model.util.Vector2d;
 import agh.isc.oop.project.simulation.SimulationConfig;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class EquatorForestMap extends AbstractWorldMap {
 

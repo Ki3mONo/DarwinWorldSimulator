@@ -1,8 +1,14 @@
 package agh.isc.oop.project.simulation;
 
 import agh.isc.oop.project.model.*;
+import agh.isc.oop.project.model.elements.AgingAnimalFactory;
+import agh.isc.oop.project.model.elements.Animal;
+import agh.isc.oop.project.model.elements.AnimalFactory;
+import agh.isc.oop.project.model.elements.Genome;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.GenomeGenerator;
 import agh.isc.oop.project.model.util.SimulationCSVSaver;
+import agh.isc.oop.project.model.util.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,10 @@ public class Simulation implements Runnable {
             this.map.addObserver(new SimulationCSVSaver(this, csvFilePath));
         }
 
-        // Inicjalizacja zwierząt
+        generateAnimalsOnMap(config, map);
+    }
+
+    private void generateAnimalsOnMap(SimulationConfig config, AbstractWorldMap map) {
         for (int i = 0; i < config.getStartAnimalCount(); i++) {
             Vector2d position = new Vector2d(
                     (int) (Math.random() * config.getMapWidth()),
@@ -59,7 +68,7 @@ public class Simulation implements Runnable {
             try {
                 synchronized (this) {
                     while (isPaused) {
-                        wait(config.getDayDurationMs());
+                        wait(1000);
                     }
                 }
                 performDayCycle();
@@ -110,10 +119,6 @@ public class Simulation implements Runnable {
     public synchronized void resume() {
         isPaused = false;
         notifyAll();
-    }
-
-    public boolean isPaused() {
-        return isPaused;
     }
 
     public List<Animal> getAliveAnimals() {

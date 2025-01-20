@@ -1,9 +1,7 @@
 package agh.isc.oop.project.model.util;
 
-import agh.isc.oop.project.model.MapChangeListener;
 import agh.isc.oop.project.simulation.Simulation;
-import agh.isc.oop.project.model.Animal;
-import agh.isc.oop.project.model.AbstractWorldMap;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.simulation.SimulationStatTracker;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -11,7 +9,6 @@ import org.apache.commons.csv.CSVPrinter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 public class SimulationCSVSaver implements MapChangeListener {
     private final Simulation simulation;

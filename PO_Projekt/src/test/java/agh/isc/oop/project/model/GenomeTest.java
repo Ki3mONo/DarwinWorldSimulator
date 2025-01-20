@@ -1,5 +1,8 @@
 package agh.isc.oop.project.model;
 
+import agh.isc.oop.project.model.elements.Animal;
+import agh.isc.oop.project.model.elements.Genome;
+import agh.isc.oop.project.model.util.Vector2d;
 import agh.isc.oop.project.simulation.SimulationConfig;
 import agh.isc.oop.project.simulation.SimulationConfigBuilder;
 import org.junit.jupiter.api.Test;

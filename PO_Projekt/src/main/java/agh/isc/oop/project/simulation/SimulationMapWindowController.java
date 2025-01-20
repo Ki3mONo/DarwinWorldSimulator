@@ -1,8 +1,10 @@
 package agh.isc.oop.project.simulation;
 
-import agh.isc.oop.project.model.*;
-import agh.isc.oop.project.model.util.AlphaChannelElement;
-import agh.isc.oop.project.model.util.ManyAnimals;
+import agh.isc.oop.project.model.elements.Animal;
+import agh.isc.oop.project.model.elements.Grass;
+import agh.isc.oop.project.model.elements.WorldElement;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
+import agh.isc.oop.project.model.util.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -17,7 +19,6 @@ import javafx.stage.Stage;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class SimulationMapWindowController implements MapChangeListener {
 

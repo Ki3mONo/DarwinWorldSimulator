@@ -1,4 +1,6 @@
-package agh.isc.oop.project.model;
+package agh.isc.oop.project.model.map;
+
+import agh.isc.oop.project.model.util.Vector2d;
 
 import java.util.Random;
 

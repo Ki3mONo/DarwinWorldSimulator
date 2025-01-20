@@ -1,10 +1,8 @@
-package agh.isc.oop.project.model;
+package agh.isc.oop.project.model.elements;
 
 import agh.isc.oop.project.model.util.GenomeGenerator;
 import agh.isc.oop.project.simulation.SimulationConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import java.util.Random;

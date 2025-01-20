@@ -1,14 +1,12 @@
 package agh.isc.oop.project.simulation;
 
-import agh.isc.oop.project.model.MapType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import agh.isc.oop.project.model.map.MapType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 
 public class NewSimulationDialogController {
 

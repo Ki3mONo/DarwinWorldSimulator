@@ -1,8 +1,8 @@
-package agh.isc.oop.project.model;
+package agh.isc.oop.project.model.util;
 
-import agh.isc.oop.project.model.util.ManyAnimals;
+import agh.isc.oop.project.model.elements.Animal;
+import agh.isc.oop.project.model.elements.WorldElement;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

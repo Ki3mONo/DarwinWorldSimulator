@@ -1,9 +1,8 @@
 package agh.isc.oop.project.simulation;
 
-import agh.isc.oop.project.model.AbstractWorldMap;
-import agh.isc.oop.project.model.Vector2d;
-import agh.isc.oop.project.model.WorldMapFactory;
-import agh.isc.oop.project.model.MapType;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
+import agh.isc.oop.project.model.map.WorldMapFactory;
+import agh.isc.oop.project.model.map.MapType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.csv.CSVFormat;
@@ -30,7 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class SimulationApp extends Application {
-
+    SimulationEngine engine = new SimulationEngine();
     @Override
     public void start(Stage primaryStage) {
         Image appIcon = new Image(getClass().getResourceAsStream("/icons/icon.png"));
@@ -191,7 +190,7 @@ public class SimulationApp extends Application {
         AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), config);
 
         Simulation simulation = new Simulation(config, worldMap, config.csvFilePath);
-        SimulationEngine engine = new SimulationEngine();
+
         engine.addSimulation(simulation);
         engine.runAsync();
 

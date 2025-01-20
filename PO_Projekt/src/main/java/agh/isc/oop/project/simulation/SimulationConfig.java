@@ -1,6 +1,6 @@
 package agh.isc.oop.project.simulation;
 
-import agh.isc.oop.project.model.MapType;
+import agh.isc.oop.project.model.map.MapType;
 
 public class SimulationConfig {
     //WorldMap
