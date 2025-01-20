@@ -6,20 +6,22 @@ import agh.isc.oop.project.model.util.SimulationCSVSaver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Simulation implements Runnable {
 
     private final AbstractWorldMap map;
     private final SimulationConfig config;
-    private final List<Animal> animals = new ArrayList<>();
+    private final List<Animal> aliveAnimals = new ArrayList<>();
+    private final List<Animal> deadAnimals = new ArrayList<>();
     private final GenomeGenerator genomeGenerator;
-    private final SimulationCSVSaver csvSaver;
+    //private final SimulationCSVSaver csvSaver;
     private boolean isRunning = true;
     private boolean isPaused = false; // Nowe pole do obsługi pauzy
     private final AnimalFactory animalFactory;
     private int currentDay = 0;
 
+    private SimulationStatTracker statTracker;
+    //do wywalenia jak skończę
     private final List<Integer> deadAnimalsLifespan = new ArrayList<>();
 
     public Simulation(SimulationConfig config, AbstractWorldMap map, String csvFilePath) {
@@ -30,8 +32,15 @@ public class Simulation implements Runnable {
         Animal.setConfig(config);
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
         this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
+
+        this.statTracker = new SimulationStatTracker(this);
+        this.map.addObserver(statTracker);
+
+        if(csvFilePath != null){
+            this.map.addObserver(new SimulationCSVSaver(this, csvFilePath));
+        }
         //to do wywalenia i jako observer do mapy
-        this.csvSaver = csvFilePath != null ? new SimulationCSVSaver(this, csvFilePath) : null;
+        //this.csvSaver = csvFilePath != null ? new SimulationCSVSaver(this, csvFilePath) : null;
 
         // Inicjalizacja zwierząt
         for (int i = 0; i < config.getStartAnimalCount(); i++) {
@@ -42,7 +51,7 @@ public class Simulation implements Runnable {
             Animal animal = animalFactory.createAnimal(position, genomeGenerator.generateGenome());
             try {
                 map.place(animal);
-                animals.add(animal);
+                aliveAnimals.add(animal);
             } catch (IncorrectPositionException e) {
                 System.err.println("Failed to place animal: " + e.getMessage());
             }
@@ -74,31 +83,34 @@ public class Simulation implements Runnable {
 
 
     private void performDayCycle() {
-        List<Animal> deadAnimals = new ArrayList<>();
-        for (Animal animal : animals) {
+        List<Animal> diedThisCycle = new ArrayList<>();
+        for (Animal animal : aliveAnimals) {
             if (animal.getEnergy() <= 0) {
                 animal.die(currentDay);
-                deadAnimals.add(animal);
+                diedThisCycle.add(animal);
+                //do wywalenia jak skończę
                 deadAnimalsLifespan.add(currentDay - animal.getBirthDate());
             }
         }
-        map.removeAnimals(deadAnimals);
-        animals.removeAll(deadAnimals);
+        map.removeAnimals(diedThisCycle);
+        aliveAnimals.removeAll(diedThisCycle);
+        deadAnimals.addAll(diedThisCycle);
 
-        for (Animal animal : animals) {
+        for (Animal animal : aliveAnimals) {
             map.move(animal);
         }
 
         map.handleEating(config.getGrassEnergy());
+
         List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionCost());
-        animals.addAll(bornAnimals);
+        aliveAnimals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
 
         map.mapChanged();
         //to też docelowo ma być observer
-        if (csvSaver != null) {
-            csvSaver.saveDayStatistics();
-        }
+        //if (csvSaver != null) {
+        //    csvSaver.saveDayStatistics();
+        //}
     }
     public void stop() {
         isRunning = false;
@@ -118,8 +130,12 @@ public class Simulation implements Runnable {
         return isPaused;
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    public List<Animal> getAliveAnimals() {
+        return aliveAnimals;
+    }
+
+    public List<Animal> getDeadAnimals() {
+        return deadAnimals;
     }
 
     public AbstractWorldMap getMap() {
@@ -145,4 +161,7 @@ public class Simulation implements Runnable {
     }
 
 
+    public SimulationStatTracker getStatTracker() {
+        return statTracker;
+    }
 }

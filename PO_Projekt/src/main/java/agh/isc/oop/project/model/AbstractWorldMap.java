@@ -200,27 +200,10 @@ public abstract class AbstractWorldMap implements WorldMap {
         return animals.values().stream().mapToInt(List::size).sum();
     }
 
-    public long getGrassCount() {
+    public int getGrassCount() {
         return grassMap.size();
     }
 
-
-    public double getAverageEnergy() {
-        synchronized (animals) {
-            List<Animal> allAnimals = animals.values().stream()
-                    .filter(Objects::nonNull)  // Removes null lists
-                    .flatMap(List::stream)
-                    .filter(Objects::nonNull)  // Removes null animals
-                    .collect(Collectors.toList());
-
-            int totalEnergy = allAnimals.stream()
-                    .mapToInt(Animal::getEnergy)
-                    .sum();
-
-            int animalCount = getAnimalCount();
-            return animalCount > 0 ? (double) totalEnergy / animalCount : 0;
-        }
-    }
 
     void putGrass(Vector2d position) {
         grassGrowthHistory.put(position, grassGrowthHistory.getOrDefault(position, 0) + 1);
@@ -231,23 +214,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public List<Integer> getMostPopularGenotype() {
-        if (animals == null) {
-            return Collections.emptyList();
-        }
-        List<Animal> allAnimals = animals.values().stream()
-                .flatMap(List::stream)
-                .toList();
-
-        Map<List<Integer>, Long> genotypeFrequency = allAnimals.stream()
-                .filter(Objects::nonNull)
-                .collect(Collectors.groupingBy(a -> a.getGenome().getGeneList(), Collectors.counting()));
-
-        return genotypeFrequency.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(Collections.emptyList());
-    }
 
     public Set<Vector2d> getPreferredGrassFields() {
         Set<Vector2d> preferredFields = new HashSet<>();

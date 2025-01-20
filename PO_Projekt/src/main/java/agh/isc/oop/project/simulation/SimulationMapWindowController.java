@@ -248,21 +248,17 @@ public class SimulationMapWindowController implements MapChangeListener {
 
     private void updateStatistics() {
         Platform.runLater(() -> {
-            AbstractWorldMap worldMap = simulation.getMap();
-            int animalCount = worldMap.getAnimalCount();
-            long grassCount = worldMap.getGrassCount();
-            List<Integer> mostPopularGenotype = worldMap.getMostPopularGenotype();
-            double avgChildren = worldMap.getAverageChildrenCount();
+            SimulationStatTracker stats = simulation.getStatTracker();
 
-            animalCountLabel.setText("Zwierzęta: " + animalCount);
-            grassCountLabel.setText("Rośliny: " + grassCount);
-            mostPopularGenotypeLabel.setText("Genotyp: " + mostPopularGenotype.toString());
-            avgEnergyLabel.setText(String.format("Średnia energia: %.4f", worldMap.getAverageEnergy()));
-            avgLifespanLabel.setText(String.format("Średnia długość życia: %.4f", simulation.getAverageLifespan()));
-            avgChildrenLabel.setText(String.format("Średnia liczba dzieci: %.2f", avgChildren));
+            animalCountLabel.setText("Zwierzęta: " + stats.getAnimalCount());
+            grassCountLabel.setText("Rośliny: " + stats.getGrassCount());
+            mostPopularGenotypeLabel.setText("Genotyp: " + stats.getMostPopularGenes().toString());
+            avgEnergyLabel.setText(String.format("Średnia energia: %.4f", stats.getAverageEnergy()));
+            avgLifespanLabel.setText(String.format("Średnia długość życia: %.4f", stats.getAverageLifespan()));
+            avgChildrenLabel.setText(String.format("Średnia liczba dzieci: %.2f", stats.getAverageChildren()));
 
-            animalSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), animalCount));
-            grassSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), grassCount));
+            animalSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), stats.getAnimalCount()));
+            grassSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), stats.getGrassCount()));
 
         });
     }
