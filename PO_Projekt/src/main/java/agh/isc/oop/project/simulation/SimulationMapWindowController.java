@@ -184,6 +184,7 @@ public class SimulationMapWindowController implements MapChangeListener {
                         VBox.setVgrow(box, Priority.ALWAYS);
                         HBox.setHgrow(box, Priority.ALWAYS);
                         box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                        cell.getChildren().add(box);
 
                         cell.setOnMouseClicked(event -> {
                             if (isPaused) {
@@ -194,13 +195,9 @@ public class SimulationMapWindowController implements MapChangeListener {
                                                 .thenComparingInt(Animal::getBirthDate)
                                                 .thenComparingInt(Animal::getChildrenCount))
                                         .ifPresent(this::trackAnimal);
-
-                                if (trackedAnimal != null) {
-                                    box.highlightYellow();
-                                }
                             }
                         });
-                        cell.getChildren().add(box);
+                        
                         mapGrid.add(cell, finalX, finalY);
                     }, () -> {
                         WorldElementBox box;
