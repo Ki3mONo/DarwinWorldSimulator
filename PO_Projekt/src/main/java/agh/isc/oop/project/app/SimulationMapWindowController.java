@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static agh.isc.oop.project.model.util.WorldElementBox.DEFAULT_BACKGROUND;
+
 public class SimulationMapWindowController implements MapChangeListener {
 
     @FXML private Label mostPopularGenotypeLabel;
@@ -59,6 +61,8 @@ public class SimulationMapWindowController implements MapChangeListener {
 
     private XYChart.Series<Number, Number> animalSeries;
     private XYChart.Series<Number, Number> grassSeries;
+
+    private WorldElementBox trackedBox = null;
 
     public void initialize(Simulation simulation, SimulationConfig config) {
         this.simulation = simulation;
@@ -147,79 +151,120 @@ public class SimulationMapWindowController implements MapChangeListener {
                     Vector2d position = new Vector2d(x, y);
 
                     Optional<List<WorldElement>> elementsOpt = worldMap.objectAt(position);
-
-                    // Zamiast isPresent i orElse, używamy ifPresentOrElse bo inaczej nie chciało działać xD
                     int finalX = x;
                     int finalY = y;
+
                     elementsOpt.ifPresentOrElse(elements -> {
-                        WorldElementBox box;
-                        StackPane cell = new StackPane();
-                        cell.setPrefSize(cellSquareSide, cellSquareSide);
-                        cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                        if (!elements.isEmpty()) {
-                            List<Animal> animalsOnCell = worldMap.getAnimals().get(position);
-                            if (animalsOnCell == null) {
-                                animalsOnCell = new ArrayList<>();
-                            }
-                            long animalCount = Math.max(0, animalsOnCell.size());
+                        WorldElementBox box = createBoxForCell(worldMap, position, cellSquareSide, elements);
+                        StackPane cell = createCell(box, cellSquareSide);
+                        cell.setOnMouseClicked(event -> handleCellClickAnimalSelection(cell, elements));
 
-                            if (animalCount > 1) {
-                                ManyAnimals manyAnimals = new ManyAnimals(animalCount);
-                                box = new WorldElementBox(manyAnimals, (int) cellSquareSide, (int) cellSquareSide);
-                                if (trackedAnimal != null && elements.contains(trackedAnimal)) {
-                                    box.highlightYellow();
-                                }
-                                box.updateAnimalCountBar(animalCount);
-                            } else if (animalCount == 1 && animalsOnCell.get(0)!= null && animalsOnCell.get(0).isAlive()) {
-                                Animal animal = animalsOnCell.get(0);
-                                box = new WorldElementBox(animal, (int) cellSquareSide, (int) cellSquareSide);
-                                if (trackedAnimal != null && trackedAnimal.equals(animal)) {
-                                    box.highlightYellow();
-                                }
-                                box.updateHealthBar(animal);
-                            } else {
-                                box = new WorldElementBox(new Grass(position), (int) cellSquareSide, (int) cellSquareSide);
-                            }
-                        } else {
-                            box = new WorldElementBox(new AlphaChannelElement(), (int) cellSquareSide, (int) cellSquareSide);
-                        }
-                        VBox.setVgrow(box, Priority.ALWAYS);
-                        HBox.setHgrow(box, Priority.ALWAYS);
-                        box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                        cell.getChildren().add(box);
-
-                        cell.setOnMouseClicked(event -> {
-                            if (isPaused) {
-                                elements.stream()
-                                        .filter(e -> e instanceof Animal)
-                                        .map(e -> (Animal) e)
-                                        .max(Comparator.comparingInt(Animal::getEnergy)
-                                                .thenComparingInt(Animal::getBirthDate)
-                                                .thenComparingInt(Animal::getChildrenCount))
-                                        .ifPresent(this::trackAnimal);
-                            }
-                        });
-                        
                         mapGrid.add(cell, finalX, finalY);
                     }, () -> {
-                        WorldElementBox box;
-                        StackPane cell = new StackPane();
-                        cell.setPrefSize(cellSquareSide, cellSquareSide);
-                        cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                        box = new WorldElementBox(new AlphaChannelElement(), (int) cellSquareSide, (int) cellSquareSide);
-                        VBox.setVgrow(box, Priority.ALWAYS);
-                        HBox.setHgrow(box, Priority.ALWAYS);
-                        box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                        cell.getChildren().add(box);
-
+                        WorldElementBox box = createAlphaChannelBoxForCell(cellSquareSide);
+                        StackPane cell = createCell(box, cellSquareSide);
                         mapGrid.add(cell, finalX, finalY);
                     });
                 }
             }
+
             updateStatistics();
             updateTrackedAnimalInfo();
         });
     }
+
+    private WorldElementBox createBoxForCell(AbstractWorldMap worldMap, Vector2d position, double cellSquareSide, List<WorldElement> elements) {
+        if (!elements.isEmpty()) {
+            List<Animal> animalsOnCell = worldMap.getAnimals().get(position);
+            if (animalsOnCell == null) {
+                animalsOnCell = new ArrayList<>();
+            }
+
+            long animalCount = animalsOnCell.size();
+
+            if (animalCount > 1) {
+                return createManyAnimalsBoxForCell(animalsOnCell, cellSquareSide, elements);
+            } else if (animalCount == 1 && animalsOnCell.get(0) != null && animalsOnCell.get(0).isAlive()) {
+                return createSingleAnimalBoxForCell(animalsOnCell.get(0), cellSquareSide, elements);
+            } else {
+                return createGrassBoxForCell(position, cellSquareSide);
+            }
+        } else {
+            return createAlphaChannelBoxForCell(cellSquareSide);
+        }
+    }
+
+    private WorldElementBox createManyAnimalsBoxForCell(List<Animal> animalsOnCell, double cellSquareSide, List<WorldElement> elements) {
+        ManyAnimals manyAnimals = new ManyAnimals(animalsOnCell.size());
+        WorldElementBox box = new WorldElementBox(manyAnimals, (int) cellSquareSide, (int) cellSquareSide);
+        if (trackedAnimal != null && elements.contains(trackedAnimal)) {
+            unhighlightTrackedBox(box, trackedAnimal);
+            box.highlightYellow();
+        }
+        box.updateAnimalCountBar(animalsOnCell.size());
+        return box;
+    }
+
+    private WorldElementBox createSingleAnimalBoxForCell(Animal animal, double cellSquareSide, List<WorldElement> elements) {
+        WorldElementBox box = new WorldElementBox(animal, (int) cellSquareSide, (int) cellSquareSide);
+        if (trackedAnimal != null && trackedAnimal.equals(animal)) {
+            box.highlightYellow();
+        }
+        box.updateHealthBar(animal);
+        return box;
+    }
+
+    private WorldElementBox createGrassBoxForCell(Vector2d position, double cellSquareSide) {
+        return new WorldElementBox(new Grass(position), (int) cellSquareSide, (int) cellSquareSide);
+    }
+
+    private WorldElementBox createAlphaChannelBoxForCell(double cellSquareSide) {
+        return new WorldElementBox(new AlphaChannelElement(), (int) cellSquareSide, (int) cellSquareSide);
+    }
+
+
+    private StackPane createCell(WorldElementBox box, double cellSquareSide) {
+        StackPane cell = new StackPane();
+        cell.setPrefSize(cellSquareSide, cellSquareSide);
+        cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // Zapewniamy, że pudełko zajmie całą dostępną przestrzeń
+        VBox.setVgrow(box, Priority.ALWAYS);
+        HBox.setHgrow(box, Priority.ALWAYS);
+        box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        cell.getChildren().add(box);
+        return cell;
+    }
+
+    private void handleCellClickAnimalSelection(StackPane cell, List<WorldElement> elements) {
+        // Pobieramy najlepsze zwierzę do śledzenia w tej komórce
+        Optional<Animal> selectedAnimalOpt = elements.stream()
+                .filter(e -> e instanceof Animal)
+                .map(e -> (Animal) e)
+                .max(Comparator.comparingInt(Animal::getEnergy)
+                        .thenComparingInt(Animal::getBirthDate)
+                        .thenComparingInt(Animal::getChildrenCount));
+
+        if (selectedAnimalOpt.isPresent()) {
+            Animal selectedAnimal = selectedAnimalOpt.get();
+
+            // Znajdujemy WorldElementBox w tej komórce
+            if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof WorldElementBox box) {
+                unhighlightTrackedBox(box, selectedAnimal);
+            }
+        }
+    }
+    private void unhighlightTrackedBox(WorldElementBox newBox, Animal newAnimal) {
+        // Jeśli mamy poprzednio śledzony box, resetujemy jego podświetlenie
+        unhighlightTrackedBox();
+
+        // Podświetlamy nowy box
+        newBox.highlightYellow();
+        trackedBox = newBox;  // Aktualizujemy śledzone pole
+        trackAnimal(newAnimal);  // Aktualizujemy śledzone zwierzę
+    }
+
+
 
 
     private double calculateCellSize() {
@@ -297,6 +342,7 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML
     private void stopTracking() {
         trackedAnimal = null;
+        unhighlightTrackedBox();
         trackedGenotypeLabel.setText("Genom: -");
         trackedActiveGeneLabel.setText("Aktywny gen: -");
         trackedEnergyLabel.setText("Energia: -");
@@ -307,6 +353,12 @@ public class SimulationMapWindowController implements MapChangeListener {
         trackedDeathDayLabel.setText("Dzień śmierci: -");
     }
 
+    private void unhighlightTrackedBox() {
+        if (trackedBox != null) {
+            trackedBox.setBackground(DEFAULT_BACKGROUND);
+            trackedBox = null;
+        }
+    }
 
 
 }
