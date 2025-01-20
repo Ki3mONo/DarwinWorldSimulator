@@ -145,7 +145,7 @@ public class WorldMapTest {
             throw new RuntimeException(e);
         }
 
-        map.handleEating(config.getGrassEnergy());
+        map.handleEating();
 
         assertEquals(15, animal1.getEnergy());  //zjadł, był jedyny
         assertEquals(10, animal2.getEnergy());  //bez zmiany, bo jest słabszy
@@ -209,7 +209,7 @@ public class WorldMapTest {
             throw new RuntimeException(e);
         }
 
-        map.handleReproduction(2137, config.getReproductionCost());
+        map.handleReproduction(2137);
 
         List<Animal> kidsV54 =  map.getAnimals().get(new Vector2d(5, 4))
                 .stream()

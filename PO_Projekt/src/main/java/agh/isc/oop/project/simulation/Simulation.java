@@ -14,7 +14,6 @@ public class Simulation implements Runnable {
     private final List<Animal> aliveAnimals = new ArrayList<>();
     private final List<Animal> deadAnimals = new ArrayList<>();
     private final GenomeGenerator genomeGenerator;
-    //private final SimulationCSVSaver csvSaver;
     private boolean isRunning = true;
     private boolean isPaused = false; // Nowe pole do obsługi pauzy
     private final AnimalFactory animalFactory;
@@ -52,9 +51,6 @@ public class Simulation implements Runnable {
                 System.err.println("Failed to place animal: " + e.getMessage());
             }
         }
-
-        // Inicjalizacja trawy
-        map.initializeGrass(config.getStartGrassCount());
     }
 
     @Override
@@ -94,9 +90,9 @@ public class Simulation implements Runnable {
             map.move(animal);
         }
 
-        map.handleEating(config.getGrassEnergy());
+        map.handleEating();
 
-        List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionEnergy());
+        List<Animal> bornAnimals = map.handleReproduction(currentDay);
         aliveAnimals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
 

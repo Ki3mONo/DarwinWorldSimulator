@@ -119,7 +119,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         return new Vector2d(x, y);
     }
 
-    public void handleEating(int grassEnergy) {
+    public void handleEating() {
         List<Vector2d> grassEaten = new ArrayList<>();
 
         for (Vector2d position : new ArrayList<>(grassMap.keySet())) {
@@ -158,19 +158,19 @@ public abstract class AbstractWorldMap implements WorldMap {
 
             Animal winner = topAnimals.get(new Random().nextInt(topAnimals.size()));
 
-            winner.eat(grassEnergy);
+            winner.eat(config.getGrassEnergy());
             grassEaten.add(position);
         }
 
         grassEaten.forEach(this::removeGrass);
     }
 
-    public List<Animal> handleReproduction(int currentDay, int reproductionEnergy) {
+    public List<Animal> handleReproduction(int currentDay) {
         List<Animal> bornAnimals = new ArrayList<>();
         animals.keySet().forEach(position -> {
             //Tutaj kolejność identyczna jak przy jedzeniu
             List<Animal> candidates = animals.get(position).stream()
-                    .filter(a -> a.getEnergy() >= reproductionEnergy)
+                    .filter(a -> a.getEnergy() >= config.getReproductionEnergy())
                     .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
                             .thenComparing(Animal::getBirthDate)
                             .thenComparing(Animal::getChildrenCount).reversed())
@@ -214,7 +214,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-
+    //Ja nie wiem czy to nie chodzi o to, żeby po prostu pokazać te, na których jest 80% szans na roślinę
     public Set<Vector2d> getPreferredGrassFields() {
         Set<Vector2d> preferredFields = new HashSet<>();
 
@@ -231,22 +231,5 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
 
         return preferredFields;
-    }
-
-
-
-    public double getAverageChildrenCount() {
-        synchronized (animals) {
-            List<Animal> allAnimals = animals.values().stream()
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-
-            int totalChildren = allAnimals.stream()
-                    .mapToInt(Animal::getChildrenCount)
-                    .sum();
-
-            int animalCount = getAnimalCount();
-            return animalCount > 0 ? (double) totalChildren / animalCount : 0;
-        }
     }
 }

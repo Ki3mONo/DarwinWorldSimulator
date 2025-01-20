@@ -7,17 +7,16 @@ import java.util.stream.Collectors;
 
 public class SimulationStatTracker implements MapChangeListener {
     Simulation simulation;
-    private int animalCount;    //Tylko żywe
-    private int grassCount;
-    private int freeFields;
-    private List<Integer> mostPopularGenes;
-    private double averageEnergy;   //Tylko dla żywych
-    private double averageLifespan; //Tylko dla martwych
-    private double averageChildren; //Tylko dla żywych
+    private int animalCount=0;    //Tylko żywe
+    private int grassCount=0;
+    private int freeFields=0;
+    private List<Integer> mostPopularGenes = List.of();
+    private double averageEnergy=0;   //Tylko dla żywych
+    private double averageLifespan=0; //Tylko dla martwych
+    private double averageChildren=0; //Tylko dla żywych
 
     public SimulationStatTracker(Simulation simulation) {
         this.simulation = simulation;
-        updateAll();
     }
 
     @Override
