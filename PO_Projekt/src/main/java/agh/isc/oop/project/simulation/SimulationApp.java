@@ -191,9 +191,6 @@ public class SimulationApp extends Application {
 
         Simulation simulation = new Simulation(config, worldMap, config.csvFilePath);
 
-        engine.addSimulation(simulation);
-        engine.runAsync();
-
         SimulationMapWindow simWindow = new SimulationMapWindow(simulation, config, engine);
         simWindow.showAndStart();
     }
