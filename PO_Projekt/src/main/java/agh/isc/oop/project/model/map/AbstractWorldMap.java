@@ -21,8 +21,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     private List<MapChangeListener> observing = new ArrayList<>();
     private final SimulationConfig config;
     private final AnimalFactory animalFactory;
-
-    private Map<Vector2d, Integer> grassGrowthAttempts = new HashMap<>();
+    
     private Map<Vector2d, Integer> grassGrowthHistory = new HashMap<>();
 
     public AbstractWorldMap(SimulationConfig config) {
@@ -211,8 +210,6 @@ public abstract class AbstractWorldMap implements WorldMap {
 
 
     void putGrass(Vector2d position) {
-        grassGrowthAttempts.put(position, grassGrowthAttempts.getOrDefault(position, 0) + 1); // Liczymy próby
-
         if (!grassMap.containsKey(position)) { // Jeśli pole nie było zajęte → trawa faktycznie rośnie
             grassGrowthHistory.put(position, grassGrowthHistory.getOrDefault(position, 0) + 1);
             Grass grass = new Grass(position);
@@ -221,17 +218,15 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-
-    //Ja nie wiem czy to nie chodzi o to, żeby po prostu pokazać te, na których jest 80% szans na roślinę
     public Map<Vector2d, Integer> getPreferredGrassFields() {
         Map<Vector2d, Integer> preferredFields = new HashMap<>();
-        Map<Vector2d, Integer> allGrassGrowthHistory = new HashMap<>(grassGrowthAttempts); // Używamy prób wzrostu
+        Map<Vector2d, Integer> allGrassGrowthHistory = new HashMap<>(grassGrowthHistory);
 
         int maxGrowths = allGrassGrowthHistory.values().stream()
                 .max(Integer::compare)
                 .orElse(0);
 
-        double tolerance = (1.0 / 3 * config.getDailyGrassGrowth()); // Ustawienie tolerancji
+        double tolerance = (config.getDailyGrassGrowth()/3.0); // Ustawienie tolerancji
 
         for (Map.Entry<Vector2d, Integer> entry : allGrassGrowthHistory.entrySet()) {
             if (maxGrowths - entry.getValue() <= tolerance) { // Uwzględnia tolerancję
@@ -241,7 +236,6 @@ public abstract class AbstractWorldMap implements WorldMap {
 
         return preferredFields;
     }
-
 
 
 
