@@ -51,8 +51,8 @@ public class WorldMapTest {
         assertThrows(IncorrectPositionException.class, () -> map.place(animal5));
         assertThrows(IncorrectPositionException.class, () -> map.place(animal6));
 
-        //assertEquals(List.of(animal1), map.objectAt(new Vector2d(1, 1)));
-        //assertEquals(List.of(animal1), map.objectAt(new Vector2d(1, 1)));
+        assertTrue(map.objectAt(new Vector2d(1, 1)).get().contains(animal1));
+        assertTrue(map.objectAt(new Vector2d(2, 1)).get().contains(animal2));
 
     }
 

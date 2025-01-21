@@ -1,6 +1,5 @@
-package agh.isc.oop.project.model;
+package agh.isc.oop.project.model.map;
 
-import agh.isc.oop.project.model.map.MapDirection;
 import agh.isc.oop.project.model.util.Vector2d;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

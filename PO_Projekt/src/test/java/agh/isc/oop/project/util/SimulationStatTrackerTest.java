@@ -1,4 +1,4 @@
-package agh.isc.oop.project.simulation;
+package agh.isc.oop.project.util;
 
 import agh.isc.oop.project.model.elements.Animal;
 import agh.isc.oop.project.model.elements.Genome;
@@ -8,6 +8,9 @@ import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.map.CrawlingJungleMap;
 import agh.isc.oop.project.model.util.SimulationStatTracker;
 import agh.isc.oop.project.model.util.Vector2d;
+import agh.isc.oop.project.simulation.Simulation;
+import agh.isc.oop.project.simulation.SimulationConfig;
+import agh.isc.oop.project.simulation.SimulationConfigBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
