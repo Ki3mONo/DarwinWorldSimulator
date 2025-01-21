@@ -62,11 +62,9 @@ public class SimulationMapWindowController implements MapChangeListener {
     private Simulation simulation;
     private SimulationConfig config;
     private boolean isPaused = false;
-    private boolean isHighlightingPreferredFields = false;
-    private boolean isHighlightingDominantGenotypes = false;
 
-    private Set<Vector2d> preferredFields = new HashSet<>();
-    private Set<Animal> dominantGenotypeAnimals = new HashSet<>();
+    private final Set<Vector2d> preferredFields = new HashSet<>();
+    private final Set<Animal> dominantGenotypeAnimals = new HashSet<>();
     private static final Map<String, Background> backgroundCache = new ConcurrentHashMap<>();
 
     private XYChart.Series<Number, Number> animalSeries;
@@ -342,16 +340,16 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML
     void highlightDominantGenotype() {
         if (!isPaused) return;
-        isHighlightingDominantGenotypes = true;
         highlightElements(this::isAnimalWithDominantGenotype, WorldElementBox::highlightDominantGenotype);
     }
 
     @FXML
     void highlightPreferredFields() {
         if (!isPaused) return;
-        isHighlightingPreferredFields = true;
         highlightElements(this::isPreferredField, WorldElementBox::highlightPreferredField);
     }
+
+
 
     private void highlightElements(Predicate<Vector2d> filterCondition, Consumer<WorldElementBox> highlightAction) {
         Platform.runLater(() -> {
@@ -378,24 +376,23 @@ public class SimulationMapWindowController implements MapChangeListener {
 
     private boolean isAnimalWithDominantGenotype(Vector2d pos) {
         AbstractWorldMap worldMap = simulation.getMap();
-        if (dominantGenotypeAnimals.isEmpty()) {
-            dominantGenotypeAnimals.addAll(getAnimalsWithMostPopularGenes());
-        }
+        // Pobieramy elementy (WorldElement) znajdujące się na danym polu
+        List<WorldElement> elementsAtPos = worldMap.objectAt(pos).orElse(Collections.emptyList());
+        // Pobieramy zwierzęta, które mają najpopularniejszy (podobny) genotyp
+        List<Animal> animalsWithPopularGenes = getAnimalsWithMostPopularGenes();
 
-        List<WorldElement> elementsAtPos = worldMap.getWorldElements().get(pos);
-        return elementsAtPos != null && elementsAtPos.stream()
-                .anyMatch(element -> element instanceof Animal animal && dominantGenotypeAnimals.contains(animal));
+        // Jeśli choć jedno zwierzę na polu należy do listy zwierząt z popularnym genotypem, zwracamy true
+        return elementsAtPos.stream()
+                .filter(e -> e instanceof Animal)
+                .map(e -> (Animal) e)
+                .anyMatch(animalsWithPopularGenes::contains);
     }
+
 
     private boolean isPreferredField(Vector2d pos) {
         AbstractWorldMap worldMap = simulation.getMap();
-
-        if (preferredFields.isEmpty()) {
-            Map<Vector2d, Integer> preferredGrassMap = worldMap.getPreferredGrassFields();
-            preferredFields.addAll(preferredGrassMap.keySet()); // Pobiera same klucze (pola)
-        }
-
-        return preferredFields.contains(pos);
+        Map<Vector2d, Integer> preferredGrassMap = worldMap.getPreferredGrassFields();
+        return preferredGrassMap.containsKey(pos);
     }
 
 
@@ -410,8 +407,6 @@ public class SimulationMapWindowController implements MapChangeListener {
                     }
                 }
             }
-            isHighlightingDominantGenotypes = false;
-            isHighlightingPreferredFields = false;
         });
     }
 
@@ -462,22 +457,23 @@ public class SimulationMapWindowController implements MapChangeListener {
 
     public List<Animal> getAnimalsWithMostPopularGenes() {
         List<Integer> popularGenes = simulation.getStatTracker().getMostPopularGenes();
-        if (popularGenes == null || popularGenes.isEmpty()) return Collections.emptyList();
+        if (popularGenes == null || popularGenes.isEmpty())
+            return Collections.emptyList();
 
         return simulation.getAliveAnimals().stream()
                 .filter(animal -> animal.getGenome() != null &&
-                        differsByAtMostOneGene(animal.getGenome().getGeneList(), popularGenes))
+                        isGenomeSimilarEnough(animal.getGenome().getGeneList(), popularGenes))
                 .collect(Collectors.toList());
     }
 
 
-    private boolean differsByAtMostOneGene(List<Integer> genome1, List<Integer> genome2) {
+    private boolean isGenomeSimilarEnough(List<Integer> genome1, List<Integer> genome2) {
 
         int differences = 0;
         for (int i = 0; i < config.getGenomeLength(); i++) {
             if (!Objects.equals(genome1.get(i), genome2.get(i))) {
                 differences++;
-                if (differences > (config.getGenomeLength() / 3.0)) {
+                if (differences > ((Math.sqrt(config.getGenomeLength()*3.0)))) {
                     return false;
                 }
             }
@@ -485,6 +481,5 @@ public class SimulationMapWindowController implements MapChangeListener {
 
         return true;
     }
-
 
 }

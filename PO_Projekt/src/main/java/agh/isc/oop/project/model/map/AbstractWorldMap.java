@@ -21,7 +21,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     private List<MapChangeListener> observing = new ArrayList<>();
     private final SimulationConfig config;
     private final AnimalFactory animalFactory;
-    
+
     private Map<Vector2d, Integer> grassGrowthHistory = new HashMap<>();
 
     public AbstractWorldMap(SimulationConfig config) {
@@ -226,7 +226,7 @@ public abstract class AbstractWorldMap implements WorldMap {
                 .max(Integer::compare)
                 .orElse(0);
 
-        double tolerance = (config.getDailyGrassGrowth()/3.0); // Ustawienie tolerancji
+        double tolerance = (Math.sqrt(config.getDailyGrassGrowth()*2.0)); // Ustawienie tolerancji
 
         for (Map.Entry<Vector2d, Integer> entry : allGrassGrowthHistory.entrySet()) {
             if (maxGrowths - entry.getValue() <= tolerance) { // Uwzględnia tolerancję
