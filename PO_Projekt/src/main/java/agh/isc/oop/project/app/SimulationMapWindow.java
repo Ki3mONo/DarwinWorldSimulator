@@ -46,7 +46,6 @@ public class SimulationMapWindow {
             // Listener zamknięcia okna - zatrzymuje symulację
             stage.setOnCloseRequest(e -> {
                 simulation.stop();
-                engine.stopAll();
             });
 
         } catch (IOException e) {
@@ -57,7 +56,6 @@ public class SimulationMapWindow {
     public void showAndStart() {
         stage.show();
         engine.addSimulation(simulation);
-        engine.runAsync();
     }
 
     public void pauseSimulation() {

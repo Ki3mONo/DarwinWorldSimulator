@@ -14,6 +14,7 @@ public class SimulationEngine {
 
     public void addSimulation(Simulation simulation) {
         simulations.add(simulation);
+        executorService.submit(simulation);
     }
 
     public void runAsync() {
