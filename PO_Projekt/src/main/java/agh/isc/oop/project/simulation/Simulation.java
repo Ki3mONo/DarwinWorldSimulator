@@ -1,38 +1,55 @@
 package agh.isc.oop.project.simulation;
 
 import agh.isc.oop.project.model.*;
+import agh.isc.oop.project.model.elements.AgingAnimalFactory;
+import agh.isc.oop.project.model.elements.Animal;
+import agh.isc.oop.project.model.elements.AnimalFactory;
+import agh.isc.oop.project.model.elements.Genome;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.GenomeGenerator;
 import agh.isc.oop.project.model.util.SimulationCSVSaver;
+import agh.isc.oop.project.model.util.SimulationStatTracker;
+import agh.isc.oop.project.model.util.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Simulation implements Runnable {
 
     private final AbstractWorldMap map;
     private final SimulationConfig config;
-    private final List<Animal> animals = new ArrayList<>();
+    private final List<Animal> aliveAnimals = new ArrayList<>();
+    private final List<Animal> deadAnimals = new ArrayList<>();
     private final GenomeGenerator genomeGenerator;
-    private final SimulationCSVSaver csvSaver;
     private boolean isRunning = true;
     private boolean isPaused = false; // Nowe pole do obsługi pauzy
     private final AnimalFactory animalFactory;
     private int currentDay = 0;
 
-    private final List<Integer> deadAnimalsLifespan = new ArrayList<>();
+    private SimulationStatTracker statTracker;
 
     public Simulation(SimulationConfig config, AbstractWorldMap map, String csvFilePath) {
         this.config = config;
         this.map = map;
-        this.currentDay = 0; // Initialize currentDay
+        this.currentDay = 0;
         Genome.setConfig(config);
         Animal.setConfig(config);
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
         this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
-        this.csvSaver = csvFilePath != null ? new SimulationCSVSaver(this, csvFilePath) : null;
 
-        // Inicjalizacja zwierząt
+        //Statystyki obserwują zmiany mapy
+        this.statTracker = new SimulationStatTracker(this);
+        this.map.addObserver(statTracker);
+
+        if(csvFilePath != null){
+            //CSV saver obserwuje zmiany statystyk
+            statTracker.addObserver(new SimulationCSVSaver(csvFilePath));
+        }
+
+        generateAnimalsOnMap(config, map);
+    }
+
+    private void generateAnimalsOnMap(SimulationConfig config, AbstractWorldMap map) {
         for (int i = 0; i < config.getStartAnimalCount(); i++) {
             Vector2d position = new Vector2d(
                     (int) (Math.random() * config.getMapWidth()),
@@ -41,14 +58,11 @@ public class Simulation implements Runnable {
             Animal animal = animalFactory.createAnimal(position, genomeGenerator.generateGenome());
             try {
                 map.place(animal);
-                animals.add(animal);
+                aliveAnimals.add(animal);
             } catch (IncorrectPositionException e) {
                 System.err.println("Failed to place animal: " + e.getMessage());
             }
         }
-
-        // Inicjalizacja trawy
-        map.initializeGrass(config.getStartGrassCount());
     }
 
     @Override
@@ -57,7 +71,7 @@ public class Simulation implements Runnable {
             try {
                 synchronized (this) {
                     while (isPaused) {
-                        wait(config.getDayDurationMs()); // Timeout, aby uniknąć zakleszczenia
+                        wait(1000);
                     }
                 }
                 performDayCycle();
@@ -73,33 +87,32 @@ public class Simulation implements Runnable {
 
 
     private void performDayCycle() {
-        List<Animal> deadAnimals = new ArrayList<>();
-        for (Animal animal : animals) {
+        List<Animal> diedThisCycle = new ArrayList<>();
+        for (Animal animal : aliveAnimals) {
             if (animal.getEnergy() <= 0) {
                 animal.die(currentDay);
-                deadAnimals.add(animal);
-                deadAnimalsLifespan.add(currentDay - animal.getBirthDate());
-                map.mapChanged("Animal died at: " + animal.getPosition());
+                diedThisCycle.add(animal);
             }
         }
-        map.removeAnimals(deadAnimals);
-        animals.removeAll(deadAnimals);
+        map.removeAnimals(diedThisCycle);
+        aliveAnimals.removeAll(diedThisCycle);
+        deadAnimals.addAll(diedThisCycle);
 
-        for (Animal animal : animals) {
+        for (Animal animal : aliveAnimals) {
             map.move(animal);
         }
 
-        map.handleEating(config.getGrassEnergy());
-        List<Animal> bornAnimals = map.handleReproduction(currentDay, config.getReproductionCost());
-        animals.addAll(bornAnimals);
+        map.handleEating();
+
+        List<Animal> bornAnimals = map.handleReproduction(currentDay);
+        aliveAnimals.addAll(bornAnimals);
         map.grassGrow(config.getDailyGrassGrowth());
-        if (csvSaver != null) {
-            csvSaver.saveDayStatistics();
-        }
+
+        map.mapChanged();
     }
     public void stop() {
         isRunning = false;
-        resume(); // Jeśli symulacja była wstrzymana, pozwól jej się zakończyć
+        resume();
     }
 
     public synchronized void pause() {
@@ -111,12 +124,12 @@ public class Simulation implements Runnable {
         notifyAll();
     }
 
-    public boolean isPaused() {
-        return isPaused;
+    public List<Animal> getAliveAnimals() {
+        return aliveAnimals;
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    public List<Animal> getDeadAnimals() {
+        return deadAnimals;
     }
 
     public AbstractWorldMap getMap() {
@@ -131,8 +144,7 @@ public class Simulation implements Runnable {
         return config;
     }
 
-    public double getAverageLifespan() {
-        return deadAnimalsLifespan.stream().mapToInt(Integer::intValue).average().orElse(0);
+    public SimulationStatTracker getStatTracker() {
+        return statTracker;
     }
-
 }

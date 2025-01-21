@@ -1,7 +1,6 @@
 package agh.isc.oop.project.model.util;
 
-import agh.isc.oop.project.model.Vector2d;
-import agh.isc.oop.project.model.WorldElement;
+import agh.isc.oop.project.model.elements.WorldElement;
 
 public class ManyAnimals implements WorldElement {
     long size;

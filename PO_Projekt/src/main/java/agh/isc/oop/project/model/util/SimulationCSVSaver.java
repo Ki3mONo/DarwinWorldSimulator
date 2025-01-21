@@ -1,41 +1,43 @@
 package agh.isc.oop.project.model.util;
 
 import agh.isc.oop.project.simulation.Simulation;
-import agh.isc.oop.project.model.Animal;
-import agh.isc.oop.project.model.AbstractWorldMap;
+import agh.isc.oop.project.model.map.AbstractWorldMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
-public class SimulationCSVSaver {
-    private final Simulation simulation;
-    private final String filePath;
+public class SimulationCSVSaver implements StatsChangeListener {
+    private final File file;
 
-    public SimulationCSVSaver(Simulation simulation, String filePath) {
-        this.simulation = simulation;
-        this.filePath = filePath;
+    //Jeśli plik nie jest pusty, to go wyczyści
+    public SimulationCSVSaver(String filePath) {
+        this.file = new File(filePath);
+        try(FileWriter writer = new FileWriter(file, false)){
+            if (!file.exists())
+                file.createNewFile();
+
+            writer.write("Day,Animal Count,Grass Count,Free Fields,Most Popular Genes," +
+                    "Average Energy,Average Lifespan,Average children count\n");
+
+        } catch (IOException e) {
+            System.err.println("Error creating file: " + filePath);
+        }
     }
 
-    public void saveDayStatistics() {
-        boolean fileExists = new java.io.File(filePath).exists();
-        try (FileWriter writer = new FileWriter(filePath, true);
-             CSVPrinter csvPrinter = new CSVPrinter(writer,
-                     CSVFormat.DEFAULT.withHeader("Day", "Animal Count", "Grass Count", "Average Lifespan"))) {
+    public void statsChanged(SimulationStatTracker stats, int currentDay) {
+        saveDayStatistics(stats, currentDay);
+    }
 
-            if (!fileExists) {
-                csvPrinter.printRecord("Day", "Animal Count", "Grass Count", "Average Lifespan");
-            }
+    public void saveDayStatistics(SimulationStatTracker stats, int currentDay) {
+        try (FileWriter writer = new FileWriter(file, true);
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
 
-            int currentDay = simulation.getCurrentDay();
-            AbstractWorldMap map = simulation.getMap();
-            List<Animal> animals = simulation.getAnimals();
-            long grassCount = map.getGrassCount();
-            double averageLifespan = simulation.getAverageLifespan();
-
-            csvPrinter.printRecord(currentDay, animals.size(), grassCount, averageLifespan);
+            csvPrinter.printRecord(currentDay, stats.getAnimalCount(), stats.getGrassCount(),
+                    stats.getFreeFields(), stats.getMostPopularGenes(), stats.getAverageEnergy(),
+                    stats.getAverageLifespan(), stats.getAverageChildren());
             csvPrinter.flush();
         } catch (IOException e) {
             System.err.println("Error saving simulation statistics: " + e.getMessage());

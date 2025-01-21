@@ -1,6 +1,6 @@
 package agh.isc.oop.project.model.util;
 
-import agh.isc.oop.project.model.Animal;
+import agh.isc.oop.project.model.elements.Animal;
 
 import java.util.ArrayList;
 import java.util.Collections;

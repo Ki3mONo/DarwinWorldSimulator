@@ -1,6 +1,6 @@
 package agh.isc.oop.project.simulation;
 
-import agh.isc.oop.project.model.MapType;
+import agh.isc.oop.project.model.map.MapType;
 
 public class SimulationConfigBuilder {
     //WorldMap
@@ -27,7 +27,7 @@ public class SimulationConfigBuilder {
 
     public SimulationConfig build(){
         return new SimulationConfig(mapType, mapWidth, mapHeight, startGrassCount, grassEnergy, dailyGrassGrowth,
-                startAnimalCount, initialEnergy, reproductionCost, moveCost,
+                startAnimalCount, initialEnergy, reproductionEnergy, reproductionCost, moveCost,
                 agingAnimalVariant, minMutations, maxMutations, genomeLength, dayDurationMs, csvFilePath);
     }
 

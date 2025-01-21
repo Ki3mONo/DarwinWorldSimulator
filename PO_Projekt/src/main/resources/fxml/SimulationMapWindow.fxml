@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="agh.isc.oop.project.simulation.SimulationMapWindowController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.isc.oop.project.app.SimulationMapWindowController">
 
     <!-- Lewa sekcja: Statystyki + Wykresy -->
     <left>
@@ -12,19 +12,20 @@
             <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Statystyki" />
             <Label fx:id="animalCountLabel" text="Zwierzęta: 0" />
             <Label fx:id="grassCountLabel" text="Rośliny: 0" />
+            <Label fx:id="freeFieldsLabel" text="Wolne pola: all"/>
             <Label fx:id="mostPopularGenotypeLabel" text="Genotyp:" />
             <Label fx:id="avgEnergyLabel" text="Średnia energia: 0" />
             <Label fx:id="avgLifespanLabel" text="Średnia długość życia: 0" />
             <Label fx:id="avgChildrenLabel" text="Średnia liczba dzieci: 0" />
 
             <!-- Wykres liczby zwierząt -->
-            <LineChart fx:id="animalChart" prefHeight="150" prefWidth="200" title="Zwierzęta w czasie">
+            <LineChart fx:id="animalChart" prefHeight="200.0" prefWidth="250.0" title="Zwierzęta w czasie">
                 <xAxis><NumberAxis label="Dzień" /></xAxis>
                 <yAxis><NumberAxis label="Zwierzęta" /></yAxis>
             </LineChart>
 
             <!-- Wykres liczby roślin -->
-            <LineChart fx:id="grassChart" prefHeight="150" prefWidth="200" title="Rośliny w czasie">
+            <LineChart fx:id="grassChart" prefHeight="200.0" prefWidth="250.0" title="Rośliny w czasie">
                 <xAxis><NumberAxis label="Dzień" /></xAxis>
                 <yAxis><NumberAxis label="Rośliny" /></yAxis>
             </LineChart>
@@ -57,8 +58,12 @@
             <Label fx:id="trackedDescendantsLabel" text="Potomkowie: -" />
             <Label fx:id="trackedAgeLabel" text="Wiek: -" />
             <Label fx:id="trackedDeathDayLabel" text="Dzień śmierci: -" />
-            <Button fx:id="stopTrackingButton" onAction="#stopTracking" text="Przestań śledzić" />
+            <Button fx:id="stopTrackingButton" onAction="#stopTracking" text="Przestań śledzić zwierzę" />
+            <Button fx:id="highlightPreferredFieldsButton" onAction="#highlightPreferredFields" text="Podświetl preferowane pola" disable="true"/>
+            <Button fx:id="highlightDominantGenotypeButton" onAction="#highlightDominantGenotype" text="Podświetl dominujący genotyp" disable="true"/>
+
         </VBox>
+
     </right>
 
 </BorderPane>
