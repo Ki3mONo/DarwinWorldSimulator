@@ -37,11 +37,13 @@ public class Simulation implements Runnable {
         this.genomeGenerator = new GenomeGenerator(config.getGenomeLength());
         this.animalFactory = config.isAgingAnimalVariant() ? new AgingAnimalFactory() : new AnimalFactory();
 
+        //Statystyki obserwują zmiany mapy
         this.statTracker = new SimulationStatTracker(this);
         this.map.addObserver(statTracker);
 
         if(csvFilePath != null){
-            this.map.addObserver(new SimulationCSVSaver(this, csvFilePath));
+            //CSV saver obserwuje zmiany statystyk
+            statTracker.addObserver(new SimulationCSVSaver(csvFilePath));
         }
 
         generateAnimalsOnMap(config, map);

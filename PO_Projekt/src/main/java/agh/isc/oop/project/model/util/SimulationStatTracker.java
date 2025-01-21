@@ -20,13 +20,30 @@ public class SimulationStatTracker implements MapChangeListener {
     private double averageLifespan=0; //Tylko dla martwych
     private double averageChildren=0; //Tylko dla żywych
 
+    private List<StatsChangeListener> observers = new LinkedList<>();
+
     public SimulationStatTracker(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    public void addObserver(StatsChangeListener observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(StatsChangeListener observer) {
+        observers.remove(observer);
+    }
+
+    private void statsChanged() {
+        for (StatsChangeListener observer : observers) {
+            observer.statsChanged(this, simulation.getCurrentDay());
+        }
     }
 
     @Override
     public void mapChanged(AbstractWorldMap worldMap) {
         updateAll();
+        statsChanged();
     }
 
     private void updateAll() {

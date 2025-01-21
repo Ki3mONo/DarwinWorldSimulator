@@ -9,14 +9,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class SimulationCSVSaver implements MapChangeListener {
-    private final Simulation simulation;
+public class SimulationCSVSaver implements StatsChangeListener {
     private final File file;
 
-
     //Jeśli plik nie jest pusty, to go wyczyści
-    public SimulationCSVSaver(Simulation simulation, String filePath) {
-        this.simulation = simulation;
+    public SimulationCSVSaver(String filePath) {
         this.file = new File(filePath);
         try(FileWriter writer = new FileWriter(file, false)){
             if (!file.exists())
@@ -30,16 +27,13 @@ public class SimulationCSVSaver implements MapChangeListener {
         }
     }
 
-    public void mapChanged(AbstractWorldMap map) {
-        saveDayStatistics();
+    public void statsChanged(SimulationStatTracker stats, int currentDay) {
+        saveDayStatistics(stats, currentDay);
     }
 
-    public void saveDayStatistics() {
+    public void saveDayStatistics(SimulationStatTracker stats, int currentDay) {
         try (FileWriter writer = new FileWriter(file, true);
              CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
-
-            int currentDay = simulation.getCurrentDay();
-            SimulationStatTracker stats = simulation.getStatTracker();
 
             csvPrinter.printRecord(currentDay, stats.getAnimalCount(), stats.getGrassCount(),
                     stats.getFreeFields(), stats.getMostPopularGenes(), stats.getAverageEnergy(),
