@@ -174,7 +174,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         animals.keySet().forEach(position -> {
             //Tutaj kolejność identyczna jak przy jedzeniu
             List<Animal> candidates = animals.get(position).stream()
-                    .filter(a -> a.getEnergy() >= config.getReproductionCost())
+                    .filter(a -> a.getEnergy() >= config.getReproductionEnergy())
                     .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
                             .thenComparing(Animal::getBirthDate)
                             .thenComparing(Animal::getChildrenCount).reversed())

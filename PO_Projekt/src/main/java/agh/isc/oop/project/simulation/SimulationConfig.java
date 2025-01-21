@@ -22,8 +22,7 @@ public class SimulationConfig {
     private final int genomeLength;
     //Simulation
     private final long dayDurationMs;
-
-    private String csvFilePath;
+    private final String csvFilePath;
     private final MapType mapType;
 
     public SimulationConfig(MapType mapType, int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,

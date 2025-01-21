@@ -6,6 +6,7 @@
   "dailyGrassGrowth" : 10,
   "startAnimalCount" : 20,
   "initialEnergy" : 50,
+  "reproductionEnergy" : 15,
   "reproductionCost" : 10,
   "moveCost" : 5,
   "agingAnimalVariant" : false,

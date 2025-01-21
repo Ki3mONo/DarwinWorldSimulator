@@ -120,6 +120,7 @@ public class SimulationApp extends Application {
                 builder.setDailyGrassGrowth(jsonNode.get("dailyGrassGrowth").asInt());
                 builder.setStartAnimalCount(jsonNode.get("startAnimalCount").asInt());
                 builder.setInitialEnergy(jsonNode.get("initialEnergy").asInt());
+                builder.setReproductionEnergy(jsonNode.get("reproductionEnergy").asInt());
                 builder.setReproductionCost(jsonNode.get("reproductionCost").asInt());
                 builder.setMoveCost(jsonNode.get("moveCost").asInt());
                 builder.setAgingAnimalVariant(jsonNode.get("agingAnimalVariant").asBoolean());
