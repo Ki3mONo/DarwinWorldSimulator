@@ -58,9 +58,9 @@ public class SimulationStatTracker implements MapChangeListener {
     }
 
     private void updateMostPopularGenes(){
-        List<Animal> allAnimals = new ArrayList<>(simulation.getAliveAnimals());
-        allAnimals.addAll(simulation.getDeadAnimals());
-        Map<List<Integer>, Long> genotypeFrequency = allAnimals.stream()
+        List<Animal> aliveAnimals = new ArrayList<>(simulation.getAliveAnimals());
+
+        Map<List<Integer>, Long> genotypeFrequency = aliveAnimals.stream()
                 .collect(Collectors.groupingBy(a -> a.getGenome().getGeneList(), Collectors.counting()));
 
         mostPopularGenes = genotypeFrequency.entrySet().stream()

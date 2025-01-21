@@ -21,7 +21,7 @@ public class WorldElementBox extends VBox {
     private ProgressBar animalCountBar;
 
     private static final Map<String, Image> imageCache = new HashMap<>();
-    private static final Background DEFAULT_BACKGROUND = loadBackground("/world/background.png");
+    public static final Background DEFAULT_BACKGROUND = loadBackground("/world/background.png");
 
     public WorldElementBox(WorldElement element, int width, int height) {
         this.element = element;
