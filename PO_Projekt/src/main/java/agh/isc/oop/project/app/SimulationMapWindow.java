@@ -139,7 +139,7 @@ public class SimulationMapWindow {
         stage.setMinWidth(MIN_WIDTH);  // Minimalna szerokość okna
         stage.setMinHeight(MIN_HEIGHT); // Minimalna wysokość okna
 
-        // Ustawienie zachowania okna przy zamknięciu
+        // Ustawienie akcji zamknięcia okna
         stage.setOnCloseRequest(e -> simulation.stop());
     }
 
