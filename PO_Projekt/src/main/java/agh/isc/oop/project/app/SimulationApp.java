@@ -41,6 +41,7 @@ public class SimulationApp extends Application {
 
         // Listener zamknięcia okna - zamyka aplikację
         primaryStage.setOnCloseRequest(event -> {
+            engine.shutdown();
             Platform.exit();
             System.exit(0);
         });

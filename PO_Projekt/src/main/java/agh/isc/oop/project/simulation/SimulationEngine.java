@@ -23,4 +23,17 @@ public class SimulationEngine {
         simulations.add(simulation);
         executorService.submit(simulation);
     }
+    /**
+     * Zatrzymuje wszystkie symulacje i zamyka pulę wątków.
+     */
+    public void shutdown() {
+        // Stop all simulations
+        for (Simulation simulation : simulations) {
+            simulation.stop();
+        }
+        simulations.clear();
+
+        // Shutdown the executor service
+        executorService.shutdown();
+    }
 }
