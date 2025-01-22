@@ -23,6 +23,7 @@ import java.io.IOException;
 public class NewSimulationDialogController {
 
 
+    // Pola tekstowe i przyciski z pliku FXML
     @FXML private Spinner<Integer> mapWidthSpinner;
     @FXML private Spinner<Integer> mapHeightSpinner;
     @FXML private Spinner<Integer> startGrassSpinner;
@@ -47,9 +48,17 @@ public class NewSimulationDialogController {
     @FXML private TextField filePathField;
     @FXML private Button fileExplorerButton;
 
-
+    /**
+     * Grupa przełączników dla wyboru typu mapy
+     */
     private ToggleGroup mapTypeToggleGroup;
+    /**
+     * Obiekt konfiguracji symulacji
+     */
     private SimulationConfig simulationConfig = null;
+    /**
+     * Flaga informująca, czy przycisk "Rozpocznij Symulację" został kliknięty
+     */
     private boolean startClicked = false;
 
 

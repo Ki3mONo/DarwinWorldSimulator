@@ -2,6 +2,9 @@ package agh.isc.oop.project.simulation;
 
 import agh.isc.oop.project.model.map.MapType;
 
+/**
+ * Klasa budowniczego konfiguracji symulacji, która pozwala na zbudowanie obiektu konfiguracji symulacji.
+ */
 public class SimulationConfigBuilder {
     //WorldMap
     private MapType mapType;
@@ -25,12 +28,16 @@ public class SimulationConfigBuilder {
     private long dayDurationMs;
     private String csvFilePath;
 
+    /**
+     * Metoda budująca obiekt konfiguracji symulacji na podstawie ustawionych parametrów.
+     */
     public SimulationConfig build(){
         return new SimulationConfig(mapType, mapWidth, mapHeight, startGrassCount, grassEnergy, dailyGrassGrowth,
                 startAnimalCount, initialEnergy, reproductionEnergy, reproductionCost, moveCost,
                 agingAnimalVariant, minMutations, maxMutations, genomeLength, dayDurationMs, csvFilePath);
     }
 
+    //Settery
     public void setMapType(MapType mapType){
         this.mapType = mapType;
     }
