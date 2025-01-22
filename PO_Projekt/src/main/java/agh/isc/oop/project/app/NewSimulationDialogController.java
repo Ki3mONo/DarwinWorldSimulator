@@ -354,7 +354,7 @@ public class NewSimulationDialogController {
      */
     private MapType getMapTypeEnum() {
         RadioButton selected = (RadioButton) mapTypeToggleGroup.getSelectedToggle(); // Pobranie zaznaczonego przycisku
-        return (selected != null && selected.getText().equals("Crawling Jungle")) ? MapType.CRAWLING_JUNGLE : MapType.EQUATOR_FOREST;  // Zwraca odpowiedni typ mapy
+        return (selected != null && selected.getText().equals("Pełzająca Dżungla")) ? MapType.CRAWLING_JUNGLE : MapType.EQUATOR_FOREST;  // Zwraca odpowiedni typ mapy
     }
 
     /**

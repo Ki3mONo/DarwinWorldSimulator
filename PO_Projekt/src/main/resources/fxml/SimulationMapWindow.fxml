@@ -9,11 +9,11 @@
     <!-- Lewa sekcja: Statystyki + Wykresy -->
     <left>
         <VBox alignment="CENTER" prefWidth="250" spacing="15">
-            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Statystyki" />
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Statystyki Mapy" />
             <Label fx:id="animalCountLabel" text="Zwierzęta: 0" />
             <Label fx:id="grassCountLabel" text="Rośliny: 0" />
             <Label fx:id="freeFieldsLabel" text="Wolne pola: all"/>
-            <Label fx:id="mostPopularGenotypeLabel" text="Genotyp:" />
+            <Label fx:id="mostPopularGenotypeLabel" text="Genom:" />
             <Label fx:id="avgEnergyLabel" text="Średnia energia: 0" />
             <Label fx:id="avgLifespanLabel" text="Średnia długość życia: 0" />
             <Label fx:id="avgChildrenLabel" text="Średnia liczba dzieci: 0" />
