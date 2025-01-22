@@ -218,22 +218,49 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
+    //DOPISZE DO TEGO KOMENTARZ BO ZMIENIAŁEM A NIE CHCE ZEBYŚ SIE ZASTANAWIAŁ CO TO ROBI NIEPOTRZEBNIE
+    //TODO USUŃ TO NA GÓRZE ^^^
+
+    /**
+     * Metoda zwracająca mapę preferowanych pól trawy, czyli takich, które znajdują się w
+     * top 20% pod względem wartości wzrostu. Preferowane pola to te, które mają wartość
+     * wzrostu równą lub wyższą od wyliczonego progu.
+     * @return Map<Vector2d, Integer> - mapa preferowanych pól trawy
+     */
     public Map<Vector2d, Integer> getPreferredGrassFields() {
+        // Mapa, która będzie przechowywać pola trawy uznane za preferowane.
         Map<Vector2d, Integer> preferredFields = new HashMap<>();
+
+        //Kopiujemy historię wzrostu trawy
         Map<Vector2d, Integer> allGrassGrowthHistory = new HashMap<>(grassGrowthHistory);
 
-        int maxGrowths = allGrassGrowthHistory.values().stream()
-                .max(Integer::compare)
-                .orElse(0);
+        //Tworzymy listę wzrostów trawy
+        List <Integer> growths = new ArrayList<>(allGrassGrowthHistory.values());
 
-        double tolerance = (Math.sqrt(config.getDailyGrassGrowth()*2.0)); // Ustawienie tolerancji
+        //Jeśli nie ma wzrostów, zwracamy pustą mapę
+        if (growths.isEmpty()) {
+            return preferredFields;
+        }
 
+        //Sortujemy wzrosty trawy od największego do najmniejszego, aby wybrać top 20%
+        growths.sort(Collections.reverseOrder());
+
+
+        int count = growths.size();
+        //Obliczamy indeks progu top 20% wzrostu trawy
+        //Jeśli jest mniej niż 5 wzrostów, to bierzemy 1, jeśli więcej, to 20% z liczby wszystkich wzrostów
+        int thresholdIndex = Math.min(count - 1, (int) Math.floor(count * 0.2));
+
+        // Pobieramy wartość wzrostu odpowiadającą obliczonemu indeksowi
+        int thresholdValue = growths.get(thresholdIndex);
+
+        //Dodajemy do mapy preferowanych pól trawy te, które mają wzrost powyżej progu lub równy
         for (Map.Entry<Vector2d, Integer> entry : allGrassGrowthHistory.entrySet()) {
-            if (maxGrowths - entry.getValue() <= tolerance) { // Uwzględnia tolerancję
+            if (entry.getValue() >= thresholdValue) {
                 preferredFields.put(entry.getKey(), entry.getValue());
             }
         }
-
+        //Zwracamy mapę preferowanych pól trawy
         return preferredFields;
     }
 }
