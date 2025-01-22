@@ -113,8 +113,8 @@ public class WorldElementBox extends VBox {
         healthBar = new ProgressBar();
         healthBar.setMinWidth(width);
         healthBar.setMaxWidth(width);
-        healthBar.setMinHeight(5);
-        healthBar.setPrefHeight(10);
+        healthBar.setMinHeight(10);
+        healthBar.setPrefHeight(12);
         updateHealthBar(animal);
         this.getChildren().add(healthBar);
     }
@@ -127,8 +127,8 @@ public class WorldElementBox extends VBox {
         manyAnimalsBar = new ProgressBar();
         manyAnimalsBar.setMinWidth(width);
         manyAnimalsBar.setMaxWidth(width);
-        manyAnimalsBar.setMinHeight(5);
-        manyAnimalsBar.setPrefHeight(10);
+        manyAnimalsBar.setMinHeight(10);
+        manyAnimalsBar.setPrefHeight(12);
         manyAnimalsBar.setProgress(1); // zawsze pełny
         manyAnimalsBar.setStyle("-fx-accent: blue;"); // niebieski akcent
         this.getChildren().add(manyAnimalsBar);
