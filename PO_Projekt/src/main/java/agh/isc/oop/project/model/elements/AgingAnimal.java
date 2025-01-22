@@ -6,10 +6,18 @@ import agh.isc.oop.project.model.map.AbstractWorldMap;
 import java.util.List;
 import java.util.Random;
 
-// Zwierzak do wariantu symulacji ze starzeniem się zwierząt
+/**
+ * Klasa reprezentująca zwierzaki w wariancie symulacji
+ * ze starzejącymi się zwierzakami. Dziedziczy po klasie
+ * Animal i nadpisuje tylko metodę move
+ */
 public class AgingAnimal extends Animal {
+    //Prawdopodobieństwo ominięcia ruchu
     private double missMoveProbability = 0;
 
+    Random rand = new Random();
+
+    //Oba konstruktory robią to samo, co w Animal
     public AgingAnimal(Vector2d position, List<Integer> geneList) {
         super(position, geneList);
     }
@@ -18,9 +26,17 @@ public class AgingAnimal extends Animal {
         super(parent1, parent2, currentDay);
     }
 
+    /**
+     * Metoda odpowiadająca za obliczenie nowej pozycji zwierzaka przy ruchu.
+     * Z prawdopodobieństwem missMoveProbability omija ruch i jedynie traci energię,
+     * w przeciwnym wypadku wykonuje metodę move z klasy Animal.
+     * Co każdy ruch zwiększa prawdopodobieństwo ominięcia ruchu o 0.01,
+     * aż do wartości 0.8
+     * @param map mapa, na której znajduje się zwierzak
+     * @return nowa pozycja zwierzaka lub stara, jeżeli się nie ruszył
+     */
     @Override
     public Vector2d move(AbstractWorldMap map){
-        Random rand = new Random();
 
         Vector2d newPosition = getPosition();
 
@@ -33,10 +49,13 @@ public class AgingAnimal extends Animal {
             newPosition = super.move(map);
         }
 
+        // Zwiększenie prawdopodobieństwa ominięcia ruchu
         if (missMoveProbability < 0.8) {
-            //Nie wiem, czy mamy podawać wartość o ile to zwiększamy
+            //Ustawione na sztywno, bo w poleceniu nie było powiedziane,
+            //czy to ma być parametr
             missMoveProbability += 0.01;
         }
+
         return newPosition;
     }
 }

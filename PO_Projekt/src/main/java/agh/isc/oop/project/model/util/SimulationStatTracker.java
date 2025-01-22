@@ -3,13 +3,16 @@ package agh.isc.oop.project.model.util;
 import agh.isc.oop.project.model.elements.Animal;
 import agh.isc.oop.project.model.elements.WorldElement;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
-import agh.isc.oop.project.model.util.MapChangeListener;
-import agh.isc.oop.project.model.util.Vector2d;
 import agh.isc.oop.project.simulation.Simulation;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * Klasa odpowiedzialna za śledzenie statystyk symulacji,
+ * jest obserwatorem mapy.
+ */
 public class SimulationStatTracker implements MapChangeListener {
     Simulation simulation;
     private int animalCount=0;    //Tylko żywe
@@ -22,30 +25,53 @@ public class SimulationStatTracker implements MapChangeListener {
 
     private List<StatsChangeListener> observers = new LinkedList<>();
 
+    /**
+     * Konstruktor zapisuje symulacje, której statystyki śledzimy
+     * @param simulation
+     */
     public SimulationStatTracker(Simulation simulation) {
         this.simulation = simulation;
     }
 
+    /**
+     * Metoda dodająca obserwatora
+     * @param observer obserwator do dodania
+     */
     public void addObserver(StatsChangeListener observer) {
         observers.add(observer);
     }
 
+    /**
+     * Metoda usuwająca obserwatora
+     * @param observer obserwator do usunięcia
+     */
     public void removeObserver(StatsChangeListener observer) {
         observers.remove(observer);
     }
 
+    /**
+     * Powiadomienie wszystkich obserwatorów o zmianie statystyk
+     */
     private void statsChanged() {
         for (StatsChangeListener observer : observers) {
             observer.statsChanged(this, simulation.getCurrentDay());
         }
     }
 
+    /**
+     * Reakcja na zmianę mapy
+     * aktualizuje statystyki oraz powiadamia obserwatorów
+     * @param worldMap obserwowana mapa
+     */
     @Override
     public void mapChanged(AbstractWorldMap worldMap) {
         updateAll();
         statsChanged();
     }
 
+    /**
+     * Aktualizacja wszystkich statystyk
+     */
     private void updateAll() {
         updateAnimalCount();
         updateGrassCount();
@@ -56,6 +82,7 @@ public class SimulationStatTracker implements MapChangeListener {
         updateAverageChildren();
     }
 
+    //Metody aktualizujące poszczególne statystyki
     private void updateAnimalCount(){
         animalCount = simulation.getAliveAnimals().size();
     }
@@ -107,6 +134,7 @@ public class SimulationStatTracker implements MapChangeListener {
                 .orElse(0);
     }
 
+    //Gettery do odczytania aktualnych statystyk
     public int getAnimalCount() {
         return animalCount;
     }

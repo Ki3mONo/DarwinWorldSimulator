@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
+//to do usunięcia raczej
 public interface WorldMap {
 
     boolean canMoveTo(Vector2d position);
@@ -16,7 +18,7 @@ public interface WorldMap {
     void place(Animal animal) throws IncorrectPositionException;
 
 
-    boolean isOccupied(Vector2d position);
+    // isOccupied(Vector2d position);
 
     Optional<List<WorldElement>> objectAt(Vector2d position);
 

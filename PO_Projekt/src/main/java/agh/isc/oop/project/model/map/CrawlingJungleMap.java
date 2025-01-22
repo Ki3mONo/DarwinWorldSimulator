@@ -5,14 +5,31 @@ import agh.isc.oop.project.simulation.SimulationConfig;
 
 import java.util.*;
 
+/**
+ * Klasa reprezentująca mapę w wariancie pełzającej dżungli.
+ * Trawa rośnie najczęściej w pobliżu innych traw.
+ * Uwaga: losowanie trawy nie gwarantuje postawienia
+ * dokładnej ilości trawy. Losujemy pozycję, a jeśli jest zajęta,
+ * to nie stawiamy tam trawy. Tym sposobem wzrost trawy jest
+ * dużo bardziej naturalny i sam się balansuje.
+ */
 public class CrawlingJungleMap extends AbstractWorldMap {
     private final Random random = new Random();
 
+    /**
+     * Konstruktor wywołuje konstruktora AbstractWorldMap
+     * oraz inicjalizuje trawę
+     * @param config konfiguracja symulacji
+     */
     public CrawlingJungleMap(SimulationConfig config) {
         super(config);
         initializeGrass(config.getStartGrassCount());
     }
 
+    /**
+     * Metoda stawiająca początkowe trawy
+     * @param initialGrassSize ilość trawy do postawienia
+     */
     @Override
     public void initializeGrass(int initialGrassSize) {
         for (int i = 0; i < initialGrassSize; i++) {
@@ -21,6 +38,11 @@ public class CrawlingJungleMap extends AbstractWorldMap {
         }
     }
 
+    /**
+     * Metoda odpowiadająca za dzienny wzrost trawy
+     * @param dailyGrowth ilość trawy rosnącej jednego dnia
+     */
+    //TODO - weź dopisz komentarze do środka bo ja wciąż nie bardzo rozumiem jak to działa XD
     @Override
     public void grassGrow(int dailyGrowth) {
         int totalFields = mapSize.getX() * mapSize.getY();
