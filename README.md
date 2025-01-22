@@ -14,7 +14,7 @@
 Projekt został zrealizowany w ramach przedmiotu **Programowanie Obiektowe** na II roku studiów na kierunku **Informatyka** na **Wydziale Informatyki Akademii Górniczo-Hutniczej**.
 
 ## Instrukcje
-Więcej szczegółów dotyczących projektu oraz instrukcje można znaleźć w katalogu [Tresc_zadania](https://github.com/Ki3mONo/DarwinWorldSimulator/Tresc_zadania/Readme.md).
+Więcej szczegółów dotyczących projektu oraz instrukcje można znaleźć w katalogu [Tresc_zadania](https://github.com/Ki3mONo/DarwinWorldSimulator/blob/main/Tresc_zadania/Readme.md).
 
 ## Cel projektu
 
