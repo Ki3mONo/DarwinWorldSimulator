@@ -513,30 +513,8 @@ public class SimulationMapWindowController implements MapChangeListener {
 
         // Zwrócenie zwierząt z najpopularniejszymi genami
         return simulation.getAliveAnimals().stream()
-                .filter(animal -> animal.getGenome() != null &&
-                        isGenomeSimilarEnough(animal.getGenome().getGeneList(), popularGenes))
+                .filter(animal -> (animal.getGenome().getGeneList().equals(popularGenes)))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Sprawdza, czy dwa genomy są wystarczająco podobne.
-     *
-     * @param genome1 pierwszy genom
-     * @param genome2 drugi genom
-     * @return true, jeśli genomy są wystarczająco podobne
-     */
-    private boolean isGenomeSimilarEnough(List<Integer> genome1, List<Integer> genome2) {
-        // Sprawdzenie, czy genomy są wystarczająco podobne (arbitralnie przyjęto sqrt((GenomeLength) * 3) różnic)
-        int differences = 0;
-        for (int i = 0; i < config.getGenomeLength(); i++) {
-            if (!Objects.equals(genome1.get(i), genome2.get(i))) {
-                differences++;
-                if (differences > Math.sqrt(config.getGenomeLength() * 3.0)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
