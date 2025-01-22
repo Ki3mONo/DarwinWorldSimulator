@@ -112,7 +112,20 @@ public class SimulationApp extends Application {
             // Jeśli użytkownik kliknął przycisk start, pobieramy konfigurację i uruchamiamy symulację
             if (dialog.isStartClicked()) {
                 SimulationConfig config = dialog.getSimulationConfig();
-                startSimulation(config);
+                if (config != null){
+                    startSimulation(config);
+                }
+                else{
+                    showErrorDialog("Błąd uruchamiania symulacji", "Nie udało się uruchomić symulacji. Masz ostatnią szansę.");
+                    dialog.showAndWait();
+                    config = dialog.getSimulationConfig();
+                    if (config != null){
+                        startSimulation(config);
+                    }
+                    else{
+                        showErrorDialog("Błąd uruchamiania symulacji", "Nie udało się uruchomić symulacji. Spróbuj ponownie.");
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -142,6 +155,11 @@ public class SimulationApp extends Application {
      * @param config Konfiguracja symulacji.
      */
     private void startSimulation(SimulationConfig config) {
+        // Jeśli konfiguracja jest nullem, wyświetlamy okno z błędem
+        if (config == null) {
+            showErrorDialog("Błąd uruchamiania symulacji", "Nie udało się uruchomić symulacji.");
+            return;
+        }
         // Tworzymy mapę i symulację
         AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), config);
         Simulation simulation = new Simulation(config, worldMap, config.getCsvFilePath());

@@ -88,8 +88,8 @@ public class NewSimulationDialogController {
         reproductionEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 500, 30));
         reproductionCostSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 500, 20));
         moveCostSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200, 5));
-        minMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 1));
-        maxMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 4));
+        minMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 1));
+        maxMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 4));
         genomeLengthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         // Ustaw wartość początkową dla CheckBoxa
         agingAnimalCheckBox.setSelected(false);
@@ -313,6 +313,40 @@ public class NewSimulationDialogController {
         builder.setMaxMutations(maxMutationsSpinner.getValue());
         builder.setGenomeLength(genomeLengthSpinner.getValue());
         builder.setCsvFilePath(csvSaveCheckBox.isSelected() ? filePathField.getText() : null);
+
+
+
+        //Sprawdzanie czy genomeLength >= minMutations
+        if(genomeLengthSpinner.getValue() < minMutationsSpinner.getValue()){
+            showAlert("Błąd", "Wartość genomeLength nie może być mniejsza od minMutations!");
+            simulationConfig = null;
+            return;
+        }
+        else{
+            builder.setGenomeLength(genomeLengthSpinner.getValue());
+        }
+
+        // Sprawdzenie, czy maxMutations <= genomeLength
+        if(genomeLengthSpinner.getValue() < maxMutationsSpinner.getValue()){
+            showAlert("Błąd", "Wartość maxMutation nie może być większa od genomeLength!");
+            simulationConfig = null;
+            return;
+        }
+        else{
+            builder.setMaxMutations(maxMutationsSpinner.getValue());
+        }
+
+        //Sprawdzanie czy minMutations <= maxMutations
+        if(minMutationsSpinner.getValue() > maxMutationsSpinner.getValue()){
+            showAlert("Błąd", "Wartość minMutations nie może być większa od maxMutations!");
+            simulationConfig = null;
+            return;
+        }
+        else{
+            builder.setMinMutations(minMutationsSpinner.getValue());
+            builder.setMaxMutations(maxMutationsSpinner.getValue());
+        }
+
 
         // Sprawdzenie wartości czasu dnia == potencjalne błędy
         long dayDurationMs = 500; // Domyślna wartość-zapobiega potencjalnym błędom
