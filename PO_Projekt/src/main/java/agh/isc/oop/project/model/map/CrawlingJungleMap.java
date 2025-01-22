@@ -42,7 +42,6 @@ public class CrawlingJungleMap extends AbstractWorldMap {
      * Metoda odpowiadająca za dzienny wzrost trawy
      * @param dailyGrowth ilość trawy rosnącej jednego dnia
      */
-    //TODO - weź dopisz komentarze do środka bo ja wciąż nie bardzo rozumiem jak to działa XD
     @Override
     public void grassGrow(int dailyGrowth) {
         // ograniczenie liczby kandydatów na preferowane miejsce wzrostu trawy
@@ -98,10 +97,9 @@ public class CrawlingJungleMap extends AbstractWorldMap {
                 // jeśli nie ma traw, to losujemy w dowolnym miejscu lub są, ale wylosowaliśmy 20% szansy
                 newPlantPosition = new Vector2d(random.nextInt(mapSize.getX()), random.nextInt(mapSize.getY()));
             }
-
             // stawiamy trawę na wylosowanej pozycji
             super.putGrass(newPlantPosition);
-            }
+
         }
     }
 
