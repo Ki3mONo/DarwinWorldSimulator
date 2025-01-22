@@ -45,42 +45,62 @@ public class CrawlingJungleMap extends AbstractWorldMap {
     //TODO - weź dopisz komentarze do środka bo ja wciąż nie bardzo rozumiem jak to działa XD
     @Override
     public void grassGrow(int dailyGrowth) {
+        // ograniczenie liczby kandydatów na preferowane miejsce wzrostu trawy
         int totalFields = mapSize.getX() * mapSize.getY();
         int maxCandidates = (int) (0.2 * totalFields);
 
+        // dla każdego wzrostu trawy
         for (int i = 0; i < dailyGrowth; i++) {
+            // losowanie pozycji dla nowej trawy
             Vector2d newPlantPosition;
 
+            // jeśli na mapie są jakieś trawy, żeby było obok czego losować
+            //          z dużym prawdopodobieństwem (80%) losujemy w pobliżu innej trawy
             if (!grassMap.isEmpty() && random.nextDouble() < 0.8) {
+                // zbior kandydatów na nową trawę
                 Set<Vector2d> candidateSet = new HashSet<>();
+                // próby znalezienia kandydata
                 int attempts = 0;
+                // dopóki nie mamy wystarczającej liczby kandydatów lub nie sprawdziliśmy wszystkich pól
                 while (candidateSet.size() < maxCandidates && attempts < totalFields) {
+                    // losujemy istniejącą trawę
                     List<Vector2d> existingPlants = new ArrayList<>(grassMap.keySet());
                     Vector2d basePlant = existingPlants.get(random.nextInt(existingPlants.size()));
+                    //kwadrat dookoła rośliny basePlant
                     int dx = random.nextInt(3) - 1;
                     int dy = random.nextInt(3) - 1;
+                    //jeżeli dx i dy są równe 0 to znaczy że losujemy tą samą pozycję, więc nie dodajemy jej do kandydatów
                     if (dx == 0 && dy == 0) {
                         attempts++;
                         continue;
                     }
+                    // losujemy pozycję w kwadracie dookoła rośliny z uwzględnieniem poprawienia pozycji
                     Vector2d candidate = adjustPosition(basePlant.add(new Vector2d(dx, dy)));
+
+                    // jeśli miejsce kandydata jest wolne, to dodajemy go do zbioru kandydatów
                     if (!grassMap.containsKey(candidate)) {
+                        // dodajemy kandydata do zbioru kandydatów
                         candidateSet.add(candidate);
                     }
+                    // zwiększamy liczbę prób
                     attempts++;
                 }
+                // jeśli udało się znaleźć kandydatów, to losujemy ze zbioru kandydatów
                 if (!candidateSet.isEmpty()) {
+                    // losujemy z kandydatów
                     List<Vector2d> candidateList = new ArrayList<>(candidateSet);
                     newPlantPosition = candidateList.get(random.nextInt(candidateList.size()));
                 } else {
+                    // jeśli nie udało się znaleźć kandydata, to losujemy w dowolnym miejscu
                     newPlantPosition = new Vector2d(random.nextInt(mapSize.getX()), random.nextInt(mapSize.getY()));
                 }
             } else {
+                // jeśli nie ma traw, to losujemy w dowolnym miejscu lub są, ale wylosowaliśmy 20% szansy
                 newPlantPosition = new Vector2d(random.nextInt(mapSize.getX()), random.nextInt(mapSize.getY()));
             }
 
-            if (!grassMap.containsKey(newPlantPosition)) {
-                super.putGrass(newPlantPosition);
+            // stawiamy trawę na wylosowanej pozycji
+            super.putGrass(newPlantPosition);
             }
         }
     }
