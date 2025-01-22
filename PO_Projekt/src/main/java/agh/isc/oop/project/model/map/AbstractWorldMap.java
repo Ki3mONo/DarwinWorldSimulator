@@ -21,7 +21,7 @@ import java.util.*;
  * który zależy od wybranego wariantu mapy.
  */
 
-public abstract class AbstractWorldMap implements WorldMap {
+public abstract class AbstractWorldMap {
     protected UUID mapID;
     protected Vector2d mapSize;
     protected Vector2d leftBottomCorner;
@@ -201,7 +201,7 @@ public abstract class AbstractWorldMap implements WorldMap {
      * jeśli na podanej pozycji niczego nie ma.
      */
     public Optional<List<WorldElement>> objectAt(Vector2d position) {
-        return Optional.ofNullable(worldElements.get(adjustPosition(position)));
+        return Optional.ofNullable(worldElements.get(position));
     }
 
     /**
@@ -212,16 +212,6 @@ public abstract class AbstractWorldMap implements WorldMap {
      */
     public Optional<Grass> getGrassAt(Vector2d grassPosition) {
         return Optional.ofNullable(grassMap.get(grassPosition));
-    }
-
-    //TODO -> bardzo bym chciał to usunąć, tylko trzeba zmienić crawlingjungle
-    public Vector2d adjustPosition(Vector2d position) {
-        int x = (position.getX() + mapSize.getX()) % mapSize.getX();
-        int y = position.getY();
-        if (y < 0 || y >= mapSize.getY()) {
-            y = Math.max(0, Math.min(y, mapSize.getY() - 1));
-        }
-        return new Vector2d(x, y);
     }
 
     /**

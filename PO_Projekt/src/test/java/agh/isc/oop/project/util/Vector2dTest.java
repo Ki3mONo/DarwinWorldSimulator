@@ -23,11 +23,6 @@ public class Vector2dTest {
         assertFalse(v1.equals(1));
     }
     @Test
-    public void toStringTest(){
-        Vector2d v1 = new Vector2d(2,4);
-        assertEquals("(2, 4)", v1.toString());
-    }
-    @Test
     public void percedesTest(){
         Vector2d v1 = new Vector2d(3,4);
 

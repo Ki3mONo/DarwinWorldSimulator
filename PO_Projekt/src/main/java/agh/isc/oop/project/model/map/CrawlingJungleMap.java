@@ -85,4 +85,22 @@ public class CrawlingJungleMap extends AbstractWorldMap {
         }
     }
 
+    /**
+     * Metoda poprawiająca pozycje poza mapą,
+     * dla współrzędnych x zwraca współrzędną na drugim końcu mapy
+     * (zapętlanie lewej i prawej krawędzi mapy),
+     * a dla y zwraca pozycję przy krawędzi, za którą pozycja wychodzi.
+     * Jest używana do obliczania pól sąsiadujących z daną rośliną.
+     * @param position pozycja do poprawienia
+     * @return poprawiona pozycja
+     */
+    public Vector2d adjustPosition(Vector2d position) {
+        int x = (position.getX() + mapSize.getX()) % mapSize.getX();
+        int y = position.getY();
+        if (y < 0 || y >= mapSize.getY()) {
+            y = Math.max(0, Math.min(y, mapSize.getY() - 1));
+        }
+        return new Vector2d(x, y);
+    }
+
 }
