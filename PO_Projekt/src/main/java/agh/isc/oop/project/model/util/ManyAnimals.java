@@ -2,15 +2,15 @@ package agh.isc.oop.project.model.util;
 
 import agh.isc.oop.project.model.elements.WorldElement;
 
+/**
+ * Klasa reprezentująca element z wieloma zwierzętami z mapy symulacji.
+ * Do celów pomocniczych wizualizacji.
+ */
 public class ManyAnimals implements WorldElement {
-    long size;
-    public ManyAnimals(long size){
-        this.size = size;
-    }
+
     @Override
     public Vector2d getPosition() {
-        // Pozycja nie ma znaczenia – używamy domyślnej wartości
-        return new Vector2d(0, 0);
+        return null;
     }
 
     @Override
@@ -18,12 +18,4 @@ public class ManyAnimals implements WorldElement {
         return "/animals/many_animals.png";
     }
 
-    @Override
-    public String toString() {
-        return "M";
-    }
-
-    public long getSize() {
-        return size;
-    }
 }

@@ -1,18 +1,11 @@
 package agh.isc.oop.project.app;
 
+import agh.isc.oop.project.app.helper.SimulationAppUIHelper;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.map.WorldMapFactory;
-import agh.isc.oop.project.model.map.MapType;
-import agh.isc.oop.project.simulation.Simulation;
-import agh.isc.oop.project.simulation.SimulationConfig;
-import agh.isc.oop.project.simulation.SimulationConfigBuilder;
-import agh.isc.oop.project.simulation.SimulationEngine;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import agh.isc.oop.project.simulation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -20,141 +13,150 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Klasa główna aplikacji JavaFx
+ * <p>
+ * Inicjalizująca okno główne aplikacji.
+ * Zawiera metodę main, uruchamiającą aplikację.
+ * Klasa dziedziczy po klasie Application z JavaFX.
+ * </p>
+ */
 public class SimulationApp extends Application {
-    SimulationEngine engine = new SimulationEngine();
+    private final SimulationEngine engine = new SimulationEngine();
+
+    /**
+     * Metoda start, inicjalizująca okno główne aplikacji.
+     * @param primaryStage Główne okno aplikacji.
+     */
     @Override
     public void start(Stage primaryStage) {
-        Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
-        primaryStage.getIcons().add(appIcon);
+        // Konfiguracja głównego okna aplikacji
+        configurePrimaryStage(primaryStage);
+        primaryStage.show();// Wyświetlenie okna
 
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app/background.png")));
-        ImageView backgroundView = new ImageView(backgroundImage);
-        backgroundView.setPreserveRatio(true);
-        backgroundView.setSmooth(true);
-
-        StackPane root = new StackPane();
-        backgroundView.fitWidthProperty().bind(root.widthProperty());
-        backgroundView.fitHeightProperty().bind(root.heightProperty());
-        root.getChildren().add(backgroundView);
-
-        VBox menuBox = new VBox(20);
-        menuBox.setAlignment(javafx.geometry.Pos.CENTER);
-        menuBox.setPadding(new javafx.geometry.Insets(20));
-
-        Button newSimButton = createTransparentImageButton("/app/start.png");
-        Button loadConfigButton = createTransparentImageButton("/app/json.png");
-        Button exitButton = createTransparentImageButton("/app/close.png");
-
-        String buttonStyle = "-fx-font-size: 16px; -fx-min-width: 200px;";
-        newSimButton.setStyle(buttonStyle);
-        loadConfigButton.setStyle(buttonStyle);
-        exitButton.setStyle(buttonStyle);
-
-        newSimButton.setOnAction(e -> openNewSimulationWindow());
-        loadConfigButton.setOnAction(e -> onLoadSimulationFromJSON(primaryStage));
-        exitButton.setOnAction(e -> primaryStage.close());
-
-        menuBox.getChildren().addAll(newSimButton, loadConfigButton, exitButton);
-        root.getChildren().add(menuBox);
-
-        Scene scene = new Scene(root, 896, 512);
-        primaryStage.setTitle("DarwinWorld – Menu Główne");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
+        // Listener zamknięcia okna - zamyka aplikację
         primaryStage.setOnCloseRequest(event -> {
+            engine.shutdown();
             Platform.exit();
             System.exit(0);
         });
     }
 
+    /**
+     * Metoda konfigurująca główne okno aplikacji.
+     * @param stage Główne okno aplikacji.
+     */
+    private void configurePrimaryStage(Stage stage) {
+        // Ustawienie ikony okna
+        Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
+        stage.getIcons().add(appIcon);
+
+        // Utworzenie głównego układu
+        StackPane root = new StackPane();
+        ImageView backgroundView = SimulationAppUIHelper.createBackgroundImageView(getClass(), "/app/background.png");
+        backgroundView.fitWidthProperty().bind(root.widthProperty());
+        backgroundView.fitHeightProperty().bind(root.heightProperty());
+        root.getChildren().add(backgroundView);
+
+        // Utworzenie menu
+        VBox menuBox = createMenu();
+        root.getChildren().add(menuBox);
+
+        // Ustawienie sceny i parametrów okna
+        Scene scene = new Scene(root, 896, 512);
+        stage.setTitle("DarwinWorld – Menu Główne");
+        stage.setScene(scene);
+    }
+
+    /**
+     * Metoda tworząca menu główne aplikacji.
+     * @return Vbox Menu główne aplikacji.
+     */
+    private VBox createMenu() {
+        // Utworzenie pionowego układu
+        VBox menuBox = new VBox(20);
+        menuBox.setAlignment(javafx.geometry.Pos.CENTER);
+        menuBox.setPadding(new javafx.geometry.Insets(20));
+
+        // Utworzenie przycisków
+        Button newSimButton = SimulationAppUIHelper.createTransparentImageButton(getClass(), "/app/start.png");
+        Button loadConfigButton = SimulationAppUIHelper.createTransparentImageButton(getClass(), "/app/json.png");
+        Button exitButton = SimulationAppUIHelper.createTransparentImageButton(getClass(), "/app/close.png");
+
+        // Dodanie akcji do przycisków
+        newSimButton.setOnAction(e -> openNewSimulationWindow());
+        loadConfigButton.setOnAction(e -> onLoadSimulationFromJSON((Stage) exitButton.getScene().getWindow()));
+        exitButton.setOnAction(e -> ((Stage) exitButton.getScene().getWindow()).close());
+
+        // Dodanie przycisków do menu
+        menuBox.getChildren().addAll(newSimButton, loadConfigButton, exitButton);
+
+        // Zwrócenie menu
+        return menuBox;
+    }
+
+    /**
+     * Metoda otwierająca okno dialogowe do ustawienia parametrów nowej symulacji.
+     */
     private void openNewSimulationWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewSimulationDialog.fxml"));
-            Parent root = loader.load();
+            // Tworzymy nowy dialog, przekazując klasę, aby wewnątrz były dostępne zasoby (FXML, ikony)
+            NewSimulationDialog dialog = new NewSimulationDialog(getClass());
+            dialog.showAndWait();
 
-            NewSimulationDialogController controller = loader.getController();
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("DarwinWorld – Ustaw Parametry Nowej Symulacji");
-            Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png")));
-            dialogStage.getIcons().add(appIcon);
-            dialogStage.setScene(new Scene(root));
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.showAndWait();
-
-            if (controller.isStartClicked()) {
-                SimulationConfig config = controller.getSimulationConfig();
+            // Jeśli użytkownik kliknął przycisk start, pobieramy konfigurację i uruchamiamy symulację
+            if (dialog.isStartClicked()) {
+                SimulationConfig config = dialog.getSimulationConfig();
                 startSimulation(config);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Metoda wczytująca konfigurację symulacji z pliku JSON.
+     * @param stage Okno, z którego wywołano metodę.
+     */
     private void onLoadSimulationFromJSON(Stage stage) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Wybierz plik JSON z konfiguracją symulacji");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki JSON", "*.json"));
+        // Przykładowe konfiguracje symulacji znajdują się w katalogu src/sample_configurations/
 
-        File chosenFile = fileChooser.showOpenDialog(stage);
-        if (chosenFile != null) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(chosenFile);
-
-                SimulationConfigBuilder builder = new SimulationConfigBuilder();
-                builder.setMapType(MapType.valueOf(jsonNode.get("mapType").asText()));
-                builder.setMapWidth(jsonNode.get("mapWidth").asInt());
-                builder.setMapHeight(jsonNode.get("mapHeight").asInt());
-                builder.setStartGrassCount(jsonNode.get("startGrassCount").asInt());
-                builder.setGrassEnergy(jsonNode.get("grassEnergy").asInt());
-                builder.setDailyGrassGrowth(jsonNode.get("dailyGrassGrowth").asInt());
-                builder.setStartAnimalCount(jsonNode.get("startAnimalCount").asInt());
-                builder.setInitialEnergy(jsonNode.get("initialEnergy").asInt());
-                builder.setReproductionEnergy(jsonNode.get("reproductionEnergy").asInt());
-                builder.setReproductionCost(jsonNode.get("reproductionCost").asInt());
-                builder.setMoveCost(jsonNode.get("moveCost").asInt());
-                builder.setAgingAnimalVariant(jsonNode.get("agingAnimalVariant").asBoolean());
-                builder.setMinMutations(jsonNode.get("minMutations").asInt());
-                builder.setMaxMutations(jsonNode.get("maxMutations").asInt());
-                builder.setGenomeLength(jsonNode.get("genomeLength").asInt());
-                builder.setDayDurationMs(jsonNode.get("dayDurationMs").asLong());
-
-                SimulationConfig config = builder.build();
-                startSimulation(config);
-
-            } catch (IOException e) {
-                showErrorDialog("Błąd", "Nie udało się wczytać pliku JSON.");
-                e.printStackTrace();
-            }
+        // Tworzymy obiekt loadera i wczytujemy konfigurację z pliku JSON
+        SimulationConfigLoader loader = new SimulationConfigLoader();
+        // Wczytujemy konfigurację z pliku JSON dzięki
+        SimulationConfig config = loader.loadConfigFromJSON(stage);
+        if (config != null) {
+            startSimulation(config); // Jeśli udało się wczytać konfigurację, uruchamiamy symulację
+        } else {
+            showErrorDialog("Błąd wczytywania konfiguracji", "Nie udało się wczytać konfiguracji z pliku JSON.");
         }
     }
 
+    /**
+     * Metoda uruchamiająca symulację z podaną konfiguracją.
+     * @param config Konfiguracja symulacji.
+     */
     private void startSimulation(SimulationConfig config) {
-        printConfigSetup(config);
-
+        // Tworzymy mapę i symulację
         AbstractWorldMap worldMap = WorldMapFactory.createMap(config.getMapType(), config);
-
         Simulation simulation = new Simulation(config, worldMap, config.getCsvFilePath());
-
+        // Tworzymy okno symulacji
         SimulationMapWindow simWindow = new SimulationMapWindow(simulation, config, engine);
+        // Uruchamiamy symulację
         simWindow.showAndStart();
     }
-
-    private static void printConfigSetup(SimulationConfig config) {
-        System.out.println("Config: " + config);
-    }
-
+    /**
+     * Metoda wyświetlająca okno z błędem.
+     * @param title Tytuł okna.
+     * @param message Treść okna.
+     */
     private void showErrorDialog(String title, String message) {
+        // Wyświetlamy okno z błędem w wątku JavaFX
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);
@@ -164,21 +166,11 @@ public class SimulationApp extends Application {
         });
     }
 
-
-    private Button createTransparentImageButton(String imagePath) {
-        Image image = new Image(getClass().getResourceAsStream(imagePath));
-        ImageView imageView = new ImageView(image);
-        imageView.setPreserveRatio(true);
-
-        Button button = new Button();
-        button.setGraphic(imageView);
-        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
-        button.setMinSize(imageView.getFitWidth(), imageView.getFitHeight()); // Ensure button size matches image
-
-        return button;
-    }
-
+    /**
+     * Metoda main, uruchamiająca aplikację.
+     */
     public static void main(String[] args) {
+        // Uruchomienie aplikacji
         launch(args);
     }
 }

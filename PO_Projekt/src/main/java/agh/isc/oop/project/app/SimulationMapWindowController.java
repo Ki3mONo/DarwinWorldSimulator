@@ -1,7 +1,9 @@
 package agh.isc.oop.project.app;
 
+import agh.isc.oop.project.app.helper.SimulationMapWindowGridHelper;
+import agh.isc.oop.project.app.helper.SimulationMapWindowHighlightHelper;
+import agh.isc.oop.project.app.helper.TrackedAnimalInfoHelper;
 import agh.isc.oop.project.model.elements.Animal;
-import agh.isc.oop.project.model.elements.Grass;
 import agh.isc.oop.project.model.elements.WorldElement;
 import agh.isc.oop.project.model.map.AbstractWorldMap;
 import agh.isc.oop.project.model.util.*;
@@ -18,20 +20,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static agh.isc.oop.project.model.util.WorldElementBox.DEFAULT_BACKGROUND;
 
+/**
+ * Klasa kontrolera okna pojedynczej symulacji.
+ * <p>
+ * Kontroler obsługuje wyświetlanie mapy symulacji oraz statystyk symulacji.
+ * Implementuje interfejs MapChangeListener, aby reagować na zmiany mapy symulacji.
+ * </p>
+ */
 public class SimulationMapWindowController implements MapChangeListener {
 
+    // Wstrzykiwanie elementów z pliku FXML
     @FXML private Label mostPopularGenotypeLabel;
     @FXML private Label avgChildrenLabel;
-
     @FXML private StackPane gridContainer;
     @FXML private GridPane mapGrid;
     @FXML private Label animalCountLabel;
@@ -39,9 +44,6 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML private Label freeFieldsLabel;
     @FXML private Label avgEnergyLabel;
     @FXML private Label avgLifespanLabel;
-    @FXML private Button pauseButton;
-    @FXML private Button resumeButton;
-    @FXML private Button closeButton;
     @FXML private LineChart<Number, Number> animalChart;
     @FXML private LineChart<Number, Number> grassChart;
     @FXML private Label trackedGenotypeLabel;
@@ -54,28 +56,38 @@ public class SimulationMapWindowController implements MapChangeListener {
     @FXML private Label trackedDeathDayLabel;
     @FXML private Button highlightPreferredFieldsButton;
     @FXML private Button highlightDominantGenotypeButton;
+    @FXML private Button resumeButton;
+    @FXML private Button pauseButton;
     @FXML private Button stopTrackingButton;
 
     private Animal trackedAnimal;
-
-
     private Simulation simulation;
+    private AbstractWorldMap worldMap;
     private SimulationConfig config;
     private boolean isPaused = false;
-
-    private final Set<Vector2d> preferredFields = new HashSet<>();
-    private final Set<Animal> dominantGenotypeAnimals = new HashSet<>();
-    private static final Map<String, Background> backgroundCache = new ConcurrentHashMap<>();
-
+    // Wykresy
     private XYChart.Series<Number, Number> animalSeries;
     private XYChart.Series<Number, Number> grassSeries;
 
+    // Śledzenie zaznaczonego elementu
     private WorldElementBox trackedBox = null;
 
+    /**
+     * Inicjalizacja kontrolera.
+     * <p>
+     * Metoda wywoływana po załadowaniu pliku FXML.
+     * </p>
+     *
+     * @param simulation Symulacja, do której przypisany jest kontroler
+     * @param config     Konfiguracja symulacji
+     */
     public void initialize(Simulation simulation, SimulationConfig config) {
+        // Przypisanie symulacji i konfiguracji
         this.simulation = simulation;
         this.config = config;
+        worldMap = simulation.getMap();
 
+        // Inicjalizacja wykresów
         animalSeries = new XYChart.Series<>();
         animalSeries.setName("Zwierzęta");
         animalChart.getData().add(animalSeries);
@@ -88,49 +100,47 @@ public class SimulationMapWindowController implements MapChangeListener {
 
         simulation.getMap().addObserver(this);
 
+        // Listener zmiany rozmiaru kontenera
         gridContainer.widthProperty().addListener((obs, oldVal, newVal) -> resizeGrid());
         gridContainer.heightProperty().addListener((obs, oldVal, newVal) -> resizeGrid());
 
+        // Inicjalizacja gridu
         createGrid();
     }
 
+    /**
+     * Tworzy siatkę mapy na podstawie konfiguracji symulacji.
+     * Używa helpera do obliczenia rozmiaru komórki.
+     */
     private void createGrid() {
+        // Czyszczenie siatki
         mapGrid.getChildren().clear();
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
 
-        double cellSize = calculateCellSize();
+        // Użycie GridHelper do obliczenia rozmiaru komórki
+        double cellSize = SimulationMapWindowGridHelper.calculateCellSize(gridContainer, config.getMapWidth(), config.getMapHeight());
 
-        for (int x = 0; x < config.getMapWidth(); x++) {
-            ColumnConstraints column = new ColumnConstraints(cellSize);
-            column.setHgrow(Priority.ALWAYS);
-            column.setFillWidth(true);
-            mapGrid.getColumnConstraints().add(column);
-        }
+        // Ustawienie ograniczeń kolumn i wierszy przy użyciu helpera
+        mapGrid.getColumnConstraints().addAll(SimulationMapWindowGridHelper.createColumnConstraints(cellSize, config.getMapWidth()));
+        mapGrid.getRowConstraints().addAll(SimulationMapWindowGridHelper.createRowConstraints(cellSize, config.getMapHeight()));
 
-        for (int y = 0; y < config.getMapHeight(); y++) {
-            RowConstraints row = new RowConstraints(cellSize);
-            row.setVgrow(Priority.ALWAYS);
-            row.setFillHeight(true);
-            mapGrid.getRowConstraints().add(row);
-        }
-
+        // Wypełnienie siatki komórkami
         drawMap();
     }
 
-
-
+    /**
+     * Zmienia rozmiar komórek siatki mapy.
+     */
     private void resizeGrid() {
-        double cellSize = calculateCellSize();
+        // Obliczenie nowego rozmiaru komórki
+        double cellSize = SimulationMapWindowGridHelper.calculateCellSize(gridContainer, config.getMapWidth(), config.getMapHeight());
 
-        for (ColumnConstraints column : mapGrid.getColumnConstraints()) {
-            column.setPrefWidth(cellSize);
-        }
+        // Ustawienie nowych rozmiarów komórek
+        mapGrid.getColumnConstraints().forEach(column -> column.setPrefWidth(cellSize));
+        mapGrid.getRowConstraints().forEach(row -> row.setPrefHeight(cellSize));
 
-        for (RowConstraints row : mapGrid.getRowConstraints()) {
-            row.setPrefHeight(cellSize);
-        }
-
+        // Ustawienie nowych rozmiarów elementów w komórkach
         for (javafx.scene.Node node : mapGrid.getChildren()) {
             if (node instanceof StackPane cell) {
                 cell.setPrefSize(cellSize, cellSize);
@@ -147,30 +157,43 @@ public class SimulationMapWindowController implements MapChangeListener {
         }
     }
 
-
+    /**
+     * Rysuje mapę symulacji na siatce.
+     */
     private void drawMap() {
         Platform.runLater(() -> {
+            // Czyszczenie siatki
             mapGrid.getChildren().clear();
-            AbstractWorldMap worldMap = simulation.getMap();
-            double cellSquareSide = calculateCellSize();
 
+            // Obliczenie rozmiaru komórki
+            double cellSquareSide = SimulationMapWindowGridHelper.calculateCellSize(gridContainer, config.getMapWidth(), config.getMapHeight());
+
+            // Wypełnienie siatki komórkami
             for (int x = 0; x < config.getMapWidth(); x++) {
                 for (int y = 0; y < config.getMapHeight(); y++) {
+                    // Utworzenie pozycji komórki
                     Vector2d position = new Vector2d(x, y);
-
+                    // Pobranie elementów znajdujących się na danej pozycji
                     Optional<List<WorldElement>> elementsOpt = worldMap.objectAt(position);
+                    // Finalne zmienne dla lambdy
                     int finalX = x;
                     int finalY = y;
 
                     elementsOpt.ifPresentOrElse(elements -> {
+                        // Utworzenie komórki na podstawie elementów
                         WorldElementBox box = createBoxForCell(worldMap, position, cellSquareSide, elements);
+                        // Utworzenie komórki na podstawie boxa
                         StackPane cell = createCell(box, cellSquareSide);
+                        // Obsługa kliknięcia na komórkę do zaznaczenia zwierzęcia
                         cell.setOnMouseClicked(event -> handleCellClickAnimalSelection(cell, elements));
-
+                        // Dodanie komórki do siatki
                         mapGrid.add(cell, finalX, finalY);
                     }, () -> {
-                        WorldElementBox box = createAlphaChannelBoxForCell(cellSquareSide);
+                        // Utworzenie komórki z przezroczystym elementem
+                        WorldElementBox box = WorldElementBoxFactory.createBox((int) cellSquareSide);
+                        // Utworzenie komórki na podstawie boxa
                         StackPane cell = createCell(box, cellSquareSide);
+                        // Dodanie komórki do siatki
                         mapGrid.add(cell, finalX, finalY);
                     });
                 }
@@ -181,75 +204,56 @@ public class SimulationMapWindowController implements MapChangeListener {
         });
     }
 
+    /**
+     * Tworzy komórkę na podstawie elementów znajdujących się na danej pozycji.
+     * Wykorzystuje fabrykę WorldElementBoxFactory do tworzenia komórek.
+     *
+     * @param worldMap       mapa świata
+     * @param position       pozycja komórki
+     * @param cellSquareSide rozmiar komórki
+     * @param elements       lista elementów znajdujących się na danej pozycji
+     * @return komórka reprezentująca elementy na danej pozycji
+     */
     private WorldElementBox createBoxForCell(AbstractWorldMap worldMap, Vector2d position, double cellSquareSide, List<WorldElement> elements) {
-        if (!elements.isEmpty()) {
-            List<Animal> animalsOnCell = worldMap.getAnimals().get(position);
-            if (animalsOnCell == null) {
-                animalsOnCell = new ArrayList<>();
-            }
-
-            long animalCount = animalsOnCell.size();
-
-            if (animalCount > 1) {
-                return createManyAnimalsBoxForCell(animalsOnCell, cellSquareSide, elements);
-            } else if (animalCount == 1 && animalsOnCell != null && !animalsOnCell.isEmpty()) {
-                Animal firstAnimal = animalsOnCell.get(0);
-                if (firstAnimal != null && firstAnimal.isAlive()) {
-                    return createSingleAnimalBoxForCell(firstAnimal, cellSquareSide, elements);
-                }
-            } else {
-                return createGrassBoxForCell(position, cellSquareSide);
-            }
-        }
-
-        return createAlphaChannelBoxForCell(cellSquareSide);
+        return agh.isc.oop.project.model.util.WorldElementBoxFactory.createBox(
+                worldMap,
+                position,
+                (int) cellSquareSide,
+                elements,
+                trackedAnimal
+        );
     }
 
-
-    private WorldElementBox createManyAnimalsBoxForCell(List<Animal> animalsOnCell, double cellSquareSide, List<WorldElement> elements) {
-        ManyAnimals manyAnimals = new ManyAnimals(animalsOnCell.size());
-        WorldElementBox box = new WorldElementBox(manyAnimals, (int) cellSquareSide, (int) cellSquareSide);
-        if (trackedAnimal != null && elements.contains(trackedAnimal)) {
-            unhighlightTrackedBox(box, trackedAnimal);
-            box.highlightYellow();
-        }
-        box.updateAnimalCountBar(animalsOnCell.size());
-        return box;
-    }
-
-    private WorldElementBox createSingleAnimalBoxForCell(Animal animal, double cellSquareSide, List<WorldElement> elements) {
-        WorldElementBox box = new WorldElementBox(animal, (int) cellSquareSide, (int) cellSquareSide);
-        if (trackedAnimal != null && trackedAnimal.equals(animal)) {
-            box.highlightYellow();
-        }
-        box.updateHealthBar(animal);
-        return box;
-    }
-
-    private WorldElementBox createGrassBoxForCell(Vector2d position, double cellSquareSide) {
-        return new WorldElementBox(new Grass(position), (int) cellSquareSide, (int) cellSquareSide);
-    }
-
-    private WorldElementBox createAlphaChannelBoxForCell(double cellSquareSide) {
-        return new WorldElementBox(new AlphaChannelElement(), (int) cellSquareSide, (int) cellSquareSide);
-    }
-
-
+    /**
+     * Tworzy komórkę na podstawie boxa.
+     *
+     * @param box            box reprezentujący elementy na danej pozycji
+     * @param cellSquareSide rozmiar komórki
+     * @return komórka reprezentująca elementy na danej pozycji
+     */
     private StackPane createCell(WorldElementBox box, double cellSquareSide) {
+        // Utworzenie komórki
         StackPane cell = new StackPane();
+        // Ustawienie rozmiaru komórki
         cell.setPrefSize(cellSquareSide, cellSquareSide);
         cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        // Zapewniamy, że pudełko zajmie całą dostępną przestrzeń
+        // Dodanie boxa do komórki
         VBox.setVgrow(box, Priority.ALWAYS);
         HBox.setHgrow(box, Priority.ALWAYS);
+        // Ustawienie paddingu
         box.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         cell.getChildren().add(box);
+        // Zwrócenie komórki
         return cell;
     }
 
+    /**
+     * Obsługuje kliknięcie na komórkę w celu zaznaczenia zwierzęcia.
+     *
+     * @param cell     komórka, na którą kliknięto
+     * @param elements lista elementów znajdujących się na danej pozycji
+     */
     private void handleCellClickAnimalSelection(StackPane cell, List<WorldElement> elements) {
-        // Pobieramy najlepsze zwierzę do śledzenia w tej komórce
         Optional<Animal> selectedAnimalOpt = elements.stream()
                 .filter(e -> e instanceof Animal)
                 .map(e -> (Animal) e)
@@ -257,38 +261,46 @@ public class SimulationMapWindowController implements MapChangeListener {
                         .thenComparingInt(Animal::getBirthDate)
                         .thenComparingInt(Animal::getChildrenCount));
 
+        // Jeśli znaleziono zwierzę, zaznacz je
         if (selectedAnimalOpt.isPresent()) {
+            // Zaznaczenie komórki
             Animal selectedAnimal = selectedAnimalOpt.get();
 
-            // Znajdujemy WorldElementBox w tej komórce
-            if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof WorldElementBox box) {
-                unhighlightTrackedBox(box, selectedAnimal);
+            // Jeśli komórka jest już zaznaczona, zaznacz nową komórkę
+            if (!cell.getChildren().isEmpty() && cell.getChildren().getFirst() instanceof WorldElementBox box) {
+                highlightTrackedBox(box, selectedAnimal);
             }
         }
     }
-    private void unhighlightTrackedBox(WorldElementBox newBox, Animal newAnimal) {
-        // Jeśli mamy poprzednio śledzony box, resetujemy jego podświetlenie
-        unhighlightTrackedBox();
 
-        // Podświetlamy nowy box
-        newBox.highlightYellow();
-        trackedBox = newBox;  // Aktualizujemy śledzone pole
-        trackAnimal(newAnimal);  // Aktualizujemy śledzone zwierzę
+    /**
+     * Zaznacza komórkę z nowo wybranym zwierzęciem.
+     *
+     * @param newBox    nowa komórka do zaznaczenia
+     * @param newAnimal nowe zwierzę do śledzenia
+     */
+    private void highlightTrackedBox(WorldElementBox newBox, Animal newAnimal) {
+        unhighlightTrackedBox(); // Odznaczenie poprzedniej komórki
+        newBox.highlightTrackedAnimal(); // Zaznaczenie nowej komórki
+        trackedBox = newBox; // Ustawienie nowej komórki
+        trackAnimal(newAnimal); // Śledzenie nowego zwierzęcia
     }
 
-
-
-
-    private double calculateCellSize() {
-        double width = gridContainer.getWidth();
-        double height = gridContainer.getHeight();
-
-        double cellSize = Math.min(width / config.getMapWidth(), height / config.getMapHeight());
-
-        return cellSize;
+    /**
+     * Odznacza zaznaczoną komórkę.
+     */
+    private void unhighlightTrackedBox() {
+        if (trackedBox != null) {
+            trackedBox.setBackground(DEFAULT_BACKGROUND);
+            trackedBox = null;
+            // Aby wprowadzić zmiany na GUI, należy wywołać drawMap()
+            drawMap();
+        }
     }
 
-
+    /**
+     * Aktualizuje statystyki symulacji.
+     */
     private void updateStatistics() {
         Platform.runLater(() -> {
             SimulationStatTracker stats = simulation.getStatTracker();
@@ -303,106 +315,120 @@ public class SimulationMapWindowController implements MapChangeListener {
 
             animalSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), stats.getAnimalCount()));
             grassSeries.getData().add(new XYChart.Data<>(simulation.getCurrentDay(), stats.getGrassCount()));
-
         });
     }
 
-
-    @Override
-    public void mapChanged(AbstractWorldMap worldMap) {
-        if (!isPaused) {
-            drawMap();
-        }
-    }
-
+    /**
+     * Pauzuje symulację.
+     */
     @FXML
     void pauseSimulation() {
         isPaused = true;
         simulation.pause();
-        updateHighlightButtonsState(); // Aktualizuje przyciski
+        updatePauseButtonState();
+        updateResumeButtonState();
+        updateHighlightButtonsState();
     }
 
+    /**
+     * Aktualzuje stan przycisku wznawiania symulacji.
+     */
+    @FXML
+    private void updateResumeButtonState() {
+        resumeButton.setDisable(!isPaused);
+    }
+
+    /**
+     * Wznawia symulację.
+     */
     @FXML
     void resumeSimulation() {
         isPaused = false;
         simulation.resume();
         removeHighlighting();
-        updateHighlightButtonsState(); // Aktualizuje przyciski
+        updatePauseButtonState();
+        updateResumeButtonState();
+        updateHighlightButtonsState();
         drawMap();
     }
 
+    /**
+     * Aktualizuje stan przycisku pauzy.
+     */
+    @FXML
+    private void updatePauseButtonState() {
+        pauseButton.setDisable(isPaused);
+    }
+
+    /**
+     * Zatrzymuje symulację i zamyka okno.
+     */
     @FXML
     void closeWindow() {
         simulation.stop();
         ((Stage) mapGrid.getScene().getWindow()).close();
     }
 
+    /**
+     * Zaznacza zwierzęta z dominującym genotypem. Używa helpera do zaznaczania elementów.
+     */
     @FXML
     void highlightDominantGenotype() {
         if (!isPaused) return;
-        highlightElements(this::isAnimalWithDominantGenotype, WorldElementBox::highlightDominantGenotype);
+        SimulationMapWindowHighlightHelper.highlightElements(mapGrid, this::isAnimalWithDominantGenotype, WorldElementBox::highlightDominantGenotype);
     }
 
+    /**
+     * Zaznacza preferowane pola. Używa helpera do zaznaczania elementów.
+     */
     @FXML
     void highlightPreferredFields() {
         if (!isPaused) return;
-        highlightElements(this::isPreferredField, WorldElementBox::highlightPreferredField);
+        SimulationMapWindowHighlightHelper.highlightElements(mapGrid, this::isPreferredField, WorldElementBox::highlightPreferredField);
     }
 
-
-
-    private void highlightElements(Predicate<Vector2d> filterCondition, Consumer<WorldElementBox> highlightAction) {
-        Platform.runLater(() -> {
-            for (javafx.scene.Node node : mapGrid.getChildren()) {
-                if (node instanceof StackPane cell) {
-                    Vector2d pos = getGridPosition(cell);
-                    if (pos == null || !filterCondition.test(pos)) continue;
-
-                    for (javafx.scene.Node child : cell.getChildren()) {
-                        if (child instanceof WorldElementBox box) {
-                            highlightAction.accept(box);
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private Vector2d getGridPosition(StackPane cell) {
-        Integer columnIndex = GridPane.getColumnIndex(cell);
-        Integer rowIndex = GridPane.getRowIndex(cell);
-        return (columnIndex != null && rowIndex != null) ? new Vector2d(columnIndex, rowIndex) : null;
-    }
-
+    /**
+     * Sprawdza, czy na danej pozycji znajduje się zwierzę z dominującym genotypem.
+     *
+     * @param pos pozycja
+     * @return true, jeśli na danej pozycji znajduje się zwierzę z dominującym genotypem
+     */
     private boolean isAnimalWithDominantGenotype(Vector2d pos) {
+        // Pobranie elementów znajdujących się na danej pozycji
         AbstractWorldMap worldMap = simulation.getMap();
-        // Pobieramy elementy (WorldElement) znajdujące się na danym polu
         List<WorldElement> elementsAtPos = worldMap.objectAt(pos).orElse(Collections.emptyList());
-        // Pobieramy zwierzęta, które mają najpopularniejszy (podobny) genotyp
+        // Pobranie zwierząt z najpopularniejszymi genami
         List<Animal> animalsWithPopularGenes = getAnimalsWithMostPopularGenes();
 
-        // Jeśli choć jedno zwierzę na polu należy do listy zwierząt z popularnym genotypem, zwracamy true
+        // Sprawdzenie, czy na danej pozycji znajduje się zwierzę z popularnym genotypem
         return elementsAtPos.stream()
                 .filter(e -> e instanceof Animal)
                 .map(e -> (Animal) e)
                 .anyMatch(animalsWithPopularGenes::contains);
     }
 
-
+    /**
+     * Sprawdza, czy dane pole jest preferowane przez trawę.
+     *
+     * @param pos pozycja
+     * @return true, jeśli na danej pozycji znajduje się preferowane pole
+     */
     private boolean isPreferredField(Vector2d pos) {
         AbstractWorldMap worldMap = simulation.getMap();
         Map<Vector2d, Integer> preferredGrassMap = worldMap.getPreferredGrassFields();
         return preferredGrassMap.containsKey(pos);
     }
 
-
+    /**
+     * Usuwa zaznaczenie zaznaczonych elementów.
+     */
     private void removeHighlighting() {
         Platform.runLater(() -> {
             for (javafx.scene.Node node : mapGrid.getChildren()) {
                 if (node instanceof StackPane cell) {
                     for (javafx.scene.Node child : cell.getChildren()) {
                         if (child instanceof WorldElementBox box) {
-                            box.setBackground(WorldElementBox.DEFAULT_BACKGROUND);
+                            box.setBackground(DEFAULT_BACKGROUND);
                         }
                     }
                 }
@@ -410,76 +436,116 @@ public class SimulationMapWindowController implements MapChangeListener {
         });
     }
 
+    /**
+     * Aktualizuje stan przycisków zaznaczania.
+     */
     private void updateHighlightButtonsState() {
-        boolean disable = !isPaused;
-        highlightPreferredFieldsButton.setDisable(disable);
-        highlightDominantGenotypeButton.setDisable(disable);
+        boolean switcher = !isPaused;
+        highlightPreferredFieldsButton.setDisable(switcher);
+        highlightDominantGenotypeButton.setDisable(switcher);
     }
 
+    /**
+     * Śledzi zwierzę. Wybiera je tylko w trybie pauzy.
+     *
+     * @param animal zwierzę do śledzenia
+     */
     public void trackAnimal(Animal animal) {
         if (isPaused) {
             trackedAnimal = animal;
             updateTrackedAnimalInfo();
         }
     }
+
+    /**
+     * Aktualizuje informacje o śledzonym zwierzęciu.
+     */
     private void updateTrackedAnimalInfo() {
         if (trackedAnimal != null) {
-            trackedGenotypeLabel.setText("Genom: " + trackedAnimal.getGenome().toString());
-            trackedActiveGeneLabel.setText("Aktywny gen: "+trackedAnimal.getGenome().getActiveGene());
-            trackedEnergyLabel.setText("Energia: " + trackedAnimal.getEnergy());
-            trackedGrassEatenLabel.setText("Zjedzone rośliny: " + trackedAnimal.getGrassEaten());
-            trackedChildrenLabel.setText("Dzieci: " + trackedAnimal.getChildrenCount());
-            trackedDescendantsLabel.setText("Potomkowie: " + trackedAnimal.getDescendantsCount());
-            trackedAgeLabel.setText(trackedAnimal.isAlive() ? "Wiek: " + trackedAnimal.getAge(simulation.getCurrentDay()) : "Wiek: Nie żyje");
-            trackedDeathDayLabel.setText(trackedAnimal.isAlive() ? "Dzień śmierci: Żyje" : "Dzień śmierci: " + trackedAnimal.getDeathDay());
+            int currentDay = simulation.getCurrentDay();
+            TrackedAnimalInfoHelper.updateTrackedAnimalInfo(
+                    trackedAnimal,
+                    trackedGenotypeLabel,
+                    trackedActiveGeneLabel,
+                    trackedEnergyLabel,
+                    trackedGrassEatenLabel,
+                    trackedChildrenLabel,
+                    trackedDescendantsLabel,
+                    trackedAgeLabel,
+                    trackedDeathDayLabel,
+                    currentDay
+            );
         }
     }
+
+
+    /**
+     * Zatrzymuje śledzenie zwierzęcia.
+     */
     @FXML
     private void stopTracking() {
-        trackedAnimal = null;
-        unhighlightTrackedBox();
-        trackedGenotypeLabel.setText("Genom: -");
-        trackedActiveGeneLabel.setText("Aktywny gen: -");
-        trackedEnergyLabel.setText("Energia: -");
-        trackedGrassEatenLabel.setText("Zjedzone rośliny: -");
-        trackedChildrenLabel.setText("Dzieci: -");
-        trackedDescendantsLabel.setText("Potomkowie: -");
-        trackedAgeLabel.setText("Wiek: -");
-        trackedDeathDayLabel.setText("Dzień śmierci: -");
-    }
-
-    private void unhighlightTrackedBox() {
-        if (trackedBox != null) {
-            trackedBox.setBackground(DEFAULT_BACKGROUND);
-            trackedBox = null;
+        if (trackedAnimal != null) {
+            Platform.runLater(this::unhighlightTrackedBox);
         }
+        trackedAnimal = null;
+        TrackedAnimalInfoHelper.resetTrackedAnimalInfo(
+                trackedGenotypeLabel,
+                trackedActiveGeneLabel,
+                trackedEnergyLabel,
+                trackedGrassEatenLabel,
+                trackedChildrenLabel,
+                trackedDescendantsLabel,
+                trackedAgeLabel,
+                trackedDeathDayLabel
+        );
     }
 
+    /**
+     * Zwraca listę zwierząt z najpopularniejszymi genami.
+     *
+     * @return lista zwierząt z najpopularniejszymi genami
+     */
     public List<Animal> getAnimalsWithMostPopularGenes() {
+        // Pobranie najpopularniejszych genów
         List<Integer> popularGenes = simulation.getStatTracker().getMostPopularGenes();
         if (popularGenes == null || popularGenes.isEmpty())
             return Collections.emptyList();
 
+        // Zwrócenie zwierząt z najpopularniejszymi genami
         return simulation.getAliveAnimals().stream()
                 .filter(animal -> animal.getGenome() != null &&
                         isGenomeSimilarEnough(animal.getGenome().getGeneList(), popularGenes))
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Sprawdza, czy dwa genomy są wystarczająco podobne.
+     *
+     * @param genome1 pierwszy genom
+     * @param genome2 drugi genom
+     * @return true, jeśli genomy są wystarczająco podobne
+     */
     private boolean isGenomeSimilarEnough(List<Integer> genome1, List<Integer> genome2) {
-
+        // Sprawdzenie, czy genomy są wystarczająco podobne (arbitralnie przyjęto sqrt((GenomeLength) * 3) różnic)
         int differences = 0;
         for (int i = 0; i < config.getGenomeLength(); i++) {
             if (!Objects.equals(genome1.get(i), genome2.get(i))) {
                 differences++;
-                if (differences > ((Math.sqrt(config.getGenomeLength()*3.0)))) {
+                if (differences > Math.sqrt(config.getGenomeLength() * 3.0)) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 
+    /**
+     * Tworzy nowe okno z wykresem.
+     */
+    @Override
+    public void mapChanged(AbstractWorldMap worldMap) {
+        if (!isPaused) {
+            drawMap();
+        }
+    }
 }

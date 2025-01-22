@@ -25,82 +25,82 @@
 
                     <children>
                         <!-- mapWidth -->
-                        <Label text="Map Width:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <Label text="Szerokość Mapy:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
                         <Spinner fx:id="mapWidthSpinner" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
                         <!-- mapHeight -->
-                        <Label text="Map Height:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <Label text="Wysokość Mapy:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
                         <Spinner fx:id="mapHeightSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
                         <!-- startGrassCount -->
-                        <Label text="Start Grass:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <Label text="Początkowa liczba traw:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
                         <Spinner fx:id="startGrassSpinner" GridPane.rowIndex="2" GridPane.columnIndex="1" />
 
                         <!-- grassEnergy -->
-                        <Label text="Grass Energy:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                        <Label text="Energia trawy:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
                         <Spinner fx:id="grassEnergySpinner" GridPane.rowIndex="3" GridPane.columnIndex="1" />
 
                         <!-- dailyGrassGrowth -->
-                        <Label text="Daily Grass Growth:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                        <Label text="Codzienny wzrost trawy:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
                         <Spinner fx:id="dailyGrassGrowthSpinner" GridPane.rowIndex="4" GridPane.columnIndex="1" />
 
                         <!-- startAnimalCount -->
-                        <Label text="Start Animal Count:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                        <Label text="Początkowa liczba zwierząt:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
                         <Spinner fx:id="startAnimalCountSpinner" GridPane.rowIndex="5" GridPane.columnIndex="1" />
 
                         <!-- initialEnergy -->
-                        <Label text="Initial Energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                        <Label text="Energia początkowa zwierząt:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
                         <Spinner fx:id="initialEnergySpinner" GridPane.rowIndex="6" GridPane.columnIndex="1" />
 
                         <!-- initialEnergy -->
-                        <Label text="Reproduction Energy:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                        <Label text="Energia potrzebna do rozmnażania:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
                         <Spinner fx:id="reproductionEnergySpinner" GridPane.rowIndex="7" GridPane.columnIndex="1" />
 
                         <!-- reproductionCost -->
-                        <Label text="Reproduction Cost:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
+                        <Label text="Koszt rozmnażania:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
                         <Spinner fx:id="reproductionCostSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1" />
 
                         <!-- moveCost -->
-                        <Label text="Move Cost:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
+                        <Label text="Koszt Ruchu:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
                         <Spinner fx:id="moveCostSpinner" GridPane.rowIndex="9" GridPane.columnIndex="1" />
 
                         <!-- Rodzaj mapy -->
                         <Label text="Rodzaj mapy:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
                         <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.rowIndex="10" GridPane.columnIndex="1">
                             <children>
-                                <RadioButton fx:id="equatorMapRadio" text="Equator" />
-                                <RadioButton fx:id="crawlingJungleMapRadio" text="Crawling Jungle" />
+                                <RadioButton fx:id="equatorMapRadio" text="Zalesione Równiki" />
+                                <RadioButton fx:id="crawlingJungleMapRadio" text="Pełzająca Dżungla" />
                             </children>
                         </HBox>
 
                         <!-- agingAnimalVariant -->
-                        <Label text="Aging Animal Variant?" GridPane.rowIndex="11" GridPane.columnIndex="0" />
+                        <Label text="Starość nie radość?" GridPane.rowIndex="11" GridPane.columnIndex="0" />
                         <CheckBox fx:id="agingAnimalCheckBox" GridPane.rowIndex="11" GridPane.columnIndex="1" />
 
                         <!-- minMutations -->
-                        <Label text="Min Mutations:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
+                        <Label text="Minimalna liczba mutacji:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
                         <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1" />
 
                         <!-- maxMutations -->
-                        <Label text="Max Mutations:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
+                        <Label text="Maksymalna liczba mutacji:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
                         <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="13" GridPane.columnIndex="1" />
 
                         <!-- genomeLength -->
-                        <Label text="Genome Length:" GridPane.rowIndex="14" GridPane.columnIndex="0" />
+                        <Label text="Długość genomu:" GridPane.rowIndex="14" GridPane.columnIndex="0" />
                         <Spinner fx:id="genomeLengthSpinner" GridPane.rowIndex="14" GridPane.columnIndex="1" />
 
                         <!-- dayDurationMs -->
-                        <Label text="Day Duration (ms):" GridPane.rowIndex="15" GridPane.columnIndex="0" />
+                        <Label text="Czas trwania dnia (ms):" GridPane.rowIndex="15" GridPane.columnIndex="0" />
                         <TextField fx:id="dayDurationField" prefWidth="80" GridPane.rowIndex="15" GridPane.columnIndex="1" />
 
                         <!-- CSV Save -->
-                        <Label text="CSV Save?" GridPane.rowIndex="16" GridPane.columnIndex="0" />
+                        <Label text="Zapisać do CSV?" GridPane.rowIndex="16" GridPane.columnIndex="0" />
                         <CheckBox fx:id="csvSaveCheckBox" GridPane.rowIndex="16" GridPane.columnIndex="1" />
                         <Label text="File Path:" GridPane.rowIndex="17" GridPane.columnIndex="0" />
                         <HBox spacing="5" GridPane.rowIndex="17" GridPane.columnIndex="1">
                             <children>
                                 <TextField fx:id="filePathField" promptText="Ścieżka do pliku" />
-                                <Button fx:id="fileExplorerButton" text="Explore" />
+                                <Button fx:id="fileExplorerButton" text="Przeglądaj" />
                             </children>
                         </HBox>
                     </children>

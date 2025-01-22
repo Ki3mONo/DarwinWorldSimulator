@@ -1,0 +1,1 @@
+{"mapWidth":10,"mapHeight":10,"startGrassCount":20,"grassEnergy":20,"dailyGrassGrowth":10,"startAnimalCount":10,"initialEnergy":100,"reproductionEnergy":30,"reproductionCost":20,"moveCost":5,"agingAnimalVariant":true,"minMutations":1,"maxMutations":4,"genomeLength":10,"dayDurationMs":500,"csvFilePath":null,"mapType":"EQUATOR_FOREST"}

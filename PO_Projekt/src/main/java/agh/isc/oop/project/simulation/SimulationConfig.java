@@ -2,6 +2,9 @@ package agh.isc.oop.project.simulation;
 
 import agh.isc.oop.project.model.map.MapType;
 
+/**
+ * Klasa konfiguracji symulacji, która zawiera w sobie parametry symulacji.
+ */
 public class SimulationConfig {
     //WorldMap
     private final int mapWidth;
@@ -25,6 +28,26 @@ public class SimulationConfig {
     private final String csvFilePath;
     private final MapType mapType;
 
+    /**
+     * Konstruktor konfiguracji symulacji, który tworzy nową konfigurację symulacji na podstawie podanych parametrów.
+     * @param mapType typ mapy
+     * @param mapWidth szerokość mapy
+     * @param mapHeight wysokość mapy
+     * @param startGrassCount początkowa liczba trawy
+     * @param grassEnergy energia trawy
+     * @param dailyGrassGrowth dzienny przyrost trawy
+     * @param startAnimalCount początkowa liczba zwierząt
+     * @param initialEnergy początkowa energia zwierząt
+     * @param reproductionEnergy energia potrzebna do rozmnażania
+     * @param reproductionCost koszt rozmnażania
+     * @param moveCost koszt ruchu
+     * @param agingAnimalVariant czy wariant z postarzaniem zwierząt
+     * @param minMutations minimalna liczba mutacji
+     * @param maxMutations maksymalna liczba mutacji
+     * @param genomeLength długość genomu
+     * @param dayDurationMs długość dnia w milisekundach
+     * @param csvFilePath ścieżka do pliku CSV
+     */
     public SimulationConfig(MapType mapType, int mapWidth, int mapHeight, int startGrassCount, int grassEnergy,
                             int dailyGrassGrowth, int startAnimalCount, int initialEnergy, int reproductionEnergy,
                             int reproductionCost, int moveCost, boolean agingAnimalVariant, int minMutations,
@@ -48,6 +71,7 @@ public class SimulationConfig {
         this.csvFilePath = csvFilePath;
     }
 
+    //Gettery
     public int getMapWidth() { return mapWidth; }
     public int getMapHeight() { return mapHeight; }
     public int getStartGrassCount() { return startGrassCount; }
@@ -67,11 +91,9 @@ public class SimulationConfig {
     public boolean isAgingAnimalVariant() {
         return agingAnimalVariant;
     }
-
     public String getCsvFilePath() {
         return csvFilePath;
     }
-
     public MapType getMapType(){
         return mapType;
     }
