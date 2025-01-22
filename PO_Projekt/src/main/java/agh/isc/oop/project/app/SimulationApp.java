@@ -126,16 +126,12 @@ public class SimulationApp extends Application {
     private void onLoadSimulationFromJSON(Stage stage) {
         // Tworzymy obiekt loadera i wczytujemy konfigurację z pliku JSON
         SimulationConfigLoader loader = new SimulationConfigLoader();
-        try {
-            // Wczytujemy konfigurację z pliku JSON dzięki
-            SimulationConfig config = loader.loadConfigFromJSON(stage);
-            if (config != null) {
-                startSimulation(config); // Jeśli udało się wczytać konfigurację, uruchamiamy symulację
-            }
-        } catch (IOException e) {
-            // W przypadku błędu wyświetlamy okno z informacją
-            showErrorDialog("Błąd", "Nie udało się wczytać pliku JSON.");
-            e.printStackTrace();
+        // Wczytujemy konfigurację z pliku JSON dzięki
+        SimulationConfig config = loader.loadConfigFromJSON(stage);
+        if (config != null) {
+            startSimulation(config); // Jeśli udało się wczytać konfigurację, uruchamiamy symulację
+        } else {
+            showErrorDialog("Błąd wczytywania konfiguracji", "Nie udało się wczytać konfiguracji z pliku JSON.");
         }
     }
 
