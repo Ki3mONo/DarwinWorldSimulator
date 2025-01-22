@@ -124,6 +124,8 @@ public class SimulationApp extends Application {
      * @param stage Okno, z którego wywołano metodę.
      */
     private void onLoadSimulationFromJSON(Stage stage) {
+        // Przykładowe konfiguracje symulacji znajdują się w katalogu src/sample_configurations/
+
         // Tworzymy obiekt loadera i wczytujemy konfigurację z pliku JSON
         SimulationConfigLoader loader = new SimulationConfigLoader();
         // Wczytujemy konfigurację z pliku JSON dzięki
