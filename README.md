@@ -1,5 +1,9 @@
 
-# Projekt: Darwin World
+# Darwin World Simulator
+
+<p align="center">
+  <img src="https://github.com/Ki3mONo/DarwinWorldSimulator/blob/main/SampleGIF/sample.gif" />
+</p>
 
 ## Autorzy
 
